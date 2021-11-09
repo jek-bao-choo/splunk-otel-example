@@ -1,8 +1,8 @@
-My setup
+My setup:
 - node v16.10.0
 - npm v7.24.1
 
-11 Steps:
+12 Steps:
 1. `npm init`
 
 
@@ -35,5 +35,11 @@ My setup
 
 11. `node -r @splunk/otel/instrument index.js`
 
+
+12. Go to http://localhost:5000/api and http://localhost:5000/. The latter would trigger an error in APM.
+
+Misc:
+
 - Ref: https://github.com/signalfx/splunk-otel-js
+- Proof: ![proof](proof.png "working proof")
 - Last updated: 9 Nov 2021
