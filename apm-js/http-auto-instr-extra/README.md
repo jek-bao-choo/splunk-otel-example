@@ -33,7 +33,7 @@
 10. Create index.js file
 
 
-11. Add the code from the index.js from the Github repo.
+11. Add the code from the index.js in this Github repo.
 
 
 12. `node -r @splunk/otel/instrument index.js`
@@ -47,5 +47,5 @@
 #Misc
 
 - Ref: https://github.com/signalfx/splunk-otel-js
-- Proof: to be added
+- Proof: ![proof](proof.png "working proof")
 - Last updated: 21 Nov 2021
