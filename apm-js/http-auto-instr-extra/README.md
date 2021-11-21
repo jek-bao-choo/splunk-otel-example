@@ -2,7 +2,7 @@
 - node v16.13.0
 - npm v8.1.0
 
-#13 Steps
+#14 Steps
 1. `npm init`
 
 
@@ -12,34 +12,37 @@
 3. `npm install @opentelemetry/instrumentation-http --save`
 
 
-4. `export OTEL_SERVICE_NAME=jek-http-auto-instr`
+4. `npm install axios --save`
 
 
-5. `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
+5. `export OTEL_SERVICE_NAME=jek-http-auto-instr`
 
 
-6. `export OTEL_EXPORTER_JAEGER_ENDPOINT=https://ingest.<realm from splunk o11y>.signalfx.com/v2/trace`
+6. `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
 
 
-7. `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
+7. `export OTEL_EXPORTER_JAEGER_ENDPOINT=https://ingest.<realm from splunk o11y>.signalfx.com/v2/trace`
 
 
-8. `printenv` to view variables are added
+8. `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
 
 
-9. Create index.js file
+9. `printenv` to view variables are added
 
 
-10. Add the code from the index.js from the Github repo.
+10. Create index.js file
 
 
-11. `node -r @splunk/otel/instrument index.js`
+11. Add the code from the index.js from the Github repo.
 
 
-12. Invoke request http://localhost:5000/api
+12. `node -r @splunk/otel/instrument index.js`
 
 
-13. Invoke error http://localhost:5000
+13. Invoke request http://localhost:5000/api
+
+
+14. Invoke error http://localhost:5000
 
 #Misc
 
