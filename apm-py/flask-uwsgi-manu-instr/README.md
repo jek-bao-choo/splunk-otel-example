@@ -56,7 +56,7 @@
 17. Create app.py file
 
 
-18. Add the hello world flask code from this Github repo to your newly created app.py
+18. Add the hello world flask code with manual instrumentation from this Github repo to your newly created app.py
 
 
 19. Run the flask app with uwsgi using `uwsgi --http 127.0.0.1:5000 --wsgi-file app.py --callable app --master --processes 4 --enable-threads`
