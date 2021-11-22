@@ -15,7 +15,7 @@
 4. `npm install axios --save`
 
 
-5. `export OTEL_SERVICE_NAME=jek-http-auto-instr`
+5. `export OTEL_SERVICE_NAME=jek-http-auto-instr-extra`
 
 
 6. `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
