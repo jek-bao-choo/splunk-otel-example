@@ -6,16 +6,18 @@ from opentelemetry.propagate import extract
 
 from kafka import KafkaConsumer
 
+kafka_topic = "jek_kafka_topic"
+
 # Start of OTel part 2
 tracer = trace.get_tracer_provider().get_tracer(__name__)
-# Start of OTel part 2
+# End of OTel part 2
 
 
 # StopIteration if no message after 60sec
 consumer = KafkaConsumer(
-    'jek-kafka-topic',
+    kafka_topic,
     bootstrap_servers=['localhost:9092'],
-    group_id='jek-consumer-group',
+    group_id='jek_consumer_group',
     consumer_timeout_ms=60000
 )
 
@@ -31,11 +33,18 @@ for message in consumer:
     headers = {
         "traceparent": traceparent
     }
+
+    # Note that kind=... and attributes={...} are the key to having the name of kafka topic shown in Splunk APM
+    # Thank you to Owais for pointing this out.
     with tracer.start_as_current_span(
             "jek_kafka_consumer_span",
             context=extract(headers),
-            kind=trace.SpanKind.SERVER
+            kind=trace.SpanKind.CONSUMER,
+            attributes={
+                "messaging.system": "kafka",
+                "messaging.destination": kafka_topic
+            }
     ):
         print("********headers", headers)
         print("********context", extract(headers))
-        # Start of OTel part 3
+        # End of OTel part 3

@@ -1,5 +1,3 @@
-#This is WIP. Not ready yet
-
 # My Setup
 - Python v3.10.0
 - Pip v21.2.3
@@ -10,7 +8,10 @@
 1. Start Zookeeper
     
 
-2. Start Kafka
+2. Start Kafka on port 9092. 
+   
+   WIP to include steps for this
+   https://hub.docker.com/r/wurstmeister/kafka
 
 
 ## Terminal 2
@@ -34,7 +35,7 @@
 8. Install `splunk-py-trace-bootstrap`
 
 
-9. `export OTEL_SERVICE_NAME=jek-kafka-consumer-manu-instr`
+9. `export OTEL_SERVICE_NAME=jek_consumer_kafka_manu_instr`
 
 
 10. `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
@@ -46,10 +47,10 @@
 12. `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
 
 
-13. Set environment name `export OTEL_RESOURCE_ATTRIBUTES=deployment.environment=jek-dev`
+13. Set environment name `export OTEL_RESOURCE_ATTRIBUTES='deployment.environment=jek-dev'`
    
 
-14. Set service version `export OTEL_RESOURCE_ATTRIBUTES=service.version=99.99.99`
+14. Set service version `export OTEL_RESOURCE_ATTRIBUTES='service.version=99.99.99'`
 
 
 15. View the packages before installing more `pip freeze`
@@ -68,7 +69,8 @@
 
 20. Activate the virtual environment `source venv/bin/activate`
 
-21. `export OTEL_SERVICE_NAME=jek-kafka-producer-manu-instr`
+
+21. `export OTEL_SERVICE_NAME=jek_producer_kafka_manu_instr`
 
 
 22. `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
@@ -80,10 +82,10 @@
 24. `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
 
 
-25. Set environment name `export OTEL_RESOURCE_ATTRIBUTES=deployment.environment=jek-dev`
+25. Set environment name `export OTEL_RESOURCE_ATTRIBUTES='deployment.environment=jek-dev'`
    
 
-26. Set service version `export OTEL_RESOURCE_ATTRIBUTES=service.version=99.99.99`
+26. Set service version `export OTEL_RESOURCE_ATTRIBUTES='service.version=99.99.99'`
 
 
 27. Create producer.py file
