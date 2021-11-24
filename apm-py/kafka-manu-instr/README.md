@@ -5,65 +5,97 @@
 - Pip v21.2.3
 - Docker v20.10.8
 
-# 20 Steps
-1. Make sure it is python 3.6 or higher `python --version`
+# 28 Steps
+## Terminal 1
+1. Start Zookeeper
+    
+
+2. Start Kafka
 
 
-2. Create virtual environment `python -m venv venv`
+## Terminal 2
+    
+
+3. Make sure it is python 3.6 or higher `python --version`
 
 
-3. Activate the virtual environment `source venv/bin/activate`
+4. Create virtual environment `python -m venv venv`
 
 
-4. Install kafka python library `pip install kafka-python`
+5. Activate the virtual environment `source venv/bin/activate`
 
 
-5. Install `pip install 'splunk-opentelemetry[all]'` 
+6. Install kafka python library `pip install kafka-python`
 
 
-6. Install `splunk-py-trace-bootstrap`
+7. Install `pip install 'splunk-opentelemetry[all]'` 
 
 
-7. `export OTEL_SERVICE_NAME=jek-kafka-manu-instr`
+8. Install `splunk-py-trace-bootstrap`
 
 
-8. `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
+9. `export OTEL_SERVICE_NAME=jek-kafka-consumer-manu-instr`
 
 
-9. `export OTEL_EXPORTER_JAEGER_ENDPOINT=https://ingest.<realm from splunk o11y>.signalfx.com/v2/trace`
+10. `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
 
 
-10. `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
+11. `export OTEL_EXPORTER_JAEGER_ENDPOINT=https://ingest.<realm from splunk o11y>.signalfx.com/v2/trace`
 
 
-11. Set environment name `export OTEL_RESOURCE_ATTRIBUTES=deployment.environment=jek-dev`
+12. `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
+
+
+13. Set environment name `export OTEL_RESOURCE_ATTRIBUTES=deployment.environment=jek-dev`
    
 
-12. Set service version `export OTEL_RESOURCE_ATTRIBUTES=service.version=99.99.99`
+14. Set service version `export OTEL_RESOURCE_ATTRIBUTES=service.version=99.99.99`
 
 
-13. View the packages before installing more `pip freeze`
+15. View the packages before installing more `pip freeze`
 
 
-14. Create producer.py and consumer.py files
+16. Create consumer.py file
 
 
-15. Add the basic code from this Github repo to your newly created producer.py and consumer.py
+17. Add the basic code from this Github repo to your newly created consumer.py
 
-
-16. Start Zookeeper
-    
-
-17. Start Kafka
-    
 
 18. Run consumer.py `splunk-py-trace python consumer.py`
 
 
-19. Run producer.py `splunk-py-trace python producer.py`
+## Terminal 3
+
+Activate the virtual environment `source venv/bin/activate`
+
+19. `export OTEL_SERVICE_NAME=jek-kafka-producer-manu-instr`
 
 
-20. Deactivate the virtual environment when no longer needed `deactivate`
+20. `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
+
+
+21. `export OTEL_EXPORTER_JAEGER_ENDPOINT=https://ingest.<realm from splunk o11y>.signalfx.com/v2/trace`
+
+
+22. `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
+
+
+23. Set environment name `export OTEL_RESOURCE_ATTRIBUTES=deployment.environment=jek-dev`
+   
+
+24. Set service version `export OTEL_RESOURCE_ATTRIBUTES=service.version=99.99.99`
+
+
+25. Create producer.py file
+
+
+26. Add the basic code from this Github repo to your newly created producer.py and consumer.py
+
+
+27. Run producer.py `splunk-py-trace python producer.py`
+
+
+28. Deactivate the virtual environment when no longer needed `deactivate`
 
 
 # Misc
