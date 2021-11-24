@@ -2,6 +2,7 @@
 
 - Python v3.10.0
 - Pip v21.2.3
+...
 
 
 # 19 Steps
