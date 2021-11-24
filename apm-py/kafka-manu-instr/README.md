@@ -5,7 +5,7 @@
 - Pip v21.2.3
 - Docker v20.10.8
 
-# 28 Steps
+# 30 Steps
 ## Terminal 1
 1. Start Zookeeper
     
@@ -66,41 +66,42 @@
 
 ## Terminal 3
 
-Activate the virtual environment `source venv/bin/activate`
+20. Activate the virtual environment `source venv/bin/activate`
 
-19. `export OTEL_SERVICE_NAME=jek-kafka-producer-manu-instr`
-
-
-20. `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
+21. `export OTEL_SERVICE_NAME=jek-kafka-producer-manu-instr`
 
 
-21. `export OTEL_EXPORTER_JAEGER_ENDPOINT=https://ingest.<realm from splunk o11y>.signalfx.com/v2/trace`
+22. `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
 
 
-22. `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
+23. `export OTEL_EXPORTER_JAEGER_ENDPOINT=https://ingest.<realm from splunk o11y>.signalfx.com/v2/trace`
 
 
-23. Set environment name `export OTEL_RESOURCE_ATTRIBUTES=deployment.environment=jek-dev`
+24. `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
+
+
+25. Set environment name `export OTEL_RESOURCE_ATTRIBUTES=deployment.environment=jek-dev`
    
 
-24. Set service version `export OTEL_RESOURCE_ATTRIBUTES=service.version=99.99.99`
+26. Set service version `export OTEL_RESOURCE_ATTRIBUTES=service.version=99.99.99`
 
 
-25. Create producer.py file
+27. Create producer.py file
 
 
-26. Add the basic code from this Github repo to your newly created producer.py and consumer.py
+28. Add the basic code from this Github repo to your newly created producer.py and consumer.py
 
 
-27. Run producer.py `splunk-py-trace python producer.py`
+29. Run producer.py `splunk-py-trace python producer.py`
 
 
-28. Deactivate the virtual environment when no longer needed `deactivate`
+30. Deactivate the virtual environment when no longer needed `deactivate`
 
 
 # Misc
 
 Ref: https://github.com/signalfx/splunk-otel-python
 
+Proof: ![proof](proof.png "working proof")
 
 Last updated: 24 Nov 2021
