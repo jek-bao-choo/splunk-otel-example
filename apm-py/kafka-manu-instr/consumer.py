@@ -6,7 +6,6 @@ from opentelemetry.propagate import extract
 
 from kafka import KafkaConsumer
 
-
 # Start of OTel part 2
 tracer = trace.get_tracer_provider().get_tracer(__name__)
 # Start of OTel part 2
@@ -26,16 +25,17 @@ for message in consumer:
     print("%s:%d:%d: headers=%s key=%s value=%s" % (message.topic, message.partition,
                                                     message.offset, message.headers,
                                                     message.key, message.value))
+    # Start of OTel part 3
     byte_traceparent = message.headers[0][1]  # this is a quick hack to get traceparent
     traceparent = byte_traceparent.decode('utf-8')  # this is for converting it from byte to string
     headers = {
         "traceparent": traceparent
     }
     with tracer.start_as_current_span(
-        "jek_kafka_consumer_span",
-        context=extract(headers),
-        kind=trace.SpanKind.SERVER
+            "jek_kafka_consumer_span",
+            context=extract(headers),
+            kind=trace.SpanKind.SERVER
     ):
         print("********headers", headers)
         print("********context", extract(headers))
-        # todo: context is showing up well but it is not showing in APM. Why?
+        # Start of OTel part 3
