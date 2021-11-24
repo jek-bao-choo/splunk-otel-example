@@ -1,25 +1,16 @@
-const { startTracing } = require('@splunk/otel');
-
-startTracing({
-    serviceName: 'jek-kafkajs-consumer-svc',
-});
-
 const { Kafka } = require('kafkajs')
 
 const kafka = new Kafka({
-    clientId: 'jek-kafkajs-consumer-app',
+    clientId: 'jek-consumer-app',
     brokers: ['localhost:9092']
 })
 
-const consumer = kafka.consumer({ groupId: 'jek-kafka-19nov2021' })
-const topic = 'jek-kafka-topic-19Nov2021'
+const consumer = kafka.consumer({ groupId: 'test-group-jek-14nov2021' })
 
 const run = async () => {
     // Consuming
     await consumer.connect()
-    await consumer.subscribe({
-        topic
-    })
+    await consumer.subscribe({ topic: 'jek-kafka-topic-14Nov2021', fromBeginning: true })
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
@@ -29,7 +20,6 @@ const run = async () => {
                 value: message.value.toString(),
                 headers: message.headers
             })
-            console.log("traceparent: " + message["headers"]["traceparent"])
         },
     })
 }

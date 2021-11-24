@@ -1,7 +1,13 @@
 {
+  "name": "kafkajs-auto-instr",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@splunk/otel": "^0.15.0",
     "chance": "^1.1.8",
-    "kafkajs": "^1.15.0"
+    "kafkajs": "^1.15.0",
+    "opentelemetry-instrumentation-kafkajs": "^0.26.0"
   }
 }
