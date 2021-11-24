@@ -26,3 +26,15 @@ for message in consumer:
     print("%s:%d:%d: headers=%s key=%s value=%s" % (message.topic, message.partition,
                                                     message.offset, message.headers,
                                                     message.key, message.value))
+    byte_traceparent = message.headers[0][1]
+    traceparent = byte_traceparent.decode('utf-8')
+    headers = {
+        "Traceparent": traceparent
+    }
+    with tracer.start_as_current_span(
+        "jek_kafka_consumer_span",
+        context=extract(headers),
+        kind=trace.SpanKind.SERVER
+    ):
+        print("********headers", headers)
+        print("********context", extract(headers))  # todo Jek: context is empty
