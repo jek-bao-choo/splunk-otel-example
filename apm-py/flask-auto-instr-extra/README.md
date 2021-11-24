@@ -4,7 +4,7 @@
 - Pip v21.2.3
 
 
-# 20 Steps
+# 19 Steps
 1. Make sure it is python 3.6 or higher `python --version`
 
 
@@ -47,22 +47,19 @@
 14. Add `pip install flask`
 
 
-15. Add `pip install requests`
+15. Create app.py file
 
 
-16. Create app.py file
+16. Add the hello world flask code from this Github repo to your newly created app.py
 
 
-17. Add the hello world flask code from this Github repo to your newly created app.py
+17. Run the flask app using `splunk-py-trace python app.py`
 
 
-18. Run the flask app using `splunk-py-trace python app.py`
+18. Invoke request via http://127.0.0.1:5000/
 
 
-19. Invoke request via http://127.0.0.1:5000/
-
-
-20. Deactivate the virtual environment `deactivate`
+19. Deactivate the virtual environment `deactivate`
 
 
 # Misc

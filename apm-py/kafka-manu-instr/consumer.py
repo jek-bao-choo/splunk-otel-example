@@ -1,4 +1,16 @@
+# Start of OTel part 1
+from opentelemetry import trace
+from opentelemetry.propagate import extract
+# End of OTel part 1
+
+
 from kafka import KafkaConsumer
+
+
+# Start of OTel part 2
+tracer = trace.get_tracer_provider().get_tracer(__name__)
+# Start of OTel part 2
+
 
 # StopIteration if no message after 60sec
 consumer = KafkaConsumer(

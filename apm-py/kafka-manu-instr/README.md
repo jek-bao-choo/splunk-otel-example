@@ -71,4 +71,4 @@
 Ref: https://github.com/signalfx/splunk-otel-python
 
 
-Last updated: 23 Nov 2021
+Last updated: 24 Nov 2021
