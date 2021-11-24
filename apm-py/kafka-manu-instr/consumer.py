@@ -37,4 +37,4 @@ for message in consumer:
         kind=trace.SpanKind.SERVER
     ):
         print("********headers", headers)
-        print("********context", extract(headers))  # todo Jek: context is empty
+        print("********context", extract(headers))
