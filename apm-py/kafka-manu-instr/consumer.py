@@ -26,8 +26,8 @@ for message in consumer:
     print("%s:%d:%d: headers=%s key=%s value=%s" % (message.topic, message.partition,
                                                     message.offset, message.headers,
                                                     message.key, message.value))
-    byte_traceparent = message.headers[0][1]
-    traceparent = byte_traceparent.decode('utf-8')
+    byte_traceparent = message.headers[0][1]  # this is a quick hack to get traceparent
+    traceparent = byte_traceparent.decode('utf-8')  # this is for converting it from byte to string
     headers = {
         "traceparent": traceparent
     }
@@ -38,3 +38,4 @@ for message in consumer:
     ):
         print("********headers", headers)
         print("********context", extract(headers))
+        # todo: context is showing up well but it is not showing in APM. Why?
