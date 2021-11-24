@@ -2,10 +2,9 @@
 
 - Python v3.10.0
 - Pip v21.2.3
-...
 
 
-# 19 Steps
+# 20 Steps
 1. Make sure it is python 3.6 or higher `python --version`
 
 
@@ -48,19 +47,22 @@
 14. Add `pip install flask`
 
 
-15. Create app.py file
+15. Add `pip install requests`
 
 
-16. Add the hello world flask code from this Github repo to your newly created app.py
+16. Create app.py file
 
 
-17. Run the flask app using `splunk-py-trace python app.py`
+17. Add the hello world flask code from this Github repo to your newly created app.py
 
 
-18. Invoke request via http://127.0.0.1:5000/
+18. Run the flask app using `splunk-py-trace python app.py`
 
 
-19. Deactivate the virtual environment `deactivate`
+19. Invoke request via http://127.0.0.1:5000/
+
+
+20. Deactivate the virtual environment `deactivate`
 
 
 # Misc
@@ -69,4 +71,4 @@ Ref: https://github.com/signalfx/splunk-otel-python
 
 Proof: ![proof](proof.png "working proof")
 
-Last updated: 22 Nov 2021
+Last updated: 24 Nov 2021
