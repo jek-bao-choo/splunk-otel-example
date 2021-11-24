@@ -29,7 +29,7 @@ for message in consumer:
     byte_traceparent = message.headers[0][1]
     traceparent = byte_traceparent.decode('utf-8')
     headers = {
-        "Traceparent": traceparent
+        "traceparent": traceparent
     }
     with tracer.start_as_current_span(
         "jek_kafka_consumer_span",
