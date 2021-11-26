@@ -1,3 +1,5 @@
+This is a Work In Progress.
+
 # My setup
 
 - Python v3.10.0
@@ -61,7 +63,7 @@
 
 # Misc
 
-Ref: https://github.com/signalfx/splunk-otel-python
-
+Ref: Thank you to Don for the sample code https://github.com/wwongpai/sanic-otel-splunk
+Another Ref: https://github.com/krvajal/sanic-opentelemetry-python-example
 
 Last updated: 22 Nov 2021
