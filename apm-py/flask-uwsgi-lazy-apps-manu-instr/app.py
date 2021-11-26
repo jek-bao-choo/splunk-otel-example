@@ -1,5 +1,4 @@
 # Start of addition for uWSGI tracing
-import uwsgidecorators
 from splunk_otel.tracing import start_tracing
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 # End of addition for uWSGI tracing
