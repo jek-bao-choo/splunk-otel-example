@@ -49,5 +49,5 @@ Add the code logger code from https://github.com/pragmaticivan/nestjs-otel > exa
 
 14. Invoke request http://localhost:3000
 
-- Proof: 
+- Proof: ![proof](proof.png "working proof")
 - Last updated: 30 Nov 2021
