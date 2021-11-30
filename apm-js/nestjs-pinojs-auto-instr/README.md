@@ -12,13 +12,16 @@ npm v8.1.0
 3. `cd <the-project-name>`
 
 
-4. `npm install @splunk/otel --save`
+4. `npm install nestjs-pino`
 
 
-5. `npm install @opentelemetry/instrumentation-http --save`
+5. `npm install @splunk/otel --save`
 
 
-6. Install two libraries as per https://github.com/pragmaticivan/nestjs-otel  `npm i nestjs-otel @opentelemetry/sdk-node --save`
+6. `npm install @opentelemetry/instrumentation-http --save`
+
+
+7. Install two libraries as per https://github.com/pragmaticivan/nestjs-otel  `npm i nestjs-otel @opentelemetry/sdk-node --save`
 
 
 7. `export OTEL_SERVICE_NAME=jek-nestjs-pinojs-auto-instr`
@@ -35,6 +38,8 @@ npm v8.1.0
 
 11. `printenv` to view variables are added
 
+
+Add the code logger code from https://github.com/pragmaticivan/nestjs-otel > examples > nestjs-prom-grafana-tempo
 
 12. `nest build`
 

@@ -25,9 +25,11 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
     "@opentelemetry/instrumentation-http": "^0.27.0",
+    "@opentelemetry/instrumentation-pino": "^0.27.0",
     "@opentelemetry/sdk-node": "^0.27.0",
     "@splunk/otel": "^0.15.0",
     "nestjs-otel": "^2.6.1",
+    "nestjs-pino": "^2.3.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
