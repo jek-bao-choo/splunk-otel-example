@@ -58,7 +58,7 @@ This is work in progress. The remaining work is to test that it is working.
 17. Create app.py file
 
 
-18. Add the hello world flask code with manual instrumentation from this Github repo to your newly created app.py
+18. Add the hello world flask code with manual instrumentation from this Github repo to your newly created app.py. Remember to add log config and format
 
 
 19. Run the flask app with uwsgi using `uwsgi --http-socket 0.0.0.0:5000 --module app:app --master --strict --die-on-term --vacuum --need-app --harakiri 30 --no-orphans --processes 6 --threads 2 --lazy-apps --cpu-affinity 1 --buffer-size 30000`
@@ -74,8 +74,6 @@ This is work in progress. The remaining work is to test that it is working.
 # Misc
 
 Ref: https://github.com/signalfx/splunk-otel-python
-
-Ack: Thank you to Owais for pointing out the --lazy-apps to run without the decorator as per https://github.com/jek-bao-choo/debugging-with-benz/commit/29a568886418d56672647f16fb2431e6f136c364
 
 Proof: ![proof](proof.png "working proof")
 
