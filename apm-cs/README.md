@@ -1,0 +1,1 @@
+The examples here are running with Signalfx Dotnet Tracing library. It is not OTel, yet.
