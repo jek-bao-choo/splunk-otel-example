@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>aspdotnetcore3dot1_auto_instr</RootNamespace>
+    <DockerComposeProjectPath>docker-compose.dcproj</DockerComposeProjectPath>
+    <UserSecretsId>c983abe3-9ba6-429d-80c3-a1d08c3733bb</UserSecretsId>
+  </PropertyGroup>
+
+</Project>

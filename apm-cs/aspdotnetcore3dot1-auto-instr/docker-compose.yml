@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  aspdotnetcore3dot1-auto-instr:
+    image: ${DOCKER_REGISTRY-}aspdotnetcore3dot1autoinstr
+    build:
+      context: .
+      dockerfile: ./Dockerfile
