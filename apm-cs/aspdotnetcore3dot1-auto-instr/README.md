@@ -172,3 +172,11 @@ docker run -it --rm \
 ```
 
 15. Test the app at `http://localhost:5000`
+
+# Misc
+Ref: https://github.com/signalfx/signalfx-dotnet-tracing
+
+Proof: ![proof](proof.png "working proof")
+Proof 2: ![proof2](proof2.png "working proof 2")
+
+Last updated: 10 Dec 2021
