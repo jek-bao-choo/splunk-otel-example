@@ -155,7 +155,7 @@ ENTRYPOINT ["dotnet", "aspdotnetcore3dot1-auto-instr.dll"]
 
 13. Build image `docker build -t jekbao/aspdotnetcore3dot1 . --no-cache`
 
-14. Add environment variables to config
+14. Add environment variables to config for sending DIRECTLY to Splunk O11y without going through OTel Collector
 
 ```
 docker run -it --rm \
