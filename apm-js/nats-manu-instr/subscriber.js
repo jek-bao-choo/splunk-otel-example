@@ -12,7 +12,12 @@ const {connect, StringCodec} = require("nats");
             const sub = nc.subscribe("msg.test");
 
             for await (const m of sub) {
-                console.log(`[${sub.getProcessed()}]: ${sc.decode(m.data)}`);
+                console.log(`[${sub.getProcessed()}] message: ${sc.decode(m.data)}`);
+                if (m["headers"]) {
+                    // reading/setting a header is not case sensitive
+                    console.log(`[${sub.getProcessed()}] id:`, m["headers"].get("id"));
+                    console.log(`[${sub.getProcessed()}] unix_time:`, m["headers"].get("unix_time"));
+                }
             }
 
             // this promise indicates the client closed
