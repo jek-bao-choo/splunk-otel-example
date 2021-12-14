@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
+using System.Collections;
 
 namespace subscriber
 {
@@ -32,9 +34,58 @@ namespace subscriber
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    var instrumentationType = Type.GetType("Datadog.Trace.ClrProfiler.Instrumentation, SignalFx.Tracing.ClrProfiler.Managed");
+                    var profilerAttached = instrumentationType?.GetProperty("ProfilerAttached", BindingFlags.Public | BindingFlags.Static)?.GetValue(null) ?? false;
+                    var tracerAssemblyLocation = Type.GetType("SignalFx.Tracing.Tracer, SignalFx.Tracing")?.Assembly.Location;
+                    var clrProfilerAssemblyLocation = instrumentationType?.Assembly.Location;
+                    var nl = Environment.NewLine;
+
+                    await context.Response.WriteAsync($"Profiler attached: {profilerAttached}{nl}");
+                    await context.Response.WriteAsync($"SignalFx.Tracing: {tracerAssemblyLocation}{nl}");
+                    await context.Response.WriteAsync($"Datadog.Trace.ClrProfiler.Managed: {clrProfilerAssemblyLocation}{nl}");
+
+                    foreach (var envVar in GetEnvironmentVariables())
+                    {
+                        await context.Response.WriteAsync($"{envVar.Key}={envVar.Value}{nl}");
+                    }
+
+                    await context.Response.WriteAsync("Hello World: v2");
+                });
+
+                endpoints.MapGet("/bad-request", context =>
+                {
+                    throw new Exception("Hello World! Exception");
+                });
+
+                endpoints.MapGet("/status-code/{statusCode=200}", async context =>
+                {
+                    object statusCode = context.Request.RouteValues["statusCode"];
+                    context.Response.StatusCode = int.Parse((string)statusCode);
+                    await context.Response.WriteAsync($"Status Code: {statusCode}");
                 });
             });
+        }
+
+        // Added to get environment variables
+        private IEnumerable<KeyValuePair<string, string>> GetEnvironmentVariables()
+        {
+            var prefixes = new[]
+                           {
+                               "COR_",
+                               "CORECLR_",
+                               "DD_",
+                               "DATADOG_"
+                           };
+
+            var envVars = from envVar in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
+                          from prefix in prefixes
+                          let key = (envVar.Key as string)?.ToUpperInvariant()
+                          let value = envVar.Value as string
+                          where key.StartsWith(prefix)
+                          orderby key
+                          select new KeyValuePair<string, string>(key, value);
+
+            return envVars;
         }
     }
 }
