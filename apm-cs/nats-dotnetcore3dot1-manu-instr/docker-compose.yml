@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  publisher:
+    image: ${DOCKER_REGISTRY-}publisher
+    build:
+      context: .
+      dockerfile: publisher/Dockerfile
+
+  subscriber:
+    image: ${DOCKER_REGISTRY-}subscriber
+    build:
+      context: .
+      dockerfile: subscriber/Dockerfile
+
