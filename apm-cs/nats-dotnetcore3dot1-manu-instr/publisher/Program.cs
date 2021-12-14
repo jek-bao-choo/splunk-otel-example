@@ -1,5 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 using System.Diagnostics;
 using System.Text;
@@ -8,7 +14,7 @@ using NATS.Client;
 namespace publisher
 {
     // Based mostly on:
-    // https://github.com/nats-io/nats.net/tree/master/src/Samples/Publish
+    // https://github.com/nats-io/nats.net/tree/master/src/Samples/Subscribe
     public class Program
     {
 
@@ -41,7 +47,7 @@ namespace publisher
                 for (int i = 0; i < count; i++)
                 {
                     // todo Jek: Add in inject context propagation try to refer kafka example https://github.com/signalfx/signalfx-dotnet-tracing/tree/main/samples
-                    c.Publish(subject, payload); 
+                    c.Publish(subject, payload);
                 }
                 c.Flush();
 
@@ -117,7 +123,8 @@ namespace publisher
         {
             try
             {
-                new Program().Run(args);
+                //new Program().Run(args);
+                CreateHostBuilder(args).Build().Run(); // toggle between web and program. Use the web to test if CLR Profiler is loaded
             }
             catch (Exception ex)
             {
@@ -127,6 +134,11 @@ namespace publisher
 
         }
 
-
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
     }
 }

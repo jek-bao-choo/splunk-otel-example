@@ -1,5 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 using System.Diagnostics;
 using System.Threading;
@@ -192,7 +198,8 @@ namespace subscriber
         {
             try
             {
-                new Program().Run(args);
+                //new Program().Run(args);
+                CreateHostBuilder(args).Build().Run(); // toggle between web and program. Use the web to test if CLR Profiler is loaded
             }
             catch (Exception ex)
             {
@@ -201,5 +208,11 @@ namespace subscriber
             }
         }
 
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
     }
 }

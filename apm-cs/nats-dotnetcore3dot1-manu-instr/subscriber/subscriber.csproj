@@ -10,11 +10,4 @@
   <ItemGroup>
     <PackageReference Include="NATS.Client" Version="0.14.3" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Startup.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="appsettings.json" />
-    <Content Remove="appsettings.Development.json" />
-  </ItemGroup>
 </Project>
