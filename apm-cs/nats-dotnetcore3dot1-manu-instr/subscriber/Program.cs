@@ -82,7 +82,7 @@ namespace subscriber
 
                 if (verbose)
                 {
-                    Console.WriteLine("Received: " + args.Message);
+                    Console.WriteLine("AsyncReceived: " + args.Message);
                     // todo Jek: Add in extract context propagation try to refer kafka example https://github.com/signalfx/signalfx-dotnet-tracing/tree/main/samples
                 }
 
@@ -124,7 +124,7 @@ namespace subscriber
                     received++;
 
                     if (verbose)
-                        Console.WriteLine("Received: " + m);
+                        Console.WriteLine("SyncReceived: " + m);
                 }
 
                 sw.Stop();
@@ -198,8 +198,8 @@ namespace subscriber
         {
             try
             {
-                //new Program().Run(args);
-                CreateHostBuilder(args).Build().Run(); // toggle between web and program. Use the web to test if CLR Profiler is loaded
+                new Program().Run(args);
+                //CreateHostBuilder(args).Build().Run(); // toggle between web and program. Use the web to test if CLR Profiler is loaded
             }
             catch (Exception ex)
             {

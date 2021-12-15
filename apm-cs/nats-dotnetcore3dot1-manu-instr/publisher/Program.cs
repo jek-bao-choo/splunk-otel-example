@@ -123,8 +123,8 @@ namespace publisher
         {
             try
             {
-                //new Program().Run(args);
-                CreateHostBuilder(args).Build().Run(); // toggle between web and program. Use the web to test if CLR Profiler is loaded
+                new Program().Run(args);
+                //CreateHostBuilder(args).Build().Run(); // toggle between web and program. Use the web to test if CLR Profiler is loaded
             }
             catch (Exception ex)
             {

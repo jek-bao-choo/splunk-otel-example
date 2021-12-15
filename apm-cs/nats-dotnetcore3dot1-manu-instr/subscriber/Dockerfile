@@ -22,4 +22,4 @@ COPY signalfx-dotnet-tracing* .
 RUN dpkg -i signalfx-dotnet-tracing_0.1.15_amd64.deb
 RUN mkdir /opt/tracelogs
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "subscriber.dll"]
+ENTRYPOINT ["dotnet", "subscriber.dll", "-verbose"]
