@@ -131,7 +131,6 @@ namespace publisher
                 Console.Error.WriteLine("Exception: " + ex.Message);
                 Console.Error.WriteLine(ex);
             }
-
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

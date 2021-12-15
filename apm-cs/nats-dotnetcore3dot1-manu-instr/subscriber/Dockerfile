@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 WORKDIR /src
-COPY ["subscriber/subscriber.csproj", "subscriber/"]
-RUN dotnet restore "subscriber/subscriber.csproj"
+COPY ["subscriber.csproj", "."]
+RUN dotnet restore "./subscriber.csproj"
 COPY . .
-WORKDIR "/src/subscriber"
+WORKDIR "/src/."
 RUN dotnet build "subscriber.csproj" -c Release -o /app/build
 
 FROM build AS publish
@@ -18,5 +18,8 @@ RUN dotnet publish "subscriber.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
+COPY signalfx-dotnet-tracing* .
+RUN dpkg -i signalfx-dotnet-tracing_0.1.15_amd64.deb
+RUN mkdir /opt/tracelogs
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "subscriber.dll"]

@@ -49,7 +49,7 @@ namespace publisher
                         await context.Response.WriteAsync($"{envVar.Key}={envVar.Value}{nl}");
                     }
 
-                    await context.Response.WriteAsync("Hello World: v2");
+                    await context.Response.WriteAsync("Hello World Publisher: v4");
                 });
 
                 endpoints.MapGet("/bad-request", context =>
