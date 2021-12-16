@@ -11,14 +11,14 @@ using System.Diagnostics;
 using System.Threading;
 using NATS.Client;
 
-using SignalFx.Tracing;
 using OpenTracing;
 using OpenTracing.Util;
+using OpenTracing.Propagation;
+using OpenTracing.Tag;
 
 namespace subscriber
 {
-    // Based mostly on:
-    // https://github.com/nats-io/nats.net/tree/master/src/Samples/Subscribe
+
     public class Program
     {
 
@@ -91,25 +91,26 @@ namespace subscriber
                 {
                     Console.WriteLine("AsyncReceived: " + args.Message);
 
-                    // todo: Add in extract context propagation try to refer kafka example https://github.com/signalfx/signalfx-dotnet-tracing/tree/main/samples
-                    var activeSpan = Tracer.Instance.StartActive("Jek subscriber span");
-                    Console.WriteLine("**********activeSpan", activeSpan);
-                    // todo: How to extract context into payload
 
-
-                    //ISpanContext context = tracer.Extract("?", "?"); // what to do for this? // Examples https://github.com/opentracing/opentracing-csharp/tree/master/examples/OpenTracing.Examples
-                    using (IScope scope = tracer.BuildSpan("MyPublisherSpan")
-                        //.WithTag(Tags.SpanKind.Key, Tags.SpanKindServer) // what to fill in for this?
-                        //.WithTag(Tags.Component.Key, "example-server") // what about this?
-                        //.AsChildOf(context)
+                    var msg = args.Message;
+                    Dictionary<string, string> contextPropagationKeyValuePairs = new Dictionary<string, string>(); // todo: msg to dict
+                    foreach (KeyValuePair<string, string> kvp in contextPropagationKeyValuePairs)
+                    {
+                        Console.WriteLine("**********subscriber testKeyValuePairs v2 ------> ");
+                        Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+                    }
+                    ISpanContext context = tracer.Extract(BuiltinFormats.TextMap, new TextMapExtractAdapter(contextPropagationKeyValuePairs)); // ref https://github.com/opentracing/opentracing-csharp/tree/master/examples/OpenTracing.Examples
+                    using (IScope scope = tracer.BuildSpan("MySubscriberSpan")
+                        .WithTag(Tags.SpanKind.Key, Tags.SpanKindConsumer)
+                        .WithTag(Tags.Component.Key, "nats-example-consumer")
+                        .AsChildOf(context)
                         .StartActive(finishSpanOnDispose: true))
                     {
                         var span = scope.Span;
                         span.SetTag("MyTag", "MyValue");
                         span.Log("My Log Statement");
-                        Console.WriteLine("**********tracer.BuildSpan = span", span);
                     }
-                    // todo: How to extract context from payload
+               
                 }
 
                 if (received >= count)
@@ -224,7 +225,7 @@ namespace subscriber
         {
             try
             {
-                new Program().Run(args);
+                new Program().Run(args); // ref https://github.com/nats-io/nats.net/tree/master/src/Samples/Subscribe
                 //CreateHostBuilder(args).Build().Run(); // toggle between web and program. Use the web to test if CLR Profiler is loaded
             }
             catch (Exception ex)

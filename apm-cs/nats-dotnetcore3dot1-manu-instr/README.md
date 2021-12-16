@@ -33,10 +33,20 @@ docker run -it --rm \
 -e CORECLR_PROFILER_PATH=/opt/signalfx-dotnet-tracing/SignalFx.Tracing.ClrProfiler.Native.so \
 -e SIGNALFX_INTEGRATIONS=/opt/signalfx-dotnet-tracing/integrations.json \
 -e SIGNALFX_DOTNET_TRACER_HOME=/opt/signalfx-dotnet-tracing \
+-e SIGNALFX_PROPAGATOR=W3C \
 -p 19228:80 \
 --network=host \
 --name jek_nats_sub jekbao/natssub
 ```
+Note that to test web if CLR profile is load do not include --network=host.
+--network=host is for docker container local to local interaction because this is easier to test nats context propagation.
+
+
+
+
+
+
+
 
 
 ---
@@ -62,7 +72,17 @@ docker run -it --rm \
 -e CORECLR_PROFILER_PATH=/opt/signalfx-dotnet-tracing/SignalFx.Tracing.ClrProfiler.Native.so \
 -e SIGNALFX_INTEGRATIONS=/opt/signalfx-dotnet-tracing/integrations.json \
 -e SIGNALFX_DOTNET_TRACER_HOME=/opt/signalfx-dotnet-tracing \
+-e SIGNALFX_PROPAGATOR=W3C \
 -p 5000:80 \
 --network=host \
 --name jek_nats_pub jekbao/natspub
 ```
+Note that to test web if CLR profile is load do not include --network=host.
+--network=host is for docker container local to local interaction because this is easier to test nats context propagation.
+
+
+
+
+
+
+

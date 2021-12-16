@@ -11,14 +11,14 @@ using System.Diagnostics;
 using System.Text;
 using NATS.Client;
 
-using SignalFx.Tracing;
 using OpenTracing;
 using OpenTracing.Util;
+using OpenTracing.Propagation;
+using OpenTracing.Tag;
+
 
 namespace publisher
 {
-    // Based mostly on:
-    // https://github.com/nats-io/nats.net/tree/master/src/Samples/Subscribe
     public class Program
     {
 
@@ -52,26 +52,25 @@ namespace publisher
 
                 for (int i = 0; i < count; i++)
                 {
-                    // todo: Add in inject context propagation try to refer kafka example https://github.com/signalfx/signalfx-dotnet-tracing/tree/main/samples
-                    var activeSpan = Tracer.Instance.StartActive("Jek publisher span");
-                    Console.WriteLine("**********Tracer.Instance.StartActive = activeSpan", activeSpan);
-                    // todo: How to inject context into payload
-
+           
                     using (IScope scope = tracer.BuildSpan("MyPublisherSpan")
-                        //.WithTag(Tags.SpanKind.Key, Tags.SpanKindClient)
-                        //.WithTag(Tags.Component.Key, "example-client")
+                        .WithTag(Tags.SpanKind.Key, Tags.SpanKindProducer)
+                        .WithTag(Tags.Component.Key, "nats-example-producer")
                         .StartActive(finishSpanOnDispose: true))
                     {
                         var span = scope.Span;
                         span.SetTag("MyTag", "MyValue");
                         span.Log("My Log Statement");
-                        Console.WriteLine("**********tracer.BuildSpan = span", span);
-                        //tracer.Inject(scope.Span.Context, "?", "?"); // Examples https://github.com/opentracing/opentracing-csharp/tree/master/examples/OpenTracing.Examples
+                        Dictionary<string, string> contextPropagationKeyValuePairs = new Dictionary<string, string>();
+                        tracer.Inject(scope.Span.Context, BuiltinFormats.TextMap, new TextMapInjectAdapter(contextPropagationKeyValuePairs)); // ref https://github.com/opentracing/opentracing-csharp/tree/master/examples/OpenTracing.Examples
+                        foreach (KeyValuePair<string, string> kvp in contextPropagationKeyValuePairs)
+                        {
+                            Console.WriteLine("**********publisher testKeyValuePairs v2 ------> ");
+                            Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+                        }
                     }
-                    // todo: How to inject context into payload
 
-
-                    c.Publish(subject, payload);
+                    c.Publish(subject, payload); // todo: Add traceparent to payload. See if payload could be dictionary of byte?
                 }
                 c.Flush();
 
@@ -147,7 +146,7 @@ namespace publisher
         {
             try
             {
-                new Program().Run(args);
+                new Program().Run(args); // ref https://github.com/nats-io/nats.net/tree/master/src/Samples/Publish
                 //CreateHostBuilder(args).Build().Run(); // toggle between web and program. Use the web to test if CLR Profiler is loaded
             }
             catch (Exception ex)
