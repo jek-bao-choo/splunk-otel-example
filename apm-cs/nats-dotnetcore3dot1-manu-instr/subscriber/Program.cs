@@ -90,14 +90,19 @@ namespace subscriber
                 if (verbose)
                 {
                     Console.WriteLine("AsyncReceived: " + args.Message);
-                    // todo Jek: Add in extract context propagation try to refer kafka example https://github.com/signalfx/signalfx-dotnet-tracing/tree/main/samples
-    
+
+                    // todo: Add in extract context propagation try to refer kafka example https://github.com/signalfx/signalfx-dotnet-tracing/tree/main/samples
                     var activeSpan = Tracer.Instance.StartActive("Jek subscriber span");
                     Console.WriteLine("**********activeSpan", activeSpan);
                     // todo: How to extract context into payload
 
 
-                    using (IScope scope = tracer.BuildSpan("MyPublisherSpan").StartActive(finishSpanOnDispose: true))
+                    //ISpanContext context = tracer.Extract("?", "?"); // what to do for this? // Examples https://github.com/opentracing/opentracing-csharp/tree/master/examples/OpenTracing.Examples
+                    using (IScope scope = tracer.BuildSpan("MyPublisherSpan")
+                        //.WithTag(Tags.SpanKind.Key, Tags.SpanKindServer) // what to fill in for this?
+                        //.WithTag(Tags.Component.Key, "example-server") // what about this?
+                        //.AsChildOf(context)
+                        .StartActive(finishSpanOnDispose: true))
                     {
                         var span = scope.Span;
                         span.SetTag("MyTag", "MyValue");

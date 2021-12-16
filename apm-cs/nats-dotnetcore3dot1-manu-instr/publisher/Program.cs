@@ -57,14 +57,19 @@ namespace publisher
                     Console.WriteLine("**********Tracer.Instance.StartActive = activeSpan", activeSpan);
                     // todo: How to inject context into payload
 
-                    using (IScope scope = tracer.BuildSpan("MyPublisherSpan").StartActive(finishSpanOnDispose: true))
+                    using (IScope scope = tracer.BuildSpan("MyPublisherSpan")
+                        //.WithTag(Tags.SpanKind.Key, Tags.SpanKindClient)
+                        //.WithTag(Tags.Component.Key, "example-client")
+                        .StartActive(finishSpanOnDispose: true))
                     {
                         var span = scope.Span;
                         span.SetTag("MyTag", "MyValue");
                         span.Log("My Log Statement");
                         Console.WriteLine("**********tracer.BuildSpan = span", span);
+                        //tracer.Inject(scope.Span.Context, "?", "?"); // Examples https://github.com/opentracing/opentracing-csharp/tree/master/examples/OpenTracing.Examples
                     }
                     // todo: How to inject context into payload
+
 
                     c.Publish(subject, payload);
                 }
