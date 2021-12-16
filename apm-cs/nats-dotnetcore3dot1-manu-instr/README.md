@@ -1,8 +1,19 @@
-﻿This is WIP.
-Next step containerised with Docker so that can add CLR profiler and run it with Profiler.
-After adding profiler is to print with trace id and span id to ensure it has local context.
+﻿# This is WIP.
+Change to W3C propagator because it should work with OTel SDK e.g. Node.js and Java tracing
+Step 1: Start publisher injection
+Step 2: Start subscriber extraction
 
-Terminal 1 in subscriber folder
+---
+
+
+# Terminal 1 to run NATS
+$ `docker run -p 4222:4222 -p 8222:8222 -p 6222:6222 --name nats-server -ti nats:latest`
+
+
+---
+
+
+# Terminal 2 in subscriber folder to run subscriber
 
 $ `cd subscriber`
 
@@ -22,16 +33,16 @@ docker run -it --rm \
 -e CORECLR_PROFILER_PATH=/opt/signalfx-dotnet-tracing/SignalFx.Tracing.ClrProfiler.Native.so \
 -e SIGNALFX_INTEGRATIONS=/opt/signalfx-dotnet-tracing/integrations.json \
 -e SIGNALFX_DOTNET_TRACER_HOME=/opt/signalfx-dotnet-tracing \
--p 5000:80 --name jek_nats_sub jekbao/natssub
+-p 19228:80 \
+--network=host \
+--name jek_nats_sub jekbao/natssub
 ```
-
-
 
 
 ---
 
 
-Terminal 2 in publisher folder run
+# Terminal 4 in publisher folder run to run publisher
 
 $ `cd publisher`
 
@@ -51,5 +62,7 @@ docker run -it --rm \
 -e CORECLR_PROFILER_PATH=/opt/signalfx-dotnet-tracing/SignalFx.Tracing.ClrProfiler.Native.so \
 -e SIGNALFX_INTEGRATIONS=/opt/signalfx-dotnet-tracing/integrations.json \
 -e SIGNALFX_DOTNET_TRACER_HOME=/opt/signalfx-dotnet-tracing \
--p 5000:80 --name jek_nats_pub jekbao/natspub
+-p 5000:80 \
+--network=host \
+--name jek_nats_pub jekbao/natspub
 ```
