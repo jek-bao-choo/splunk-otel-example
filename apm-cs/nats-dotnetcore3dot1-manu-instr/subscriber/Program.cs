@@ -11,12 +11,19 @@ using System.Diagnostics;
 using System.Threading;
 using NATS.Client;
 
+using SignalFx.Tracing;
+using OpenTracing;
+using OpenTracing.Util;
+
 namespace subscriber
 {
     // Based mostly on:
     // https://github.com/nats-io/nats.net/tree/master/src/Samples/Subscribe
     public class Program
     {
+
+        private static ITracer tracer = GlobalTracer.Instance; // Added for open tracing
+
         Dictionary<string, string> parsedArgs = new Dictionary<string, string>();
 
         int count = 1000000;
@@ -84,6 +91,20 @@ namespace subscriber
                 {
                     Console.WriteLine("AsyncReceived: " + args.Message);
                     // todo Jek: Add in extract context propagation try to refer kafka example https://github.com/signalfx/signalfx-dotnet-tracing/tree/main/samples
+    
+                    var activeSpan = Tracer.Instance.StartActive("Jek subscriber span");
+                    Console.WriteLine("**********activeSpan", activeSpan);
+                    // todo: How to extract context into payload
+
+
+                    using (IScope scope = tracer.BuildSpan("MyPublisherSpan").StartActive(finishSpanOnDispose: true))
+                    {
+                        var span = scope.Span;
+                        span.SetTag("MyTag", "MyValue");
+                        span.Log("My Log Statement");
+                        Console.WriteLine("**********tracer.BuildSpan = span", span);
+                    }
+                    // todo: How to extract context from payload
                 }
 
                 if (received >= count)

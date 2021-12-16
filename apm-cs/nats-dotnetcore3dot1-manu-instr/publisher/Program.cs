@@ -11,12 +11,18 @@ using System.Diagnostics;
 using System.Text;
 using NATS.Client;
 
+using SignalFx.Tracing;
+using OpenTracing;
+using OpenTracing.Util;
+
 namespace publisher
 {
     // Based mostly on:
     // https://github.com/nats-io/nats.net/tree/master/src/Samples/Subscribe
     public class Program
     {
+
+        private static ITracer tracer = GlobalTracer.Instance;  // Added for open tracing
 
         Dictionary<string, string> parsedArgs = new Dictionary<string, string>();
 
@@ -46,7 +52,20 @@ namespace publisher
 
                 for (int i = 0; i < count; i++)
                 {
-                    // todo Jek: Add in inject context propagation try to refer kafka example https://github.com/signalfx/signalfx-dotnet-tracing/tree/main/samples
+                    // todo: Add in inject context propagation try to refer kafka example https://github.com/signalfx/signalfx-dotnet-tracing/tree/main/samples
+                    var activeSpan = Tracer.Instance.StartActive("Jek publisher span");
+                    Console.WriteLine("**********Tracer.Instance.StartActive = activeSpan", activeSpan);
+                    // todo: How to inject context into payload
+
+                    using (IScope scope = tracer.BuildSpan("MyPublisherSpan").StartActive(finishSpanOnDispose: true))
+                    {
+                        var span = scope.Span;
+                        span.SetTag("MyTag", "MyValue");
+                        span.Log("My Log Statement");
+                        Console.WriteLine("**********tracer.BuildSpan = span", span);
+                    }
+                    // todo: How to inject context into payload
+
                     c.Publish(subject, payload);
                 }
                 c.Flush();
