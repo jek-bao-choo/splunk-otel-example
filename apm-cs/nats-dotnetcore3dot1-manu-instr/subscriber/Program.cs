@@ -119,6 +119,7 @@ namespace subscriber
                         .StartActive(finishSpanOnDispose: true))
                     {
                         var span = scope.Span;
+                        span.SetTag("messaging.destination", subject); // Thank you for to Piotr Kiełkowicz for this. Subject is showing now. It is magical.
                         span.SetTag("MyTag", "MyNatsSubscriberValue");
                         span.Log("My Nats Subscriber Log Statement");
                     }

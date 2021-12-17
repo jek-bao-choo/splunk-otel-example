@@ -54,12 +54,14 @@ namespace publisher
                 {
 
                     // todo: How do I set the topic to make the topic appears in APM service map?
+                    // "messaging.destination": kafka_topic
                     using (IScope scope = tracer.BuildSpan("MyPublisherSpan")
                         .WithTag(Tags.SpanKind.Key, Tags.SpanKindProducer)
                         .WithTag(Tags.Component.Key, "nats-example-producer")
                         .StartActive(finishSpanOnDispose: true))
                     {
                         var span = scope.Span;
+                        span.SetTag("messaging.destination", subject); // Thank you for to Piotr Kiełkowicz for this. Subject is showing now. It is magical.
                         span.SetTag("MyTag", "MyNatsPublisherValue");
                         span.Log("My Publisher Log Statement");
                         Dictionary<string, string> contextPropagationKeyValuePairs = new Dictionary<string, string>();
