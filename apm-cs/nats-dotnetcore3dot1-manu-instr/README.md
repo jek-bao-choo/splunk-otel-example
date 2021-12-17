@@ -1,7 +1,4 @@
-﻿# This is WIP.
-Change to W3C propagator because it should work with OTel SDK e.g. Node.js and Java tracing
-Step 1: Start publisher injection
-Step 2: Start subscriber extraction
+﻿Todo: How to make topic show in APM service map?
 
 ---
 
@@ -85,4 +82,13 @@ Note that to test web if CLR profile is load do not include --network=host.
 
 
 
+
+
+---
+
+#Misc
+Proof: ![proof](proof.png "working proof")
+Proof 2: ![proof2](proof2.png "working proof 2")
+
+Last updated: 17 Dec 2021
 
