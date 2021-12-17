@@ -52,7 +52,8 @@ namespace publisher
 
                 for (int i = 0; i < count; i++)
                 {
-           
+
+                    // todo: How do I set the topic to make the topic appears in APM service map?
                     using (IScope scope = tracer.BuildSpan("MyPublisherSpan")
                         .WithTag(Tags.SpanKind.Key, Tags.SpanKindProducer)
                         .WithTag(Tags.Component.Key, "nats-example-producer")

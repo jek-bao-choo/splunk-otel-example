@@ -111,6 +111,7 @@ namespace subscriber
                     //    Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
                     //}
                     ISpanContext context = tracer.Extract(BuiltinFormats.TextMap, new TextMapExtractAdapter(contextPropagationKeyValuePairs)); // ref https://github.com/opentracing/opentracing-csharp/tree/master/examples/OpenTracing.Examples
+                    // todo: How do I set the topic to make the topic appears in APM service map?
                     using (IScope scope = tracer.BuildSpan("MySubscriberSpan")
                         .WithTag(Tags.SpanKind.Key, Tags.SpanKindConsumer)
                         .WithTag(Tags.Component.Key, "nats-example-consumer")
