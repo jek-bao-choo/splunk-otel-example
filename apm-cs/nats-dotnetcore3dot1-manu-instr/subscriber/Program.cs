@@ -15,6 +15,7 @@ using OpenTracing;
 using OpenTracing.Util;
 using OpenTracing.Propagation;
 using OpenTracing.Tag;
+using System.Text;
 
 namespace subscriber
 {
@@ -89,16 +90,26 @@ namespace subscriber
 
                 if (verbose)
                 {
-                    Console.WriteLine("AsyncReceived: " + args.Message);
+                    Console.WriteLine("*******AsyncReceived = {0} ", args.Message);
+                    Console.WriteLine("*******args.Message.Subject = {0} ", args.Message.Subject);
+                    Console.WriteLine("*******args.Message.Data = {0} ", args.Message.Data);
 
+                    var payload = args.Message.Data;
+                    //foreach (byte element in payload)
+                    //{
+                    //    Console.WriteLine("{0} = {1}", (char)element, element);
+                    //}
+                    var traceparent = Encoding.UTF8.GetString(payload);
+                    Console.WriteLine("**********subscriber W3C traceparent ------> {0}", traceparent);
 
-                    var msg = args.Message;
-                    Dictionary<string, string> contextPropagationKeyValuePairs = new Dictionary<string, string>(); // todo: msg to dict
-                    foreach (KeyValuePair<string, string> kvp in contextPropagationKeyValuePairs)
-                    {
-                        Console.WriteLine("**********subscriber testKeyValuePairs v2 ------> ");
-                        Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-                    }
+                    Dictionary<string, string> contextPropagationKeyValuePairs = new Dictionary<string, string>();
+                    contextPropagationKeyValuePairs.Add("traceparent", traceparent);
+
+                    //foreach (KeyValuePair<string, string> kvp in contextPropagationKeyValuePairs)
+                    //{
+                    //    Console.WriteLine("**********subscriber testKeyValuePairs v2 ------> ");
+                    //    Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+                    //}
                     ISpanContext context = tracer.Extract(BuiltinFormats.TextMap, new TextMapExtractAdapter(contextPropagationKeyValuePairs)); // ref https://github.com/opentracing/opentracing-csharp/tree/master/examples/OpenTracing.Examples
                     using (IScope scope = tracer.BuildSpan("MySubscriberSpan")
                         .WithTag(Tags.SpanKind.Key, Tags.SpanKindConsumer)
@@ -107,8 +118,8 @@ namespace subscriber
                         .StartActive(finishSpanOnDispose: true))
                     {
                         var span = scope.Span;
-                        span.SetTag("MyTag", "MyValue");
-                        span.Log("My Log Statement");
+                        span.SetTag("MyTag", "MyNatsSubscriberValue");
+                        span.Log("My Nats Subscriber Log Statement");
                     }
                
                 }

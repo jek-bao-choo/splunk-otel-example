@@ -59,18 +59,31 @@ namespace publisher
                         .StartActive(finishSpanOnDispose: true))
                     {
                         var span = scope.Span;
-                        span.SetTag("MyTag", "MyValue");
-                        span.Log("My Log Statement");
+                        span.SetTag("MyTag", "MyNatsPublisherValue");
+                        span.Log("My Publisher Log Statement");
                         Dictionary<string, string> contextPropagationKeyValuePairs = new Dictionary<string, string>();
                         tracer.Inject(scope.Span.Context, BuiltinFormats.TextMap, new TextMapInjectAdapter(contextPropagationKeyValuePairs)); // ref https://github.com/opentracing/opentracing-csharp/tree/master/examples/OpenTracing.Examples
-                        foreach (KeyValuePair<string, string> kvp in contextPropagationKeyValuePairs)
+                        if (contextPropagationKeyValuePairs.ContainsKey("traceparent"))
                         {
-                            Console.WriteLine("**********publisher testKeyValuePairs v2 ------> ");
-                            Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+                            var traceparent = contextPropagationKeyValuePairs["traceparent"];
+                            Console.WriteLine("**********publisher W3C traceparent ------> {0}", traceparent);
+                            payload = Encoding.UTF8.GetBytes(traceparent);
+                            //Console.WriteLine("**********publisher encoded payload");
+                            //foreach (byte element in payload)
+                            //{
+                            //    Console.WriteLine("{0} = {1}", (char)element, element);
+                            //}
                         }
+
+                        //foreach (KeyValuePair<string, string> kvp in contextPropagationKeyValuePairs)
+                        //{
+                        //    Console.WriteLine("**********publisher testKeyValuePairs v2 ------> ");
+                        //    Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+                        //}
+
                     }
 
-                    c.Publish(subject, payload); // todo: Add traceparent to payload. See if payload could be dictionary of byte?
+                    c.Publish(subject, payload);
                 }
                 c.Flush();
 
