@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  aspdotnet2dot2-auto-instr:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"

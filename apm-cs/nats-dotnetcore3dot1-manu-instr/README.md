@@ -1,4 +1,4 @@
-﻿Todo: How to make topic show in APM service map?
+﻿Todo: How to make topic show up?
 
 ---
 
@@ -42,7 +42,20 @@ Note that to test web if CLR profile is load do not include --network=host.
 
 
 
-
+docker run -it --rm \
+-e SIGNALFX_SERVICE_NAME=jek-nats-sub \
+-e SIGNALFX_ENDPOINT_URL=https://ingest.us1.signalfx.com/v2/trace \
+-e SIGNALFX_ACCESS_TOKEN=HysDu9eWcFv3XA6arBUD0Q \
+-e SIGNALFX_ENV=jek-playground-env \
+-e CORECLR_ENABLE_PROFILING=1 \
+-e CORECLR_PROFILER="{B4C89B0F-9908-4F73-9F59-0D77C5A06874}" \
+-e CORECLR_PROFILER_PATH=/opt/signalfx-dotnet-tracing/SignalFx.Tracing.ClrProfiler.Native.so \
+-e SIGNALFX_INTEGRATIONS=/opt/signalfx-dotnet-tracing/integrations.json \
+-e SIGNALFX_DOTNET_TRACER_HOME=/opt/signalfx-dotnet-tracing \
+-e SIGNALFX_PROPAGATOR=W3C \
+-p 19228:80 \
+--network=host \
+--name jek_nats_sub jekbao/natssub
 
 
 
@@ -81,7 +94,20 @@ Note that to test web if CLR profile is load do not include --network=host.
 
 
 
-
+docker run -it --rm \
+-e SIGNALFX_SERVICE_NAME=jek-nats-pub \
+-e SIGNALFX_ENDPOINT_URL=https://ingest.us1.signalfx.com/v2/trace \
+-e SIGNALFX_ACCESS_TOKEN=HysDu9eWcFv3XA6arBUD0Q \
+-e SIGNALFX_ENV=jek-playground-env \
+-e CORECLR_ENABLE_PROFILING=1 \
+-e CORECLR_PROFILER="{B4C89B0F-9908-4F73-9F59-0D77C5A06874}" \
+-e CORECLR_PROFILER_PATH=/opt/signalfx-dotnet-tracing/SignalFx.Tracing.ClrProfiler.Native.so \
+-e SIGNALFX_INTEGRATIONS=/opt/signalfx-dotnet-tracing/integrations.json \
+-e SIGNALFX_DOTNET_TRACER_HOME=/opt/signalfx-dotnet-tracing \
+-e SIGNALFX_PROPAGATOR=W3C \
+-p 5000:80 \
+--network=host \
+--name jek_nats_pub jekbao/natspub
 
 
 ---
