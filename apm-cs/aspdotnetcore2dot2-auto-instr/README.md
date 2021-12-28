@@ -54,7 +54,7 @@ COPY signalfx-dotnet-tracing* .
 RUN dpkg -i signalfx-dotnet-tracing_0.XXXXXXXXXXXXXXXXXXXXXXX_amd64.deb
 RUN mkdir /opt/tracelogs
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "aspdotnetcore3dot1-auto-instr.dll"]
+ENTRYPOINT ["dotnet", "aspdotnet2dot2-auto-instr.dll"]
 ```
 
 9. Add code to print if profiler is attached 
@@ -75,8 +75,10 @@ docker run -it --rm \
 -e CORECLR_PROFILER_PATH=/opt/signalfx-dotnet-tracing/SignalFx.Tracing.ClrProfiler.Native.so \
 -e SIGNALFX_INTEGRATIONS=/opt/signalfx-dotnet-tracing/integrations.json \
 -e SIGNALFX_DOTNET_TRACER_HOME=/opt/signalfx-dotnet-tracing \
--p 5000:80 --name jek_aspnetcore2dot2 jekbao/aspdotnetcore2dot2
-
+-e SIGNALFX_PROPAGATOR=W3C \
+-e SIGNALFX_TRACE_DEBUG=true \
+-e SIGNALFX_STDOUT_LOG_ENABLED=true \
+-p 5000:80 --name jek_aspdotnetcore2dot2 jekbao/aspdotnetcore2dot2
 ```
 
 Misc
