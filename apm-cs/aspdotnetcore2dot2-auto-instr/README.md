@@ -66,15 +66,16 @@ ENTRYPOINT ["dotnet", "aspdotnet2dot2-auto-instr.dll"]
 12. Add environment variables to config for sending DIRECTLY to Splunk O11y without going through OTel Collector
 ```
 docker run -it --rm \
--e SIGNALFX_SERVICE_NAME=jek-aspdotnetcore2dot2-auto-instr \
--e SIGNALFX_ENDPOINT_URL=https://ingest.<the realm>.signalfx.com/v2/trace \
--e SIGNALFX_ACCESS_TOKEN=<the token> \
 -e SIGNALFX_ENV=jek-playground-env \
 -e CORECLR_ENABLE_PROFILING=1 \
 -e CORECLR_PROFILER="{B4C89B0F-9908-4F73-9F59-0D77C5A06874}" \
 -e CORECLR_PROFILER_PATH=/opt/signalfx-dotnet-tracing/SignalFx.Tracing.ClrProfiler.Native.so \
 -e SIGNALFX_INTEGRATIONS=/opt/signalfx-dotnet-tracing/integrations.json \
 -e SIGNALFX_DOTNET_TRACER_HOME=/opt/signalfx-dotnet-tracing \
+-e SIGNALFX_SERVICE_NAME=jek-aspdotnetcore2dot2-auto-instr \
+-e SIGNALFX_ENV=jek-env \
+-e SIGNALFX_ENDPOINT_URL=https://ingest.<the realm>.signalfx.com/v2/trace \
+-e SIGNALFX_ACCESS_TOKEN=<the token> \
 -e SIGNALFX_PROPAGATOR=W3C \
 -e SIGNALFX_TRACE_DEBUG=true \
 -e SIGNALFX_STDOUT_LOG_ENABLED=true \
