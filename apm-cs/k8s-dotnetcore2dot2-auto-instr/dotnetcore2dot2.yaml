@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-dotnet2dot2-auto-instr
+  labels:
+    app: dotnetdeployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dotnetpod
+  template:
+    metadata:
+      labels:
+        app: dotnetpod
+    spec:
+      containers:
+      - name: dotnet2dot2
+        image: jekbao/aspdotnetcore2dot2
+        ports:
+        - containerPort: 80
+        env:
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: CORECLR_ENABLE_PROFILING
+            value: '1'
+          - name: CORECLR_PROFILER
+            value: '{B4C89B0F-9908-4F73-9F59-0D77C5A06874}'
+          - name: CORECLR_PROFILER_PATH
+            value: '/opt/signalfx-dotnet-tracing/SignalFx.Tracing.ClrProfiler.Native.so'
+          - name: SIGNALFX_INTEGRATIONS
+            value: '/opt/signalfx-dotnet-tracing/integrations.json'
+          - name: SIGNALFX_DOTNET_TRACER_HOME
+            value: '/opt/signalfx-dotnet-tracing'
+          - name: SIGNALFX_SERVICE_NAME
+            value: 'jek-k8s-dotnet2dot2-auto-instr'
+          - name: SIGNALFX_ENV
+            value: 'jek-env'
+          - name: SIGNALFX_ENDPOINT_URL
+            value: 'http://$(NODE_IP):9080/v1/trace'
+          - name: SIGNALFX_PROPAGATOR
+            value: W3C
+          - name: SIGNALFX_TRACE_DEBUG
+            value: 'true'
+          - name: SIGNALFX_STDOUT_LOG_ENABLED
+            value: 'true'
