@@ -47,6 +47,13 @@ ENTRYPOINT ["dotnet", "aspdotnet2dot2-auto-instr.dll"]
 
 7. Download CLRProfiler from https://github.com/signalfx/signalfx-dotnet-tracing/releases/latest
 
+
+Below has two approaches, namely A and B.
+
+---
+
+# Approach A - environment variables along with docker run (recommended).
+
 8. In Dockerfile add the CLRProfiler by copying the distribution into container Note: Take note of the version e.g. signalfx-dotnet-tracing_0.1.xxxxxxx_amd64.deb
 ```
 WORKDIR /app
@@ -81,6 +88,49 @@ docker run -it --rm \
 -e SIGNALFX_STDOUT_LOG_ENABLED=true \
 -p 5000:80 --name jek_aspdotnetcore2dot2 jekbao/aspdotnetcore2dot2
 ```
+
+13. Test by going to http://localhost:5000
+
+---
+
+# Approach B - environment variables along with docker run (not recommended because I can't imagine how to approach could send to OTel Collector).
+
+8. In Dockerfile add the CLRProfiler by copying the distribution into container together with the environment variables. Note: Take note of the version e.g. signalfx-dotnet-tracing_0.1.xxxxxxx_amd64.deb
+```
+WORKDIR /app
+COPY signalfx-dotnet-tracing* .
+RUN dpkg -i signalfx-dotnet-tracing_0.XXXXXXXXXXXXXXXXXXXXXXX_amd64.deb
+RUN mkdir /opt/tracelogs
+ENV SIGNALFX_ENV="jek-playground-env"
+ENV CORECLR_ENABLE_PROFILING="1"
+ENV CORECLR_PROFILER="{B4C89B0F-9908-4F73-9F59-0D77C5A06874}"
+ENV CORECLR_PROFILER_PATH="/opt/signalfx-dotnet-tracing/SignalFx.Tracing.ClrProfiler.Native.so"
+ENV SIGNALFX_INTEGRATIONS="/opt/signalfx-dotnet-tracing/integrations.json"
+ENV SIGNALFX_DOTNET_TRACER_HOME="/opt/signalfx-dotnet-tracing"
+ENV SIGNALFX_SERVICE_NAME="jek-dockerfile-aspdotnetcore2dot2-auto-instr"
+ENV SIGNALFX_ENV="jek-env"
+ENV SIGNALFX_ENDPOINT_URL="https://ingest.THEREALMXXXXXXXXXXXXXXXXXXXXXXXX.signalfx.com/v2/trace"
+ENV SIGNALFX_ACCESS_TOKEN="XXXXXXXXXXXXXXXXXXXXXXX"
+ENV SIGNALFX_PROPAGATOR="W3C"
+ENV SIGNALFX_TRACE_DEBUG="true"
+ENV SIGNALFX_STDOUT_LOG_ENABLED="true"
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "aspdotnet2dot2-auto-instr.dll"]
+```
+
+9. Add code to print if profiler is attached 
+
+10. Update the version in the return route of hello world e.g. Hello World v1 v2 v3 etc...
+
+11. Build the image `docker build -t jekbao/aspdotnetcore2dot2 . --no-cache`
+
+12. Run the image
+```
+docker run -it --rm \
+-p 5000:80 --name jek_aspdotnetcore2dot2 jekbao/aspdotnetcore2dot2
+```
+
+13. Test by going to http://localhost:5000
 
 Misc
 
