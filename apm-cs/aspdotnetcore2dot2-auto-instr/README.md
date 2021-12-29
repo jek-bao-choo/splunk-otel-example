@@ -93,7 +93,7 @@ docker run -it --rm \
 
 ---
 
-# Approach B - environment variables along with docker run (not recommended because I can't imagine how to approach could send to OTel Collector).
+# Approach B - environment variables all in Dockerfile (not recommended because I can't imagine how this approach could send to OTel Collector).
 
 8. In Dockerfile add the CLRProfiler by copying the distribution into container together with the environment variables. Note: Take note of the version e.g. signalfx-dotnet-tracing_0.1.xxxxxxx_amd64.deb
 ```
