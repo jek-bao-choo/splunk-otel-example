@@ -94,6 +94,14 @@ namespace subscriber
                     Console.WriteLine("*******args.Message.Subject = {0} ", args.Message.Subject);
                     Console.WriteLine("*******args.Message.Data = {0} ", args.Message.Data);
 
+
+                    /*
+                      * 
+                      * START of manual instrumentation for NATS
+                      * 
+                      * Subscriber
+                      *
+                      */
                     var payload = args.Message.Data;
                     //foreach (byte element in payload)
                     //{
@@ -111,7 +119,7 @@ namespace subscriber
                     //    Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
                     //}
                     ISpanContext context = tracer.Extract(BuiltinFormats.TextMap, new TextMapExtractAdapter(contextPropagationKeyValuePairs)); // ref https://github.com/opentracing/opentracing-csharp/tree/master/examples/OpenTracing.Examples
-                    // todo: How do I set the topic to make the topic appears in APM service map?
+
                     using (IScope scope = tracer.BuildSpan("MySubscriberSpan")
                         .WithTag(Tags.SpanKind.Key, Tags.SpanKindConsumer)
                         .WithTag(Tags.Component.Key, "nats-example-consumer")
@@ -119,11 +127,21 @@ namespace subscriber
                         .StartActive(finishSpanOnDispose: true))
                     {
                         var span = scope.Span;
-                        span.SetTag("messaging.destination", subject); // Thank you for to Piotr Kiełkowicz for this. Subject is showing now. It is magical.
+                        span.SetTag("messaging.destination", subject); // Thank you for to Piotr Kiełkowicz for this. https://docs.splunk.com/Observability/apm/inferred-services.html#types-of-inferred-services-and-how-they-re-inferred
+                        span.SetTag("messaging.system", "nats");
+                        span.SetTag("messaging.destination_kind", "topic");
+                        span.SetTag("messaging.url", url);
                         span.SetTag("MyTag", "MyNatsSubscriberValue");
                         span.Log("My Nats Subscriber Log Statement");
                     }
-               
+                    /*
+                   * 
+                   * END of manual instrumentation for NATS
+                   * 
+                   * Subscriber
+                   *
+                   */
+
                 }
 
                 if (received >= count)

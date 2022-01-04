@@ -53,15 +53,23 @@ namespace publisher
                 for (int i = 0; i < count; i++)
                 {
 
-                    // todo: How do I set the topic to make the topic appears in APM service map?
-                    // "messaging.destination": kafka_topic
+                    /*
+                     * 
+                     * START of manual instrumentation for NATS
+                     * 
+                     * Publisher
+                     *
+                     */
                     using (IScope scope = tracer.BuildSpan("MyPublisherSpan")
                         .WithTag(Tags.SpanKind.Key, Tags.SpanKindProducer)
                         .WithTag(Tags.Component.Key, "nats-example-producer")
                         .StartActive(finishSpanOnDispose: true))
                     {
                         var span = scope.Span;
-                        span.SetTag("messaging.destination", subject); // Thank you for to Piotr Kiełkowicz for this. Subject is showing now. It is magical.
+                        span.SetTag("messaging.destination", subject); // Thank you for to Piotr Kiełkowicz for this. https://docs.splunk.com/Observability/apm/inferred-services.html#types-of-inferred-services-and-how-they-re-inferred
+                        span.SetTag("messaging.system", "nats");
+                        span.SetTag("messaging.destination_kind", "topic");
+                        span.SetTag("messaging.url", url);
                         span.SetTag("MyTag", "MyNatsPublisherValue");
                         span.Log("My Publisher Log Statement");
                         Dictionary<string, string> contextPropagationKeyValuePairs = new Dictionary<string, string>();
@@ -85,6 +93,17 @@ namespace publisher
                         //}
 
                     }
+                    /*
+                     * 
+                     * END of manual instrumentation for NATS
+                     * 
+                     * Publisher
+                     * 
+                     * Reminder: Make sure that traceparent is added to message payload.
+                     * If message header exists, adding to message header is better.
+                     * But earlier version of NATS doesn't support message header yet.
+                     *
+                     */
 
                     c.Publish(subject, payload);
                 }
