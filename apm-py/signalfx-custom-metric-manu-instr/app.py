@@ -16,6 +16,7 @@ class resptime:
 
     def getResponseTime(self, url):
         begin_url_time = time.time()
+        res = requests.get(url)
         time_toget_url = (time.time() - begin_url_time) * 1000  # Time is milliseconds
         tstamp = time.time() * 1000
         return time_toget_url, tstamp
