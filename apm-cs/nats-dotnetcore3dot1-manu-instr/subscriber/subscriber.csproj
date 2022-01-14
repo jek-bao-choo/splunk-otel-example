@@ -11,11 +11,10 @@
     <None Remove="Newtonsoft.Json" />
     <None Remove="SignalFx.Tracing" />
     <None Remove="SignalFx.Tracing.OpenTracing" />
+    <None Remove="OpenTracing" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NATS.Client" Version="0.14.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="SignalFx.Tracing" Version="0.1.16" />
-    <PackageReference Include="SignalFx.Tracing.OpenTracing" Version="0.1.16" />
+    <PackageReference Include="OpenTracing" Version="0.12.1" />
   </ItemGroup>
 </Project>
