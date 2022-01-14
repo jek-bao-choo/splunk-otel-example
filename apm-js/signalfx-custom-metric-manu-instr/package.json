@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "signalfx": "^7.4.1"
+  }
+}
