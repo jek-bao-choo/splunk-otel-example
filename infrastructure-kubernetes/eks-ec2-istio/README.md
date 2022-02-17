@@ -43,15 +43,16 @@ There are a few options to install i.e. Istioctl, Helm (alpha at the time of wri
 https://istio.io/latest/docs/setup/install/helm/ 
 ```bash
 # Set traceSampling to 100 percent before installation otherwise just install and set later
+# --set values.pilot.traceSampling=100
 istioctl install --set profile=demo
 
 # After installation, see what is installed.
 kubectl get all -n istio-system
 
-# Optionally install other Istio integration e.g. Jaegar and Prometheus https://istio.io/latest/docs/ops/integrations/ These integration will be isntalled in istio-system namespace
+# Optionally install other Istio integration e.g. Jaegar and Prometheus. These integration will be intalled in istio-system namespace
+# https://istio.io/latest/docs/ops/integrations/
 # istioctl dashboard prometheus
 # istioctl dashboard jaeger
-# istioctl dashboard grafana
 # istioctl dashboard kiali
 ```
 
@@ -126,27 +127,38 @@ kubectl logs $(kubectl get pod -l app=productpage -o jsonpath='{.items[0].metada
 # 
 ```
 
-9. Test tracing
+9. Test tracing with Jaeger
 Change trace sampling to 100%. Default is 1% when we install the demo profile
 https://istio.io/v1.0/docs/tasks/telemetry/distributed-tracing/ 
 ```bash
 # Ensure that it is 100% 
 kubectl get deployment.apps/istiod -n istio-system -o yaml | grep PILOT_TRACE_SAMPLING -A4
+
+# Generate trace data
+for i in {1..100}; do echo $(curl -s "http://${GATEWAY_URL}/productpage" | grep -o "<title>.*</title>"); done
+
+# Access jaegar dashboard optionally
+# https://istio.io/latest/docs/tasks/observability/distributed-tracing/jaeger/
+istioctl dashboard jaeger
 ```
 
-10. Clean up Istio official sample Bookinfo app
+10. Test tracing with Splunk OTel Collector -> APM
+...
+
+11. Clean up Istio official sample Bookinfo app
+https://istio.io/latest/docs/examples/bookinfo/#cleanup
 ```bash
 # Delete all
 
 ```
 
-11. Clean up Istio using istioctl
+12. Clean up Istio using istioctl
 https://istio.io/latest/docs/setup/install/istioctl/#uninstall-istio
 ```bash
 istioctl x uninstall --purge
 ```
 
-12. Clean up EKS EC2 using eksctl
+13. Clean up EKS EC2 using eksctl
 ```bash
 # View the eks cluster name
 eksctl get cluster
