@@ -32,6 +32,8 @@ This link explains the differences https://istio.io/latest/docs/setup/additional
 ```bash
 istioctl profile list
 
+# Check that in spec.meshConfig.accessLogFile=/dev/stdout
+# This is to ensure that we have the log files
 istioctl profile dump demo
 ```
 
@@ -40,6 +42,7 @@ istioctl profile dump demo
 There are a few options to install i.e. Istioctl, Helm (alpha at the time of writing), Operator, and etc.
 https://istio.io/latest/docs/setup/install/helm/ 
 ```bash
+# Set traceSampling to 100 percent before installation otherwise just install and set later
 istioctl install --set profile=demo
 
 # After installation, see what is installed.
@@ -71,46 +74,70 @@ kubectl label namespace default istio-injection=enabled
 *Note: This must be added before application pods creation because sidecar injection won't happen after this.
 
 
-7. Install Splunk OTel Collector Chart
-
-
-8. Deploy Kubernetes official example app https://github.com/kubernetes/examples/tree/master/guestbook
+7. Install Splunk OTel Collector Chart using Helm Chart
 ```bash
-# 1 Create database (redis) master pods
-kubectl apply -f https://k8s.io/examples/application/guestbook/redis-leader-deployment.yaml
-
-# 2 Create database (redis) master service
-kubectl apply -f https://k8s.io/examples/application/guestbook/redis-leader-service.yaml
-
-# 3 Create redatabase (redis)dis slave pods
-kubectl apply -f https://k8s.io/examples/application/guestbook/redis-follower-deployment.yaml
-
-# 4 Create database (redis) slave service
-kubectl apply -f https://k8s.io/examples/application/guestbook/redis-follower-service.yaml
-
-# 5 Create app (guestbook) pods
-kubectl apply -f https://k8s.io/examples/application/guestbook/frontend-deployment.yaml
-
-# 6 Create app (guestbook) service
-kubectl apply -f https://k8s.io/examples/application/guestbook/frontend-service.yaml
-
-# 7 View the app on browser at http://localhost:8080 using port forwarding
-kubectl port-forward svc/frontend 8080:80
-
-# 8 Scale to more pods
-kubectl scale deployment frontend --replicas=5
+# Remember to add 
+# helm ... --set autodetect.istio='true' ...
 ```
 
-9. Verify that Envoy sidecar are injected per pod
 
 
-10. Clean up Kubernetes official example app
+8. Deploy Kubernetes official example app https://github.com/istio/istio/tree/master/samples/bookinfo
+```bash
+# 1 Clone the repo in your desired folder / path.
+git clone https://github.com/istio/istio.git
+
+# 2 Change directory to istio folder after cloning
+cd istio
+
+# 3 Launch the review, rating, productpage, and details
+kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+
+# 4 Launch Istio Gateway and Virtual Service
+# We need to make the application accessible from outside of your Kubernetes cluster, e.g., from a browser. 
+kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+
+# 5 Determine the ingress IP and ports
+export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+export TCP_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="tcp")].port}')
+
+
+# 6 Set gateway url for use
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+echo $GATEWAY_URL
+
+# 7 Test access
+# The url will look something like http://a8c649f4a0ce14e00b57884307ccf1dc-349131511.ap-southeast-1.elb.amazonaws.com/productpage to access via browser
+curl -s "http://${GATEWAY_URL}/productpage" | grep -o "<title>.*</title>"
+
+# 8 Test access using for loop
+for i in {1..10}; do echo $(curl -s "http://${GATEWAY_URL}/productpage" | grep -o "<title>.*</title>"); done
+
+# 9 View service mesh animation with Kiali *optional 
+#Must have installed Prometheus and Kiali before using Kiali
+istioctl dashboard kiali
+
+# 10 Access Istio Envory proxy logs
+kubectl logs $(kubectl get pod -l app=productpage -o jsonpath='{.items[0].metadata.name}') -c istio-proxy | tail
+
+
+# 
+```
+
+9. Test tracing
+Change trace sampling to 100%. Default is 1% when we install the demo profile
+https://istio.io/v1.0/docs/tasks/telemetry/distributed-tracing/ 
+```bash
+# Ensure that it is 100% 
+kubectl get deployment.apps/istiod -n istio-system -o yaml | grep PILOT_TRACE_SAMPLING -A4
+```
+
+10. Clean up Istio official sample Bookinfo app
 ```bash
 # Delete all
-kubectl delete deployment -l app=redis
-kubectl delete service -l app=redis
-kubectl delete deployment frontend
-kubectl delete service frontend
+
 ```
 
 11. Clean up Istio using istioctl
@@ -132,4 +159,4 @@ eksctl delete cluster jek-eks-ec2-cluster-<the date>
 
 - Ref: https://github.com/signalfx/splunk-otel-collector-chart
 - Proof: ![proof](proof.png "working proof")
-- Last updated: 15 Feb 2022
+- Last updated: 17 Feb 2022
