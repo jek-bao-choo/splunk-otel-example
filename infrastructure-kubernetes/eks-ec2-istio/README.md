@@ -1,5 +1,13 @@
 #My setup
 
+```mermaid
+  graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+```
+
 
 #N Steps
 1. Create EKS EC2 cluster using eksctl
@@ -31,10 +39,10 @@ aws eks describe-cluster --name jek-eks-ec2-cluster-<add a date> --region ap-sou
 # Create namespace otel
 kubectl create ns otel
 
-# Remember to add 
+# Remember to add
 # helm ... --set autodetect.istio='true' ...
 # --set=autodetect.prometheus='true'
-# -n otel 
+# -n otel
 helm install -n otel --set cloudProvider='aws' --set distribution='eks' --set splunkObservability.accessToken='<token redacted>' --set clusterName='jek-eks-ec2-istio-18feb2022' --set splunkObservability.realm='<realm redacted>' --set gateway.enabled='false' --set splunkObservability.logsEnabled='true' --set autodetect.istio='true' --set=autodetect.prometheus='true' --generate-name splunk-otel-collector-chart/splunk-otel-collector
 
 # See if installed successfully
@@ -47,7 +55,7 @@ Note: when Istio sends telemetry to the collector that communication itself need
 
 
 4. Display the list of Istio profile and look at demo profile
-This link explains the differences https://istio.io/latest/docs/setup/additional-setup/config-profiles/ 
+This link explains the differences https://istio.io/latest/docs/setup/additional-setup/config-profiles/
 ```bash
 istioctl profile list
 
@@ -97,7 +105,7 @@ istioctl analyze --all-namespaces
 ```
 
 
-6. Enable Istio Sidecar Injection 
+6. Enable Istio Sidecar Injection
 Add a namespace label to instruct Istio to automatically inject Envoy sidecar proxies when you deploy your application later
 ```bash
 # first describe default namespace
@@ -120,7 +128,7 @@ cd istio
 kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
 
 # 4 Launch Istio Gateway and Virtual Service
-# We need to make the application accessible from outside of your Kubernetes cluster, e.g., from a browser. 
+# We need to make the application accessible from outside of your Kubernetes cluster, e.g., from a browser.
 kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
 
 # 5 Determine the ingress IP and ports
@@ -141,7 +149,7 @@ curl -s "http://${GATEWAY_URL}/productpage" | grep -o "<title>.*</title>"
 # 8 Test access using for loop
 for i in {1..10}; do echo $(curl -s "http://${GATEWAY_URL}/productpage" | grep -o "<title>.*</title>"); done
 
-# 9 View service mesh animation with Kiali *optional 
+# 9 View service mesh animation with Kiali *optional
 #Must have installed Prometheus and Kiali before using Kiali
 istioctl dashboard kiali
 
@@ -151,9 +159,9 @@ kubectl logs $(kubectl get pod -l app=productpage -o jsonpath='{.items[0].metada
 
 8. Test tracing with Jaeger
 Change trace sampling to 100%. Default is 1% when we install the demo profile
-https://istio.io/v1.0/docs/tasks/telemetry/distributed-tracing/ 
+https://istio.io/v1.0/docs/tasks/telemetry/distributed-tracing/
 ```bash
-# Ensure that it is 100% 
+# Ensure that it is 100%
 kubectl get deployment.apps/istiod -n istio-system -o yaml | grep PILOT_TRACE_SAMPLING -A4
 
 # Generate trace data
