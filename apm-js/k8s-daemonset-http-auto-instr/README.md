@@ -2,7 +2,7 @@
 - node v16.13.0
 - npm v8.1.0
 
-#13 Steps
+#12 Steps
 1. `npm init`
 
 
@@ -38,13 +38,14 @@ curl localhost:3009/api
 If it works, now we can docker push
 docker push jekbao/k8snodejs:v1.0.2
 
+10. Ensure that Splunk OTel Collector Chart is installed
 
-9. Update image in k8s-daemonset-nodejs.yaml to latest image v1.0.2 after which create the deployment with the follow command in terminal CLI
+11. Update image in k8s-daemonset-nodejs.yaml to latest image v1.0.2 after which create the deployment with the follow command in terminal CLI
 ```bash
 kubectl apply -f k8s-daemonset-nodejs.yaml`
 ```
 
-10. Test that can connect to pod
+12. Test that can connect to pod
 ```bash
 # Invoke success
 kubectl run tmp --image=nginx:alpine -i --rm --restart=Never -- curl -m 5 -v <pod ip using kubectl get pod -o wide>:<containerPort>/api
