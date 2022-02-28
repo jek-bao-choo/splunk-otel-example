@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-daemonset-nodejs-http-auto-instr
+  labels:
+    app: nodejs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers:
+      - name: nodejshttp
+        image: jekbao/k8snodejs:v1.0.2
+        ports:
+        - containerPort: 3002
+        env:
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: deployment.environment=jek-k8s-nodejs
+          - name: OTEL_SERVICE_NAME
+            value: jek-k8s-daemonset-nodejs-http
+          - name: SPLUNK_METRICS_ENDPOINT
+            value: http://$(NODE_IP):9943
+          - name: OTEL_EXPORTER_JAEGER_ENDPOINT
+            value: http://$(NODE_IP):9080/v1/trace
+          - name: OTEL_TRACES_EXPORTER
+            value: jaeger-thrift-splunk
