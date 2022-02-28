@@ -43,6 +43,9 @@ docker push jekbao/k8snodejs:v1.0.2
 11. Update image in k8s-daemonset-nodejs.yaml to latest image v1.0.2 after which create the deployment with the follow command in terminal CLI
 ```bash
 kubectl apply -f k8s-daemonset-nodejs.yaml`
+
+# or if repo is updated
+kubectl apply -f https://raw.githubusercontent.com/jek-bao-choo/splunk-otel-example/main/apm-js/k8s-daemonset-http-auto-instr/k8s-daemonset-nodejs.yaml
 ```
 
 12. Test that can connect to pod
