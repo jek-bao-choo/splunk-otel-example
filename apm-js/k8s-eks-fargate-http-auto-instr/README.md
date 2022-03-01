@@ -12,7 +12,7 @@ Pre-req: The containerization of Node.js was done in k8s-daemonset-http-auto-ins
 kubectl -n dev apply -f k8s-eks-fargate-nodejs.yaml`
 
 # or if repo is updated
-kubectl -n dev apply -f https://raw.githubusercontent.com/jek-bao-choo/splunk-otel-example/main/apm-js/k8s-daemonset-http-auto-instr/k8s-daemonset-nodejs.yaml
+kubectl -n dev apply -f https://raw.githubusercontent.com/jek-bao-choo/splunk-otel-example/main/apm-js/k8s-eks-fargate-http-auto-instr/k8s-eks-fargate-nodejs.yaml
 ```
 IMPORTANT: The service name in the yaml file needs to splunk-otel-collector-1646020911.default:4317 where is the service name from kubectl get svc and .default is the namespace of where the service is.
 
