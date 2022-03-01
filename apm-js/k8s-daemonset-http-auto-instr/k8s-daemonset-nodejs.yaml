@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nodejshttp
-        image: jekbao/k8snodejs:v1.0.2
+        image: jekbao/k8snodejs:v1.0.3
         ports:
         - containerPort: 3002
         env:

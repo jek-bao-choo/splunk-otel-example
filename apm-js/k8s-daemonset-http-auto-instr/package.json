@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "@opentelemetry/instrumentation-http": "^0.27.0",
-    "@splunk/otel": "^0.15.0"
+    "@splunk/otel": "^0.17.0"
   }
 }

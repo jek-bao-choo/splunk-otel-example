@@ -22,12 +22,12 @@ CMD [ "node", "-r", "@splunk/otel/instrument", "index.js" ]
 - Name the image jekbao/k8snodejs:<version>
 - Run without taking from cache
 ```bash
-docker build -t jekbao/k8snodejs:v1.0.2 . --no-cache
+docker build -t jekbao/k8snodejs:v1.0.3 . --no-cache
 ```
 
 7. Run your image with -d runs the container in detached mode, leaving the container running in the background. The -p flag redirects a public port to a private port inside the container. Run the image you previously built:
 ```bash
-docker run -d -p 3009:3002 --name jek_k8s_nodejs_http_auto-instr jekbao/k8snodejs:v1.0.2
+docker run -d -p 3009:3002 --name jek_k8s_nodejs_http_auto-instr jekbao/k8snodejs:v1.0.3
 ```
 Note: Intentionally port forward to 3009. Internally it is exposing port 3002 to show variation
 
@@ -36,7 +36,7 @@ Note: Intentionally port forward to 3009. Internally it is exposing port 3002 to
 curl localhost:3009/api
 ```
 If it works, now we can docker push
-docker push jekbao/k8snodejs:v1.0.2
+docker push jekbao/k8snodejs:v1.0.3
 
 10. Ensure that Splunk OTel Collector Chart is installed
 
