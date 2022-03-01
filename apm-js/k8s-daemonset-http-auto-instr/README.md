@@ -42,24 +42,24 @@ docker push jekbao/k8snodejs:v1.0.2
 
 11. Update image in k8s-daemonset-nodejs.yaml to latest image v1.0.2 after which create the deployment with the follow command in terminal CLI
 ```bash
-kubectl apply -f k8s-daemonset-nodejs.yaml`
+kubectl apply -n dev -f k8s-daemonset-nodejs.yaml
 
 # or if repo is updated
-kubectl apply -f https://raw.githubusercontent.com/jek-bao-choo/splunk-otel-example/main/apm-js/k8s-daemonset-http-auto-instr/k8s-daemonset-nodejs.yaml
+kubectl apply -n dev -f https://raw.githubusercontent.com/jek-bao-choo/splunk-otel-example/main/apm-js/k8s-daemonset-http-auto-instr/k8s-daemonset-nodejs.yaml
 ```
 
 12. Test that can connect to pod
 ```bash
 # Invoke success
-kubectl run tmp --image=nginx:alpine -i --rm --restart=Never -- curl -m 5 -v <pod ip using kubectl get pod -o wide>:<containerPort>/api
+kubectl run tmp -n dev --image=nginx:alpine -i --rm --restart=Never -- curl -m 5 -v <pod ip using kubectl get pod -n dev -o wide>:<containerPort>/api
 
 # Invoke error
-kubectl run tmp --image=nginx:alpine -i --rm --restart=Never -- curl -m 5 -v <pod ip using kubectl get pod -o wide>:<containerPort>
+kubectl run tmp -n dev --image=nginx:alpine -i --rm --restart=Never -- curl -m 5 -v <pod ip using kubectl get pod -n dev -o wide>:<containerPort>
 ```
 
 11. Or use port forwarding if permitted
 ```bash
-kubectl port-forward deployment/k8s-daemonset-nodejs-http-auto-instr 3009:<containerPort>
+kubectl port-forward -n dev deployment/k8s-daemonset-nodejs-http-auto-instr 3009:<containerPort>
 
 # Invoke success
 curl http://localhost:3009/api

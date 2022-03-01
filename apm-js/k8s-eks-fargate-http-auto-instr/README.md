@@ -9,7 +9,7 @@ Pre-req: The containerization of Node.js was done in k8s-daemonset-http-auto-ins
 
 2. Update image in k8s-eks-fargate-nodejs.yaml to latest image v1.0.2 after which create the deployment with the follow command in terminal CLI
 ```bash
-kubectl -n dev apply -f k8s-eks-fargate-nodejs.yaml`
+kubectl -n dev apply -f k8s-eks-fargate-nodejs.yaml
 
 # or if repo is updated
 kubectl -n dev apply -f https://raw.githubusercontent.com/jek-bao-choo/splunk-otel-example/main/apm-js/k8s-eks-fargate-http-auto-instr/k8s-eks-fargate-nodejs.yaml

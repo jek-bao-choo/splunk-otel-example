@@ -28,9 +28,5 @@ spec:
             value: deployment.environment=jek-k8s-nodejs
           - name: OTEL_SERVICE_NAME
             value: jek-k8s-daemonset-nodejs-http
-          - name: SPLUNK_METRICS_ENDPOINT
-            value: http://$(NODE_IP):9943
-          - name: OTEL_EXPORTER_JAEGER_ENDPOINT
-            value: http://$(NODE_IP):9080/v1/trace
-          - name: OTEL_TRACES_EXPORTER
-            value: jaeger-thrift-splunk
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(NODE_IP):4317
