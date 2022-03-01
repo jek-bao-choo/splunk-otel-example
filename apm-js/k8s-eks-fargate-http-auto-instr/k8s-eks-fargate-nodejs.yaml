@@ -25,4 +25,4 @@ spec:
           - name: OTEL_SERVICE_NAME
             value: jek-k8s-eks-fargate-nodejs-http
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
-            value: splunk-otel-collector-1646020911:4317
+            value: splunk-otel-collector-1646020911.default:4317
