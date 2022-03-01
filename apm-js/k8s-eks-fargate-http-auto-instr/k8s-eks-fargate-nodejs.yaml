@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-eks-fargate-nodejs-http-auto-instr
+  labels:
+    app: nodejs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs
+  template:
+    metadata:
+      labels:
+        app: nodejs
+    spec:
+      containers:
+      - name: nodejshttp
+        image: jekbao/k8snodejs:v1.0.2
+        ports:
+        - containerPort: 3002
+        env:
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: deployment.environment=jek-k8s-nodejs
+          - name: OTEL_SERVICE_NAME
+            value: jek-k8s-eks-fargate-nodejs-http
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: splunk-otel-collector-1646020911:4317
