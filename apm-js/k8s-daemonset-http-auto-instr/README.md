@@ -1,8 +1,8 @@
-#My setup
+# My setup
 - node v16.13.0
 - npm v8.1.0
 
-#12 Steps
+# 12 Steps
 1. `npm init`
 
 
