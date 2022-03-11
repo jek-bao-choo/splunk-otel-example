@@ -86,8 +86,13 @@ export OTEL_SERVICE_NAME=jek-spring-maven-web-rest-http
 ```
 ---
 ```bash
-export OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com/v2/trace/otlp
+export OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com
 ```
+Note: 
+- For Java to send directly to the backend using OTLP endpoint is https://ingest.<YOUR REALM>.signalfx.com without the path
+- While for Python the OTLP endpoint is https://ingest.<YOUR REALM>.signalfx.com/v2/trace with the /v2/trace path.
+- Alternatively, can you use Jaeger Thrift to send directly https://docs.splunk.com/Observability/gdi/get-data-in/application/java/instrumentation/instrument-java-application.html#send-data-directly-to-observability-cloud
+- To configure the endpoint variable it can be complex, this is the doc for Java https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/README.md
 ---
 ```bash
 export SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY>
