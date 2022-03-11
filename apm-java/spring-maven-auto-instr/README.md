@@ -1,4 +1,4 @@
-This is a work in progress. Continue from step 10. The OTLP endpoint isn't working as expected. 
+This is a work in progress.
 
 1. Use the Spring CLI to build a simple web app
 with the dependency web i.e. -dweb
@@ -101,3 +101,14 @@ export SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY>
 ```bash
 java -javaagent:./splunk-otel-javaagent.jar -jar target/jekspringwebapp-*.jar
 ```
+
+11. Test run the web app with endpoint `/greeting`
+```bash
+# Check that the previous step execution is successful and curl the endpoint.
+
+curl localhost:8080/greeting
+
+# Go to Splunk O11y portal to see that the service is showing up in APM.
+```
+
+12. 
