@@ -25,4 +25,4 @@ spec:
           - name: OTEL_SERVICE_NAME
             value: jek-spring-maven-k8s-eks-fargate-http
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
-            value: splunk-otel-collector-1646020911.default:4317
+            value: splunk-otel-collector-1646814262.default.svc:4317

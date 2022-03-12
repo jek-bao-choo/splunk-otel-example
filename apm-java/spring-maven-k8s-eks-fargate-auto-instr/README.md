@@ -17,8 +17,17 @@ Ensure that there is  Splunk OTel Collector
 2. Get the image from Dockerhub https://hub.docker.com/repository/docker/jekbao/jekspringwebapp
 For example `jekbao/jekspringwebapp:v1`
 
-3. Deploy the yaml file
-Update image in spring-maven-k8s-eks-fargate-deployment.yaml to latest image (e.g. v1) after which create the deployment with the follow command in terminal CLI
+3. Get the Splunk OTel Collector Service name and namespace e.g. splunk-otel-collector-xxx and default is the namespace
+```bash
+kubectl get svc -A
+```
+---
+For example `splunk-otel-collector-1646814262.default.svc`
+
+4. Deploy the yaml file
+- Update image in spring-maven-k8s-eks-fargate-deployment.yaml to latest image (e.g. v1) after which create the deployment 
+- Update the OTLP_ENDPOINT name with the service name and namespace with port 4317 e.g. `splunk-otel-collector-1646814262.default.svc:4317`
+- After that run with the following  command in terminal CLI
 ```bash
 kubectl apply -f spring-maven-k8s-eks-fargate-deployment.yaml
 
@@ -32,7 +41,7 @@ If have difficulty resolving <svc>.<namespace>... see:
 - https://stackoverflow.com/questions/66760610/kubernetes-pod-unable-to-communicate-with-another-pod-using-a-service
 - https://stackoverflow.com/questions/71234933/how-to-make-inter-container-calls-within-a-pod-in-elastic-kubernetes-service 
 
-9. Use port forwarding to test
+5. Use port forwarding to test
 ```bash
 kubectl port-forward -n dev deployment/k8s-eks-fargate-nodejs-http-auto-instr 3009:<containerPort>
 
