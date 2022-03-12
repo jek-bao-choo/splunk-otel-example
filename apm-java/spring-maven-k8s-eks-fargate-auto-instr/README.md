@@ -34,7 +34,7 @@ kubectl apply -f spring-maven-k8s-eks-fargate-deployment.yaml
 # or if repo is updated
 kubectl apply -f https://raw.githubusercontent.com/jek-bao-choo/splunk-otel-example/main/apm-java/spring-maven-k8s-eks-fargate-auto-instr/spring-maven-k8s-eks-fargate-deployment.yaml
 ```
-IMPORTANT: The service name in the yaml file needs to http://splunk-otel-collector-1646020911.default:4318 where is the service name from kubectl get svc and .default is the namespace of where the service is.
+IMPORTANT: The service name in the yaml file needs to http://splunk-otel-collector-1646020911.default.svc:4317 where is the service name from kubectl get svc and .default is the namespace of where the service is.
 Reference: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 If have difficulty resolving <svc>.<namespace>... see: 
 - https://stackoverflow.com/questions/68515198/how-can-pod-make-http-request-to-other-service-in-k8s
