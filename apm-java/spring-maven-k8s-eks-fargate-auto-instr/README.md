@@ -34,7 +34,7 @@ kubectl apply -f spring-maven-k8s-eks-fargate-deployment.yaml
 # or if repo is updated
 kubectl apply -f https://raw.githubusercontent.com/jek-bao-choo/splunk-otel-example/main/apm-java/spring-maven-k8s-eks-fargate-auto-instr/spring-maven-k8s-eks-fargate-deployment.yaml
 ```
-IMPORTANT: The service name in the yaml file needs to http://splunk-otel-collector-1646020911.default:4318 where is the service name from kubectl get svc and .default is the namespace of where the service is.
+IMPORTANT: The service name in the yaml file needs to http://splunk-otel-collector-1646020911.default.svc:4317 where is the service name from kubectl get svc and .default is the namespace of where the service is.
 Reference: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 If have difficulty resolving <svc>.<namespace>... see: 
 - https://stackoverflow.com/questions/68515198/how-can-pod-make-http-request-to-other-service-in-k8s
@@ -44,8 +44,8 @@ If have difficulty resolving <svc>.<namespace>... see:
 - https://github.com/open-telemetry/opentelemetry-java/blob/9456aeea26b51aeb2074e7fabf071693fe63fce0/sdk-extensions/autoconfigure/README.md#otlp-exporter-span-metric-and-log-exporters
 NOTE: For Java it needs to have http:// 
 without http:// it would throw invalid OTLP endpoint
-- http://splunk-otel-collector-1646814262.default.svc:4317 --> Seemed to work.
-- splunk-otel-collector-1646814262.default.svc:4317 --> Invalid OTLP endpoint
+- http://splunk-otel-collector-1646814262.default.svc:4317 --> This works
+- splunk-otel-collector-1646814262.default.svc:4317 --> This doesn't work (without http://)
 
 5. Use port forwarding to test
 ```bash
