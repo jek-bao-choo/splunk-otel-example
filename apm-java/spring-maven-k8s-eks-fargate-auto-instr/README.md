@@ -32,23 +32,36 @@ For example `splunk-otel-collector-1646814262.default.svc`
 kubectl apply -f spring-maven-k8s-eks-fargate-deployment.yaml
 
 # or if repo is updated
-kubectl apply -f https://raw.githubusercontent.com/jek-bao-choo/splunk-otel-example/main/apm-js/k8s-eks-fargate-http-auto-instr/k8s-eks-fargate-nodejs.yaml
+kubectl apply -f https://raw.githubusercontent.com/jek-bao-choo/splunk-otel-example/main/apm-java/spring-maven-k8s-eks-fargate-auto-instr/spring-maven-k8s-eks-fargate-deployment.yaml
 ```
-IMPORTANT: The service name in the yaml file needs to splunk-otel-collector-1646020911.default:4317 where is the service name from kubectl get svc and .default is the namespace of where the service is.
+IMPORTANT: The service name in the yaml file needs to http://splunk-otel-collector-1646020911.default:4318 where is the service name from kubectl get svc and .default is the namespace of where the service is.
 Reference: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/
 If have difficulty resolving <svc>.<namespace>... see: 
 - https://stackoverflow.com/questions/68515198/how-can-pod-make-http-request-to-other-service-in-k8s
 - https://stackoverflow.com/questions/66760610/kubernetes-pod-unable-to-communicate-with-another-pod-using-a-service
 - https://stackoverflow.com/questions/71234933/how-to-make-inter-container-calls-within-a-pod-in-elastic-kubernetes-service 
+- https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/ 
+- 
+NOTE: For Java it needs to have http:// 
+without http:// it would throw invalid OTLP endpoint
+- http://splunk-otel-collector-1646814262.default.svc:4317 --> Seemed to work.
+- splunk-otel-collector-1646814262.default.svc:4317 --> Invalid OTLP endpoint
 
 5. Use port forwarding to test
 ```bash
-kubectl port-forward -n dev deployment/k8s-eks-fargate-nodejs-http-auto-instr 3009:<containerPort>
+kubectl port-forward deployment/spring-maven-k8s-eks-fargate 3009:<containerPort>
+
+# i.e. kubectl port-forward deployment/spring-maven-k8s-eks-fargate 3009:8080
 
 # Invoke success
-curl http://localhost:3009/api
+curl http://localhost:3009/greeting
 
-# Invoke error
+# Invoke general
 curl http://localhost:3009
+```
+
+6. View the logs to verify
+```bash
+kubectl logs deployment/spring-maven-k8s-eks-fargate
 ```
 
