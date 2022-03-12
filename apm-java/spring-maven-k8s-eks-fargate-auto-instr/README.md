@@ -64,4 +64,10 @@ curl http://localhost:3009
 ```bash
 kubectl logs deployment/spring-maven-k8s-eks-fargate
 ```
+---
 
+#Misc
+- Ref: https://github.com/signalfx/splunk-otel-java
+- Proof: ![proof](proof.png "working proof")
+- - Proof: ![proof2](proof2.png "working proof")
+- Last updated: 12 Mar 2022
