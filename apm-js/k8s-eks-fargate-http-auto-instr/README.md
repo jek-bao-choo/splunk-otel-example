@@ -6,6 +6,7 @@
 Pre-req: The containerization of Node.js was done in k8s-daemonset-http-auto-instr
 
 1. Ensure that Splunk OTel Collector Chart is installed
+Important to use Gateway mode when installing.
 
 2. Update image in k8s-eks-fargate-nodejs.yaml to latest image v1.0.2 after which create the deployment with the follow command in terminal CLI
 ```bash
