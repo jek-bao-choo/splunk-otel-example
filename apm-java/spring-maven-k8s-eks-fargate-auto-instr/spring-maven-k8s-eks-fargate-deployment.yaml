@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: jekspringwebapp
-        image: jekbao/jekspringwebapp:v1
+        image: jekbao/jekspringwebapp:v2
         ports:
         - containerPort: 8080
         env:

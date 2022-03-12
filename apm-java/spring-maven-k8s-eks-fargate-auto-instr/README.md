@@ -15,7 +15,7 @@ helm ls -A
 Ensure that there is  Splunk OTel Collector
 
 2. Get the image from Dockerhub https://hub.docker.com/repository/docker/jekbao/jekspringwebapp
-For example `jekbao/jekspringwebapp:v1`
+For example `jekbao/jekspringwebapp:v2`
 
 3. Get the Splunk OTel Collector Service name and namespace e.g. splunk-otel-collector-xxx and default is the namespace
 ```bash
@@ -25,7 +25,7 @@ kubectl get svc -A
 For example `splunk-otel-collector-1646814262.default.svc`
 
 4. Deploy the yaml file
-- Update image in spring-maven-k8s-eks-fargate-deployment.yaml to latest image (e.g. v1) after which create the deployment 
+- Update image in spring-maven-k8s-eks-fargate-deployment.yaml to latest image (e.g. v2) after which create the deployment 
 - Update the OTLP_ENDPOINT name with the service name and namespace with port 4317 e.g. `splunk-otel-collector-1646814262.default.svc:4317`
 - After that run with the following  command in terminal CLI
 ```bash
@@ -41,7 +41,7 @@ If have difficulty resolving <svc>.<namespace>... see:
 - https://stackoverflow.com/questions/66760610/kubernetes-pod-unable-to-communicate-with-another-pod-using-a-service
 - https://stackoverflow.com/questions/71234933/how-to-make-inter-container-calls-within-a-pod-in-elastic-kubernetes-service 
 - https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/ 
-- 
+- https://github.com/open-telemetry/opentelemetry-java/blob/9456aeea26b51aeb2074e7fabf071693fe63fce0/sdk-extensions/autoconfigure/README.md#otlp-exporter-span-metric-and-log-exporters
 NOTE: For Java it needs to have http:// 
 without http:// it would throw invalid OTLP endpoint
 - http://splunk-otel-collector-1646814262.default.svc:4317 --> Seemed to work.
