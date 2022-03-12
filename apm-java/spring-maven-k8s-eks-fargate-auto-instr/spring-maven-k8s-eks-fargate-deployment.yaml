@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8s-eks-fargate-nodejs-http-auto-instr
+  name: spring-maven-k8s-eks-fargate
   labels:
-    app: nodejs
+    app: javaspringmaven
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nodejs
+      app: javaspringmaven
   template:
     metadata:
       labels:
-        app: nodejs
+        app: javaspringmaven
     spec:
       containers:
-      - name: nodejshttp
-        image: jekbao/k8snodejs:v1.0.2
+      - name: jekspringwebapp
+        image: jekbao/jekspringwebapp:v1
         ports:
-        - containerPort: 3002
+        - containerPort: 8080
         env:
           - name: OTEL_RESOURCE_ATTRIBUTES
-            value: deployment.environment=jek-k8s-nodejs
+            value: deployment.environment=jek-sandbox
           - name: OTEL_SERVICE_NAME
-            value: jek-k8s-eks-fargate-nodejs-http
+            value: jek-spring-maven-k8s-eks-fargate-http
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
             value: splunk-otel-collector-1646020911.default:4317
