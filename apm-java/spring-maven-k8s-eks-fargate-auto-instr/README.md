@@ -44,8 +44,8 @@ If have difficulty resolving <svc>.<namespace>... see:
 - 
 NOTE: For Java it needs to have http:// 
 without http:// it would throw invalid OTLP endpoint
-- http://splunk-otel-collector-1646814262.default.svc:4317 --> Seemed to work.
-- splunk-otel-collector-1646814262.default.svc:4317 --> Invalid OTLP endpoint
+- http://splunk-otel-collector-1646814262.default.svc:4317 --> This works
+- splunk-otel-collector-1646814262.default.svc:4317 --> This doesn't work (without http://)
 
 5. Use port forwarding to test
 ```bash
