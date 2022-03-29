@@ -1,5 +1,6 @@
 #My setup
-
+- Using EKS EC2 Agent mode
+- splunk-otel-collector-0.46.0 version
 
 #N Steps
 1. Create EKS EC2 cluster using eksctl
