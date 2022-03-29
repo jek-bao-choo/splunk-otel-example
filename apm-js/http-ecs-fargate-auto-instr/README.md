@@ -29,6 +29,9 @@ aws ec2 authorize-security-group-ingress --group-id <THE SECURITY GROUP ID sg-..
 
 
 
+Source
+- https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-cli-tutorial-fargate.html 
+
 
 
 
