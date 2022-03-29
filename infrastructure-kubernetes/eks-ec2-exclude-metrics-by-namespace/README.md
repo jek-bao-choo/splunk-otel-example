@@ -2,7 +2,7 @@
 - Using EKS EC2 Agent mode
 - splunk-otel-collector-0.46.0 version
 
-#N Steps
+#10 Steps
 1. Create EKS EC2 cluster using eksctl
 Because eksctl tool will create K8s Control Plane (master nodes, etcd, API server, etc), worker nodes, VPC, Security Groups, Subnets, Routes, Internet Gateway, etc.
 ```bash
