@@ -20,7 +20,7 @@ splunkObservability:
   # Required for Splunk Observability. Splunk Observability realm to send
   # telemetry data to. Setting this parameter enables Splunk Observability as a
   # destination.
-  realm: "us1"
+  realm: "<set your own realm e.g. us1 us0>"
   # Required for Splunk Observability (if `realm` is specified). Splunk
   # Observability org access token.
   accessToken: "<redacted for security>"
@@ -74,17 +74,16 @@ agent:
   # Any additional fields will be merged into the defaults,
   # existing fields can be disabled by setting them to null value.
   # Todo: Jek to update it here for agent mode
+  # However, if using EKS Fargate do update the Gateway config instead of agent config
   config:
     processors:
       filter/exclude_metrics2:
         metrics:
           exclude:
             match_type: regexp
-            metric_names:
-            - k8s.pod.ph*
             resource_attributes:
               - Key: k8s.namespace.name
-                Value: "kube-system"
+                Value: "dev"
     service:
       pipelines:
         metrics:
@@ -102,18 +101,6 @@ agent:
           - otlp
           - receiver_creator
           - signalfx
-        metrics/agent:
-          exporters:
-          - signalfx
-          processors:
-          - memory_limiter
-          - batch
-          - resource/add_agent_k8s
-          - resourcedetection
-          - resource
-          - filter/exclude_metrics2
-          receivers:
-          - prometheus/agent
 
 ################################################################################
 # OpenTelemetry Kubernetes cluster receiver
@@ -138,11 +125,9 @@ clusterReceiver:
         metrics:
           exclude:
             match_type: regexp
-            metric_names:
-            - k8s.pod.ph*
             resource_attributes:
               - Key: k8s.namespace.name
-                Value: "kube-system"
+                Value: "dev"
     service:
       pipelines:
         metrics:
@@ -156,18 +141,7 @@ clusterReceiver:
           - filter/exclude_metrics2
           receivers:
           - k8s_cluster
-        metrics/collector:
-          exporters:
-          - signalfx
-          processors:
-          - memory_limiter
-          - batch
-          - resource/add_collector_k8s
-          - resourcedetection
-          - resource
-          - filter/exclude_metrics2
-          receivers:
-          - prometheus/k8s_cluster_receiver
+
 ################################################################################
 # OpenTelemetry "collector" k8s deployment configuration.
 # This is an additional deployment of Open-telemetry collector that can be used

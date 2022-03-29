@@ -56,18 +56,56 @@ kubectl -n dev port-forward svc/frontend 8080:80
 kubectl -n dev scale deployment frontend --replicas=5
 ```
 
-6. Verify in Splunk O11y portal that the metrics are coming through from dev namespace
+6. Verify in Splunk O11y portal that the metrics are coming through from `dev` namespace
 
 7. Remove metrics from dev namespace
 Upgrade helm chart with these supplied values in namespace `default`.
 ```bash
-helm upgrade splunk-otel-collector-1648537705 splunk-otel-collector-chart/splunk-otel-collector -f values.yaml
+helm upgrade <Release name> splunk-otel-collector-chart/splunk-otel-collector -f values.yaml
 ```
 
-8. Verify in Splunk O11y portal that the metrics are NOT coming through from dev namespace
+8. Verify in Splunk O11y portal that the metrics are NOT coming through from `dev` namespace
+```
+My personal testing note. 
+v1 ... v5 notes not taken... This is a good reminder to take notes with every config change.
 
+v6 - try not having agent config instead cluster receiver.
+Expect dev no metrics, kube-system has metrics.
+Assert dev has metrics, kube-system has metrics. 
+Hence this means that need to add filter to both cluster receiver and agent.
 
-N. Clean up Kubernetes official example app
+v7 - Remove metrics/agent:
+Expect dev no metrics, kube-system has metrics.
+Assert dev no metrics, kube-system has metrics.
+Hence this means that we don't need metrics/agent
+
+v8 - Remove metrics/collector
+Expect dev no show in infrastructure map
+Assert dev no show in infrastructure map
+hence can remove metrics/collector
+
+v9 - remove cluster receiver config to see if dev will show
+Expect dev to show in infrastructure map
+Assert dev showed in infrastructure map
+hence it seemed to sad it is working
+
+v10 - add back cluster receiver config and
+Expect dev no show in infrastructure map
+Assert dev no show in infras map
+Hence it seemed to be correct the config
+
+v11 - remove agent config and
+expect dev container cpu metrics to come in
+assert dev container cpu metrics to come in
+Hence settings correct
+
+v12 - add agent config
+expect dev container cpu metrics to not show
+assert dev container cpu metrics to now show
+Hence the settings correct
+```
+
+9. Clean up Kubernetes official example app
 ```bash
 # Delete all
 kubectl delete deployment -l app=redis
@@ -76,7 +114,7 @@ kubectl delete deployment frontend
 kubectl delete service frontend
 ```
 
-N + 1. Clean up EKS EC2 using eksctl
+10. Clean up EKS EC2 using eksctl
 ```bash
 # View the eks cluster name
 eksctl get cluster
