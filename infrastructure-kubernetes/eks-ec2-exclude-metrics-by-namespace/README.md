@@ -127,4 +127,5 @@ eksctl delete cluster jek-eks-ec2-cluster-<the date>
 
 - Ref: https://github.com/signalfx/splunk-otel-collector-chart
 - Proof: ![proof](proof.png "working proof")
+- Proof: ![proof2](proof2.png "working proof 2")
 - Last updated: 15 Feb 2022
