@@ -59,7 +59,10 @@ kubectl -n dev scale deployment frontend --replicas=5
 6. Verify in Splunk O11y portal that the metrics are coming through from dev namespace
 
 7. Remove metrics from dev namespace
-Update helm chart with these supplied values in namespace `default`.
+Upgrade helm chart with these supplied values in namespace `default`.
+```bash
+helm upgrade splunk-otel-collector-1648537705 splunk-otel-collector-chart/splunk-otel-collector -f values.yaml
+```
 
 8. Verify in Splunk O11y portal that the metrics are NOT coming through from dev namespace
 
