@@ -1,0 +1,154 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:ap-southeast-1:972204093366:task-definition/jek-ecs-fargate-java-spring-boot-5apr2022-v2:3",
+    "containerDefinitions": [
+        {
+            "name": "jekspringwebapp",
+            "image": "jekbao/jekspringwebapp:v2",
+            "cpu": 0,
+            "links": [],
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "entryPoint": [],
+            "command": [],
+            "environment": [
+                {
+                    "name": "OTEL_SERVICE_NAME",
+                    "value": "jek-spring-maven-ecs-fargate-app"
+                },
+                {
+                    "name": "OTEL_RESOURCE_ATTRIBUTES",
+                    "value": "deployment.environment=jek-sandbox"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [],
+            "dnsServers": [],
+            "dnsSearchDomains": [],
+            "extraHosts": [],
+            "dockerSecurityOptions": [],
+            "dockerLabels": {},
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/jek-ecs-fargate-java-spring-boot-5apr2022-v2",
+                    "awslogs-region": "ap-southeast-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        },
+        {
+            "name": "splunk-otel-collector",
+            "image": "quay.io/signalfx/splunk-otel-collector:latest",
+            "cpu": 0,
+            "links": [],
+            "portMappings": [],
+            "essential": true,
+            "entryPoint": [],
+            "command": [],
+            "environment": [
+                {
+                    "name": "METRICS_TO_EXCLUDE",
+                    "value": "[]"
+                },
+                {
+                    "name": "SPLUNK_CONFIG",
+                    "value": "/etc/otel/collector/fargate_config.yaml"
+                },
+                {
+                    "name": "SPLUNK_REALM",
+                    "value": "us1"
+                },
+                {
+                    "name": "SPLUNK_ACCESS_TOKEN",
+                    "value": "< access token redacted for security >"
+                },
+                {
+                    "name": "ECS_METADATA_EXCLUDED_IMAGES",
+                    "value": "[\\\"quay.io/signalfx/splunk-otel-collector:latest\\\"]"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [],
+            "dnsServers": [],
+            "dnsSearchDomains": [],
+            "extraHosts": [],
+            "dockerSecurityOptions": [],
+            "dockerLabels": {},
+            "ulimits": [],
+            "systemControls": []
+        }
+    ],
+    "family": "jek-ecs-fargate-java-spring-boot-5apr2022-v2",
+    "taskRoleArn": "arn:aws:iam::972204093366:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::972204093366:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 3,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.17"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "registeredAt": "2022-04-05T08:28:24.948Z",
+    "registeredBy": "arn:aws:iam::972204093366:user/jchoo@splunk.com",
+    "tags": [
+        {
+            "key": "ecs:taskDefinition:createdFrom",
+            "value": "ecs-console-v2"
+        },
+        {
+            "key": "ecs:taskDefinition:stackId",
+            "value": "arn:aws:cloudformation:ap-southeast-1:972204093366:stack/ECS-Console-V2-TaskDefinition-01c4f979-667f-4cfb-b759-bb0baff5e880/59929c60-b4ba-11ec-bf93-06c2a615c4a6"
+        }
+    ]
+}
