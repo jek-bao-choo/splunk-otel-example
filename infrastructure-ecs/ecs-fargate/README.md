@@ -88,17 +88,19 @@ When creating Task Defintions, we can select the following options:
 
 # 14. Remove the addition port to the Security Group.
 
-# 15. List all ecs clusters
+# 15. Remove the Task Definitions
+
+# 16. List all ecs clusters
 ```bash
 aws ecs list-clusters
 ```
 
-# 16. Delete the ECS cluster
+# 17. Delete the ECS cluster
 ```bash
 ecs-cli down --cluster jek-ecs-cli-fargate-cluster-<today date>
 ```
 
-# 17.  Check that the cluster is delete
+# 18.  Check that the cluster is delete
 ```bash
 aws ecs list-clusters
 ```

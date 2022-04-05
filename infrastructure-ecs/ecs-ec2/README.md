@@ -17,13 +17,13 @@ aws ecs list-clusters
 
 # 4. Create ECS cluster with launch-type FARGATE
 ```bash
-ecs-cli up --launch-type FARGATE --cluster jek-ecs-cli-fargate-cluster-<today date>
+ecs-cli up --capability-iam --launch-type EC2 --keypair jchoo-splunk-aws-key-pair --size 2 --instance-type t3.medium --cluster jek-ecs-ec2-cli-cluster-<today date>
 ```
 
 # 5. Take note of the VPC and subnets that the ECS cluster created in.
 Take note of the name of the VPC because when creating the ECS Task (not ECS Task Definitions), we need to select the correct VPC.
 
-# 6. Create ECS task definitions for launch-type FARGATE
+# 6. Create ECS task definitions for launch-type EC2
 We can use the AWS Web GUI to create a task definition.
 ![Howtocreatetaskdefinition](how-to-create-task-definitions.png "How to create task definitions")
 
@@ -35,6 +35,7 @@ source courtesy: https://www.udemy.com/course/aws-ecs-fargate/
 Search for the Security Group.
 ![thesteps](how-to-get-security-group.png "the steps ecs")
 Add the necessary inbound rules e.g. HTTP, TCP, and the PORT with source Custom.
+Notice that it is `All TCP` from `Anywhere`.
 ![thesteps](how-to-add-the-inbound-rule.png "the steps ecs")
 
 # 8a Either create ECS task OR create ECS service
@@ -46,10 +47,9 @@ Click the create button
 ![thesteps](how-to-create-task-next.png "the steps ecs")
 
 Select the task definitions created in above steps.
-![thesteps](how-to-create-task-select-task-definitions.png "the steps ecs")
+Please note to select `EC2`.
+![thesteps](how-to-create-task-from-task-definition.png "the steps ecs")
 
-Make sure to select the right VPC, Subnets (as created above), and the Security Group should allow inbound traffic from the right port and IP address.
-![thesteps](how-to-select-security-group.png "the steps ecs")
 
 # 8b. Either create ECS task OR create ECS service
 This example creates a ECS service
@@ -59,9 +59,27 @@ This example creates a ECS service
 Retrieve the public IP address from the ECS task
 ![thesteps](how-to-get-the-public-ip.png "the steps ecs")
 
-# 10. Add OTel Collector as sidecar to ECS Task Defintions.
+# 10. Add OTel Collector as Daemonset
 Go to Splunk O11y portal and use Data Setup
 ![thesteps](how-to-use-data-setup.png "the steps ecs")
+
+
+
+
+
+|
+
+
+|
+
+
+To be continued from here ----->
+
+
+|
+
+|
+
 
 Revise ECS Task Definitions
 ![thesteps](how-to-create-revision.png "the steps ecs")
@@ -88,17 +106,19 @@ When creating Task Defintions, we can select the following options:
 
 # 14. Remove the addition port to the Security Group.
 
-# 15. List all ecs clusters
+# 15. Remove the Task Definitions
+
+# 16. List all ecs clusters
 ```bash
 aws ecs list-clusters
 ```
 
-# 16. Delete the ECS cluster
+# 17. Delete the ECS cluster
 ```bash
-ecs-cli down --cluster jek-ecs-cli-fargate-cluster-<today date>
+ecs-cli down --cluster jek-ecs-ec2-cli-cluster-<today date>
 ```
 
-# 17.  Check that the cluster is delete
+# 18.  Check that the cluster is delete
 ```bash
 aws ecs list-clusters
 ```
