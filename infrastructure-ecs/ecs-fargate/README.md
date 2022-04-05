@@ -66,13 +66,19 @@ Go to Splunk O11y portal and use Data Setup
 Revise ECS Task Definitions
 ![thesteps](how-to-create-revision.png "the steps ecs")
 
-Create a second ECS Task from the revised Task Definitions
+Add the environment variables
+![thesteps](how-to-add-environment-variables.png "the steps ecs")
+
+
+
+# 11. Create a second ECS Task from the revised Task Definitions
+Create a second ECS Task
 ![thesteps](how-to-create-task-after-revision.png "the steps ecs")
 
 Select the latest revision
 ![thesteps](how-to-create-task-after-revision-next.png "the steps ecs")
 
-# 11. Verify that the metrics are in Splunk Observability O11y Dashboard
+# 12 Verify that the metrics are in Splunk Observability O11y Dashboard
 
 Go to Dashboard Group ECS
 ![thesteps](how-to-verify-dashboard.png "the steps ecs")
@@ -80,22 +86,22 @@ Go to Dashboard Group ECS
 Select a Dashboard
 ![thesteps](how-to-verify.png "the steps ecs")
 
-# 12. Container Logs from ECS is enabled via ECS setup
+# 13. Container Logs from ECS is enabled via ECS setup
 When creating Task Defintions, we can select the following options:
 ![thesteps](how-to-send-logs.png "the steps ecs")
 
-# 13. Clean up ECS Task, ECS Service, or both.
+# 14. Clean up ECS Task, ECS Service, or both.
 
-# 14. Remove the addition port to the Security Group.
+# 15. Remove the addition port to the Security Group.
 
-# 15. Remove the Task Definitions
+# 16. Remove the Task Definitions
 
-# 16. List all ecs clusters
+# 17. List all ecs clusters
 ```bash
 aws ecs list-clusters
 ```
 
-# 17. Delete the ECS cluster
+# 18. Delete the ECS cluster
 ```bash
 ecs-cli down --cluster jek-ecs-cli-fargate-cluster-<today date>
 ```
