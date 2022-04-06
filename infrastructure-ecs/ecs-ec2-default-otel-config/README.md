@@ -74,7 +74,7 @@ Go to Splunk O11y portal and use Data Setup
 
 
 To be continued from here ----->
-
+Reference: https://github.com/signalfx/splunk-otel-collector/tree/main/deployments/ecs/ec2#launch-the-collector
 
 |
 
