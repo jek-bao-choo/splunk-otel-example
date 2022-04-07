@@ -92,10 +92,10 @@ processors:
       #- action: insert
         #value: staging/production/...
         #key: deployment.environment
-  attributes/insert:
+  attributes/jek-insert:
     actions:
-      # The following inserts a new attribute {"attribute1": 123} to spans where
-      # the key "attribute1" doesn't exist.
+      # The following inserts a new attribute {"attribute1": 123} to metrics dimension where
+      # the key "jek-attribute1" doesn't exist.
       # The type of `attribute1` is inferred by the configuration.
       #  `123` is an integer and is stored as an integer in the attributes.
       # This demonstrates how to backfill spans with an attribute that may
@@ -103,12 +103,8 @@ processors:
       - key: "jek-attribute1"
         value: 123
         action: insert
-      # The following uses the value from attribute "anotherkey" to insert a new
-      # attribute {"string key": <value from attribute "anotherkey">} to spans
-      # where the key "string key" does not exist. If the attribute "anotherkey"
-      # doesn't exist, no new attribute is inserted to spans.
-      - key: "jek-string key"
-        from_attribute: "jek-anotherkey"
+      - key: "jek string key"
+        value: "jek hello world"
         action: insert
 
 exporters:
@@ -141,7 +137,7 @@ service:
       exporters: [sapm, signalfx]
     metrics:
       receivers: [signalfx, smartagent/signalfx-forwarder, smartagent/ecs-metadata, prometheus/internal]
-      processors: [memory_limiter, batch, resourcedetection, attributes/insert]
+      processors: [memory_limiter, batch, resourcedetection, attributes/jek-insert]
       exporters: [signalfx]
     logs:
       receivers: [otlp]
