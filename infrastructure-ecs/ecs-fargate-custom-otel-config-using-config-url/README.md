@@ -1,4 +1,4 @@
-This is a continuation of ecs-ec2-default-otel-config setup.
+This is a continuation of ecs-fargate-default-otel-config setup.
 
 The purpose of this guide is to use custom otel configuration instead of default otel configuration file.
 
