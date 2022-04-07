@@ -55,5 +55,7 @@ There is a `reference-sample-task-definitions.json` in this folder.
 If you have following the guide it would be `http://<public url>:8080/greeting`
 
 # Misc.
-- Proof: ![proof](proof.png "working proof")
+- Proof 1: ![proof](proof.png "working proof")
+- Proof 2: ![proof](proof2.png "working proof")
+- Proof 3: ![proof](proof3.png "working proof")
 - Updated 7 April 2022
