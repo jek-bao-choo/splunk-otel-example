@@ -90,6 +90,9 @@ Select a Dashboard
 When creating Task Defintions, we can select the following options:
 ![thesteps](how-to-send-logs.png "the steps ecs")
 
+Where to view the logs
+![thesteps](how-to-view-logs.png "the steps ecs")
+
 # 14. Clean up ECS Task, ECS Service, or both.
 
 # 15. Remove the addition port to the Security Group.
