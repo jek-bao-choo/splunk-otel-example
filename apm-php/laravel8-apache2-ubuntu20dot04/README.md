@@ -229,9 +229,13 @@ Add the SetEnv and the LogLevel debug
 </VirtualHost>
 ```
 Ref: https://stackoverflow.com/a/10902492/3073280 & https://stackoverflow.com/a/48701463/3073280 
-Or ref: https://stackoverflow.com/a/34844105/3073280 
 
 We are setting it as `SetEnv SIGNALFX_ENDPOINT_URL "http://localhost:9411/api/v2/traces"` because we sending it to Spunk OTel Collector's zipkin receiver
+
+Or set it in .env ref: https://stackoverflow.com/a/34844105/3073280 for example
+![signalfx php tracing](further-environment-settings.png "signalfx php tracing") These maybe optional in the .env. Will need to test it further.
+
+---
 
 Once done the setup we need to restart
 ```bash
@@ -269,6 +273,10 @@ journalctl -u splunk-otel-collector.service -f
 # Troubleshooting
 - View Apache logs in `/var/log/apache2/error.log`
 - View Splunk OTel Collector logs `journalctl -u splunk-otel-collector.service -e` or `journalctl -u splunk-otel-collector.service -f`
+
+# To Do
+- Could document about SSH Tunneling
+- Rearrange the materials here
 
 # Misc
 
