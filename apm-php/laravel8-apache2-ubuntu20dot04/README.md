@@ -40,6 +40,16 @@ sudo systemctl restart apache2
 # e.g. http://ip-address/info.php 
 ```
 
+# 7. Install PHP curl
+```bash
+sudo apt install php-curl
+```
+
+```bash
+# Restarted apache
+sudo systemctl restart apache2
+```
+
 # 7. Install and Configure Laravel (excluding Nginx) on Ubuntu 20.04 (LEMP) 
 https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-laravel-with-nginx-on-ubuntu-20-04
 Do:
@@ -203,6 +213,8 @@ Add the SetEnv and the LogLevel debug
 
    SetEnv SIGNALFX_SERVICE_NAME "jek-php-laravel-8"
    SetEnv SetEnv SIGNALFX_TRACE_GLOBAL_TAGS "deployment.environment:jek-sandbox"
+   SetEnv SIGNALFX_ENDPOINT_URL "http://localhost:9411/api/v2/traces"
+   SetEnv SIGNALFX_TRACE_DEBUG "true"
 
    <Directory /var/www/html/travellist/public/>
        Options Indexes FollowSymlinks MultiViews
@@ -216,18 +228,47 @@ Add the SetEnv and the LogLevel debug
    CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
-Ref: https://stackoverflow.com/a/10902492/3073280 
+Ref: https://stackoverflow.com/a/10902492/3073280 & https://stackoverflow.com/a/48701463/3073280 
+Or ref: https://stackoverflow.com/a/34844105/3073280 
 
-Todo: Document how to set environment variables
-It seemed there are many places to set environment variables.
+We are setting it as `SetEnv SIGNALFX_ENDPOINT_URL "http://localhost:9411/api/v2/traces"` because we sending it to Spunk OTel Collector's zipkin receiver
 
-
-Restart
+Once done the setup we need to restart
 ```bash
 sudo service apache2 restart
 
 sudo systemctl restart apache2
 ```
+
+# N. Configure Splunk OTel Collector to log traces
+```bash
+sudo vim /etc/otel/collector/agent_config.yaml
+```
+![signalfx php tracing](add-logging-traces.png "signalfx php tracing")
+
+and also add to
+![signalfx php tracing](add-logging-traces-2nd.png "signalfx php tracing")
+
+```bash
+# Restart Splunk OTel Collector
+
+sudo systemctl restart splunk-otel-collector
+```
+
+We can view the logged traces via
+```bash
+# Trigger some traffic
+
+journalctl -u splunk-otel-collector.service -e
+```
+
+```bash
+journalctl -u splunk-otel-collector.service -f
+```
+
+# Troubleshooting
+- View Apache logs in `/var/log/apache2/error.log`
+- View Splunk OTel Collector logs `journalctl -u splunk-otel-collector.service -e` or `journalctl -u splunk-otel-collector.service -f`
 
 # Misc
 
