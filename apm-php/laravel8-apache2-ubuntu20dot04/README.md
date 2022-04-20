@@ -4,6 +4,7 @@ This guide is specifically for Laravel v8, Apache2, and Ubuntu 20.04
 
 # 2. Do initial Server Setup with Ubuntu 20.04
 https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04 
+- Step 4
 
 # 3. Install the Apache Web Server on Ubuntu 20.04
 https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04 
