@@ -24,7 +24,7 @@ composer
 ```
 - Step 3
 - Step 4
-- Step 4
+- Step 5
 
 ## 4a. Ensure `php -v` is 7.4.3
 ![php version](php-version.png "php version")
