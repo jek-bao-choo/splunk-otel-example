@@ -272,6 +272,9 @@ Or set it in .env ref: https://stackoverflow.com/a/34844105/3073280 for example
 Once done the setup via SetEnv, we need to restart
 ```bash
 
+# test for configuration error
+sudo apache2ctl configtest
+
 sudo systemctl restart apache2
 ```
 
