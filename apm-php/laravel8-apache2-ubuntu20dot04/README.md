@@ -114,11 +114,16 @@ Add this config
 </VirtualHost>
 ```
 
+---
+
 ```bash
 cd /var/www/html/travellist/
 ```
 
+Continue to Step 6
 - Step 6
+
+Outcome after completing Step 6
 ![outcome](outcome-of-configuring-laravel.png "Outcome of configuring laravel")
 
 ## 7a. Ensure laravel version is 8.83.8
