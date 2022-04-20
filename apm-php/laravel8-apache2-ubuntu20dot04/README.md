@@ -100,7 +100,7 @@ Add this config
 ```xml
 <VirtualHost *:80>
    ServerAdmin webmaster@localhost
-   DocumentRoot /var/www/html/travellist
+   DocumentRoot /var/www/html/travellist/public
 
    <Directory /var/www/html/travellist/public>
        Options Indexes FollowSymlinks MultiViews
