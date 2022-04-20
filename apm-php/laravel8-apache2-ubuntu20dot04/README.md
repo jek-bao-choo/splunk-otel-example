@@ -123,20 +123,13 @@ cd /var/www/html/travellist/
 Continue to Step 6
 - Step 6
 
-Outcome after completing Step 6
-![outcome](outcome-of-configuring-laravel.png "Outcome of configuring laravel")
+After Step 6 do this
 
-## 7a. Ensure laravel version is 8.83.8
-![laravel version](laravel-version.png "laravel version")
-
-
-
-
-# 10. Disable and enable the relevant Apache conf
+Disable and enable the relevant Apache conf
 ```bash
 sudo a2dissite 000-default.conf
 
-sudo a2dissite jek-dot-com.conf
+sudo a2dissite your_domain.conf
 
 sudo a2ensite travellist-project.conf
 
@@ -144,7 +137,7 @@ sudo a2ensite travellist-project.conf
 sudo apache2ctl configtest
 ```
 
-# 11. Enable the Apache rewrite module, and finally, restart the Apache service
+Enable the Apache rewrite module, and finally, restart the Apache service
 ```bash
 sudo a2enmod rewrite
 
@@ -153,6 +146,15 @@ sudo systemctl restart apache2
 # Test by going to the url
 # e.g. http://ip-address/
 ```
+
+
+Outcome after completing Step 6 and the extra steps
+![outcome](outcome-of-configuring-laravel.png "Outcome of configuring laravel")
+
+## 7a. Ensure laravel version is 8.83.8
+![laravel version](laravel-version.png "laravel version")
+
+
 
 # 12. Install Splunk OTel Collector
 Follow the steps here
