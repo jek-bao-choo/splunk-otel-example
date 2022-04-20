@@ -152,6 +152,9 @@ Outcome after completing Step 6 and the extra steps
 ![outcome](outcome-of-configuring-laravel.png "Outcome of configuring laravel")
 
 ## 7a. Ensure laravel version is 8.83.8
+```bash
+php artisan --version
+```
 ![laravel version](laravel-version.png "laravel version")
 
 
