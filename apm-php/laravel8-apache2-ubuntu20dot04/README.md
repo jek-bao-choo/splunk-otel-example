@@ -11,6 +11,20 @@ https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-s
 
 # 4. Install and Use Composer on Ubuntu 20.04
 https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-20-04
+Perform
+- Step 1
+- Step 2
+- Before Step 3 do the below checks and update
+```bash
+php -v
+
+sudo composer self-update 2.2.9
+
+composer
+```
+- Step 3
+- Step 4
+- Step 4
 
 ## 4a. Ensure `php -v` is 7.4.3
 ![php version](php-version.png "php version")
