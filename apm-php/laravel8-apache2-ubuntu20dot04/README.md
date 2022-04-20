@@ -243,7 +243,7 @@ Add the SetEnv and the LogLevel debug
    DocumentRoot /var/www/html/travellist/public
 
    SetEnv SIGNALFX_SERVICE_NAME "jek-php-laravel-8"
-   SetEnv SetEnv SIGNALFX_TRACE_GLOBAL_TAGS "deployment.environment:jek-sandbox"
+   SetEnv SIGNALFX_TRACE_GLOBAL_TAGS "deployment.environment:jek-sandbox"
    SetEnv SIGNALFX_ENDPOINT_URL "http://localhost:9411/api/v2/traces"
    SetEnv SIGNALFX_TRACE_DEBUG "true"
 
@@ -263,14 +263,14 @@ Ref: https://stackoverflow.com/a/10902492/3073280 & https://stackoverflow.com/a/
 
 We are setting it as `SetEnv SIGNALFX_ENDPOINT_URL "http://localhost:9411/api/v2/traces"` because we sending it to Spunk OTel Collector's zipkin receiver
 
+---
+These might not be important:
 Or set it in .env ref: https://stackoverflow.com/a/34844105/3073280 for example
 ![signalfx php tracing](further-environment-settings.png "signalfx php tracing") These maybe optional in the .env. Will need to test it further.
-
 ---
 
-Once done the setup we need to restart
+Once done the setup via SetEnv, we need to restart
 ```bash
-sudo service apache2 restart
 
 sudo systemctl restart apache2
 ```
