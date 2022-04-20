@@ -66,15 +66,10 @@ Do:
 - Step 1
 - Step 2
 - Step 3
-- Step 4 
-- Step 6
-![outcome](outcome-of-configuring-laravel.png "Outcome of configuring laravel")
+- Step 4
+- Don't do Step 5 instead do these:
 
-## 7a. Ensure laravel version is 8.83.8
-![laravel version](laravel-version.png "laravel version")
-
-# 8. Move the travellist project to Apache web root
-https://www.hostinger.com/tutorials/how-to-install-laravel-on-ubuntu-18-04-with-apache-and-php/ 
+Move travellist to /var/www/html/ https://www.hostinger.com/tutorials/how-to-install-laravel-on-ubuntu-18-04-with-apache-and-php/ 
 however this guide is for ubuntu 18.04 so reference only specific section.
 ```bash
 cd ~
@@ -96,18 +91,18 @@ sudo chmod -R 775 /var/www/html/travellist/storage/
 sudo chmod -R 777 /var/www/html/travellist/storage/logs
 ```
 
-# 9. Create a new virtual host for the project
+Create a new virtual host for the project
 ```bash
 sudo nano /etc/apache2/sites-available/travellist-project.conf
 ```
 
-Remember to replace thedomain.com with your server’s IP address
+Add this config
 ```xml
 <VirtualHost *:80>
    ServerAdmin webmaster@localhost
-   DocumentRoot /var/www/html/travellist/public
+   DocumentRoot /var/www/html/travellist
 
-   <Directory /var/www/html/travellist/public/>
+   <Directory /var/www/html/travellist/public>
        Options Indexes FollowSymlinks MultiViews
        AllowOverride All
        Order allow,deny
@@ -118,6 +113,17 @@ Remember to replace thedomain.com with your server’s IP address
    CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
+
+
+
+- Step 6
+![outcome](outcome-of-configuring-laravel.png "Outcome of configuring laravel")
+
+## 7a. Ensure laravel version is 8.83.8
+![laravel version](laravel-version.png "laravel version")
+
+
+
 
 # 10. Disable and enable the relevant Apache conf
 ```bash
