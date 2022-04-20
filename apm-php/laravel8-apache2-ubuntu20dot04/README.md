@@ -37,10 +37,9 @@ https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysq
 Do:
 - step 2
 - step 3
-- step 5 (but do it with Apache instead)
-- step 6
+- Before step 5 do this:
 
-# 6. Install Apache2 Mod PHP
+## Install Apache2 Mod PHP
 https://askubuntu.com/a/1402316
 ```bash
 sudo apt install libapache2-mod-php
@@ -54,6 +53,9 @@ sudo systemctl restart apache2
 # Go to the EC2 public ip and access it
 # e.g. http://ip-address/info.php 
 ```
+
+- step 5 (but do it with Apache instead)
+- step 6
 
 # 7. Install PHP curl
 ```bash
