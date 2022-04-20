@@ -39,19 +39,12 @@ Do:
 - step 3
 - Before step 5 do this:
 
-## Install Apache2 Mod PHP
+Install Apache2 Mod PHP
 https://askubuntu.com/a/1402316
 ```bash
 sudo apt install libapache2-mod-php
 
-sudo service apache2 restart
-
 sudo systemctl restart apache2
-
-# Test with with phpinfo 
-# https://www.hostinger.com/tutorials/how-to-create-phpinfo-file
-# Go to the EC2 public ip and access it
-# e.g. http://ip-address/info.php 
 ```
 
 - step 5 (but do it with Apache instead)
