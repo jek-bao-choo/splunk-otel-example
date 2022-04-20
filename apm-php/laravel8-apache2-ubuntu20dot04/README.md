@@ -114,7 +114,9 @@ Add this config
 </VirtualHost>
 ```
 
-
+```bash
+cd /var/www/html/travellist/
+```
 
 - Step 6
 ![outcome](outcome-of-configuring-laravel.png "Outcome of configuring laravel")
