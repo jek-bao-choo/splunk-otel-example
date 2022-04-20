@@ -117,6 +117,9 @@ sudo a2dissite 000-default.conf
 sudo a2dissite jek-dot-com.conf
 
 sudo a2ensite travellist-project.conf
+
+# test for configuration error
+sudo apache2ctl configtest
 ```
 
 # 11. Enable the Apache rewrite module, and finally, restart the Apache service
