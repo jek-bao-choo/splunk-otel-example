@@ -75,6 +75,8 @@ agent:
   # existing fields can be disabled by setting them to null value.
   # Todo: Jek to update it here for agent mode
   # However, if using EKS Fargate do update the Gateway config instead of agent config
+  # ...
+  # Value: (namespace1_to_exclude|namespace2_to_exclude|namespace3_to_exclude|...)
   config:
     processors:
       filter/exclude_metrics2:
@@ -118,7 +120,7 @@ clusterReceiver:
   # Default configuration defined in templates/config/_otel-k8s-cluster-receiver-config.tpl
   # Any additional fields will be merged into the defaults,
   # existing fields can be disabled by setting them to null value.
-  # Jek to add config here too for clusterreceiver
+  # ...
   # Value: (namespace1_to_exclude|namespace2_to_exclude|namespace3_to_exclude|...)
   config:
     processors:
