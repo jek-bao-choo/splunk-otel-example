@@ -119,6 +119,7 @@ clusterReceiver:
   # Any additional fields will be merged into the defaults,
   # existing fields can be disabled by setting them to null value.
   # Jek to add config here too for clusterreceiver
+  # Value: (namespace1_to_exclude|namespace2_to_exclude|namespace3_to_exclude|...)
   config:
     processors:
       filter/exclude_metrics2:
