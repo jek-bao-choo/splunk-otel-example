@@ -14,7 +14,7 @@
 3. Activate the virtual environment `source venv/bin/activate`
 
 
-4. Install `pip install 'splunk-opentelemetry[all]'` 
+4. Install `pip install 'splunk-opentelemetry[all]' --no-cache-dir` 
 
 
 5. Install `splunk-py-trace-bootstrap`
