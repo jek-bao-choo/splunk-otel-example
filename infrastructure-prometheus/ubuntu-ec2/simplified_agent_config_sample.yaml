@@ -1,0 +1,10 @@
+receivers:
+  prometheus_simple/jek:
+    endpoint: "localhost:9100" # can be localhost - depending on setup
+  prometheus_simple/jekip:
+    endpoint: "54.254.55.228:9100" # can be ip address
+service:
+  pipelines:
+    metrics:
+      receivers: [prometheus_simple/jek, prometheus_simple/jekip]
+# this is a sample, not the full config so it won't work when used.
