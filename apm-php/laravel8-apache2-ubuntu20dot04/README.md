@@ -1,6 +1,6 @@
 This guide is specifically for Laravel v8, Apache2, and Ubuntu 20.04
 
-# 1. Create a Ubuntu 20.04 EC2 Instance
+# 1. Create a Ubuntu 20.04 EC2 Instance with 30 GB storage
 
 # 2. Do initial Server Setup with Ubuntu 20.04
 https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04 
@@ -278,14 +278,37 @@ sudo apache2ctl configtest
 sudo systemctl restart apache2
 ```
 
-# N. Configure Splunk OTel Collector to log traces
+# 16. Configure Splunk OTel Collector to add debug traces logging
 ```bash
 sudo vim /etc/otel/collector/agent_config.yaml
 ```
 ![signalfx php tracing](add-logging-traces.png "signalfx php tracing")
 
+# 17. Configure Splunk OTel Collector to add debub logs logging
+
 and also add to
 ![signalfx php tracing](add-logging-traces-2nd.png "signalfx php tracing")
+
+# 18. Configure Splunk OTel Collector to logging to Log Observer
+
+After that add Syslog UDP https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/syslogreceiver 
+```yml
+receivers:
+  syslog:
+    udp:
+      listen_address: "0.0.0.0:54526"
+    protocol: rfc5424
+
+service:
+  pipelines:
+    logs/signalfx::    
+      receivers: [signalfx syslog]
+    logs:    
+      receivers: [fluentforward, otlp, syslog]
+```
+![signalfx php logs](syslogudp.png "signalfx php logs")
+
+![signalfx php logs](syslogudpreceiver.png "signalfx php logs")
 
 ```bash
 # Restart Splunk OTel Collector
@@ -293,7 +316,7 @@ and also add to
 sudo systemctl restart splunk-otel-collector
 ```
 
-We can view the logged traces via
+We can view the debug logged traces and the debug logged logs via
 ```bash
 # Trigger some traffic
 
@@ -303,6 +326,61 @@ journalctl -u splunk-otel-collector.service -e
 ```bash
 journalctl -u splunk-otel-collector.service -f
 ```
+
+# 19. Configure PHP logging
+Modified `/var/www/html/travellist/config/logging.php` by adding `otel` channel to `channels` section.
+```bash
+sudo vim /var/www/html/travellist/config/logging.php
+```
+
+Append the following to the list of channels.
+```php
+'otel' => [
+  'driver' => 'monolog',
+  'level' => env('LOG_LEVEL', 'debug'),
+  'tap' => [App\Logging\InjectTraceContext::class],
+  'handler' => SyslogUdpHandler::class,
+  'handler_with' => [
+      'host' => env('OTEL_COLLECTOR_HOST', '127.0.0.1'),
+      'port' => env('OTEL_COLLECTOR_SYSLOG_PORT', '54526'),
+    ],
+],
+```
+
+# 20. Importantly, modify the default `LOG_CHANNEL` to use `otel` 
+So instead of stack or etc use `otel`. This is very important.
+
+
+# 21. Add trace_id and span_id to application logs using InjectTraceContext.php config file
+The above setting `App\Logging\InjectTraceContext::class` refers to the config `/var/www/html/travellist/app/Logging/InjectTraceContext.php` file added separately.
+So let us add this config file now. 
+```bash
+sudo mkdir /var/www/html/travellist/app/Logging
+```
+
+```bash
+sudo vim /var/www/html/travellist/app/Logging/InjectTraceContext.php
+```
+Then add the below code.
+```php
+<?php
+
+namespace App\Logging;
+
+class InjectTraceContext
+{
+  public function __invoke($logger)
+  {
+    $logger->pushProcessor(function ($record) {
+      $record['extra']['trace_id'] = \DDTrace\Util\HexConversion::idToHex(\DDTrace\trace_id());
+      $record['extra']['span_id'] = \DDTrace\Util\HexConversion::idToHex(dd_trace_peek_span_id());
+      return $record;
+    });
+  }
+}
+```
+
+---
 
 # Troubleshooting
 - View Apache logs in `/var/log/apache2/error.log`
