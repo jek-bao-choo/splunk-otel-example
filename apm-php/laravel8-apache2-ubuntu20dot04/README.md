@@ -410,6 +410,9 @@ Route::get('phpinfo', function () {
 - Could document about SSH Tunneling
 - Rearrange the materials here
 
+# Ref
+- Increase size of disk https://linuxhint.com/increase-disk-space-ec2/ 
+
 # Misc
 
 Ref: https://github.com/signalfx/signalfx-php-tracing
