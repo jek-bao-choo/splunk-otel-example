@@ -392,13 +392,13 @@ class InjectTraceContext
 sudo vim /var/www/html/travellist/routes/web.php
 ```
 
-Add this line to code `Log::info('Jek-log messages it should have trace info');`
+Add this line to code `Log::info('jek-log messages it should have trace info');`
 
 For example like the below
 
 ```php
 Route::get('/', function () {
-    Log::info('Jek-log messages it should have trace info');
+    Log::info('jek-log messages it should have trace info');
     return view('welcome');
 });
 
