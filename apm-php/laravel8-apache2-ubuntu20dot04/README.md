@@ -358,6 +358,10 @@ sudo vim /var/www/html/travellist/.env
 
 ![signalfx php logs](otellogchannel2.png "signalfx php logs")
 
+```bash
+sudo systemctl restart apache2
+```
+
 
 # 18. Add trace_id and span_id to application logs using InjectTraceContext.php config file
 The above setting `App\Logging\InjectTraceContext::class` refers to the config `/var/www/html/travellist/app/Logging/InjectTraceContext.php` file added separately.
