@@ -411,7 +411,7 @@ Route::get('phpinfo', function () {
 
 # Troubleshooting
 - View Apache logs in `cat /var/log/apache2/error.log`
-- View Splunk OTel Collector logs `journalctl -u splunk-otel-collector.service -e` or `journalctl -u splunk-otel-collector.service -f` or `journalctl -u splunk-otel-collector.service | grep jek-log`
+- View Splunk OTel Collector logs `journalctl -u splunk-otel-collector.service -e` or `journalctl -u splunk-otel-collector.service -f` or `journalctl --grep=jek-log -u splunk-otel-collector.service`
 
 # Future To Do
 - Could document about SSH Tunneling
