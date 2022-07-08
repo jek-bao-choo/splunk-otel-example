@@ -402,8 +402,11 @@ Add this line to code `Log::info('jek-log messages it should have trace info');`
 For example like the below
 
 ```php
+use Illuminate\Support\Facades\Log;
+
 Route::get('/', function () {
     Log::info('jek-log messages it should have trace info');
+    Log::debug('jek-log debugging messages it should have trace info');
     return view('welcome');
 });
 
