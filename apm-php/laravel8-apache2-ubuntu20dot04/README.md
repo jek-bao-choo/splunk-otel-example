@@ -350,6 +350,9 @@ So instead of stack or etc use `otel`. This is very important.
 
 # 17. Also important to modify the `.env` file in the application root
 Make sure it is using `otel` instead of `stack`. Even though the default log channel is otel in config/logging.php, the `.env` needs to use `otel` too. Verify this in `http://<ip address>/phpinfo`.
+```bash
+sudo vim /var/www/html/travellist/.env
+```
 
 ![signalfx php logs](otellogchannel.png "signalfx php logs")
 
