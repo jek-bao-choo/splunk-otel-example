@@ -415,6 +415,14 @@ Route::get('phpinfo', function () {
 })->name('phpinfo');
 ```
 
+```bash
+sudo systemctl restart apache2
+```
+
+```bash
+sudo systemctl restart splunk-otel-collector
+```
+
 ---
 
 # Troubleshooting
