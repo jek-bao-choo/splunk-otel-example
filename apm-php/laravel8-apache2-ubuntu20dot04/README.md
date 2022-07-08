@@ -301,8 +301,6 @@ receivers:
 
 service:
   pipelines:
-    logs/signalfx::    
-      receivers: [signalfx syslog]
     logs:    
       receivers: [fluentforward, otlp, syslog]
 ```
