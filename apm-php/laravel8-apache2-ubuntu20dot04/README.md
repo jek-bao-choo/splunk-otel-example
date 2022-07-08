@@ -50,7 +50,7 @@ sudo systemctl restart apache2
 - step 5 (but do it with Apache instead)
 - step 6
 
-# 7. Install PHP curl
+# 6. Install PHP curl
 ```bash
 sudo apt install php-curl
 ```
@@ -159,7 +159,7 @@ php artisan --version
 
 
 
-# 12. Install Splunk OTel Collector
+# 8. Install Splunk OTel Collector
 Follow the steps here
 ![linux otel](linux-splunk-otel-collector.png "linux otel")
 
@@ -171,7 +171,7 @@ Check that splunk-otel-collector is installed
 sudo apt list --installed | grep splunk
 ```
 
-# 13. Install Signalfx PHP Tracing
+# 9. Install Signalfx PHP Tracing
 Follow the steps here
 ![signalfx php tracing](install-php-tracing.png "signalfx php tracing")
 
@@ -180,7 +180,7 @@ Check that signalfx-php-tracing is installed
 sudo apt list --installed | grep signalfx
 ```
 
-# 14. Make debugging easier by adding these
+# 10. Make debugging easier by adding these
 Modify `travellist/routes/web.php` to display PHP info page - you can view it when navigating to `/phpinfo` Useful to see the env vars and so on.
 
 ```bash
@@ -229,7 +229,7 @@ After that access to http://ip-address/phpinfo and ensure that signalfx-tracing 
 
 ![signalfx php tracing](phpinfo-signalfx-tracing.png "signalfx php tracing")
  
-# 15. Set the environment variables
+# 11. Set the environment variables
 Apache passes environment variables to the app via SetEnv directive, you can see the environment variables I set at `sudo nano /etc/apache2/sites-available/000-default.conf` or `sudo nano /etc/apache2/sites-available/travellist-project.conf`  Modifying this config requires a config `reload/restart` for apache
 
 ```bash
@@ -278,18 +278,18 @@ sudo apache2ctl configtest
 sudo systemctl restart apache2
 ```
 
-# 16. Configure Splunk OTel Collector to add debug traces logging
+# 12. Configure Splunk OTel Collector to add debug traces logging
 ```bash
 sudo vim /etc/otel/collector/agent_config.yaml
 ```
 ![signalfx php tracing](add-logging-traces.png "signalfx php tracing")
 
-# 17. Configure Splunk OTel Collector to add debub logs logging
+# 13. Configure Splunk OTel Collector to add debub logs logging
 
 and also add to
 ![signalfx php tracing](add-logging-traces-2nd.png "signalfx php tracing")
 
-# 18. Configure Splunk OTel Collector to logging to Log Observer
+# 14. Configure Splunk OTel Collector to logging to Log Observer
 
 After that add Syslog UDP https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/syslogreceiver 
 ```yml
@@ -327,7 +327,7 @@ journalctl -u splunk-otel-collector.service -e
 journalctl -u splunk-otel-collector.service -f
 ```
 
-# 19. Configure PHP logging
+# 15. Configure PHP logging
 Modified `/var/www/html/travellist/config/logging.php` by adding `otel` channel to `channels` section.
 ```bash
 sudo vim /var/www/html/travellist/config/logging.php
@@ -347,11 +347,18 @@ Append the following to the list of channels.
 ],
 ```
 
-# 20. Importantly, modify the default `LOG_CHANNEL` to use `otel` 
+# 16. Importantly, modify the default `LOG_CHANNEL` to use `otel` 
 So instead of stack or etc use `otel`. This is very important.
 
+# 17. Also important to modify the `.env` file in the application root
+Make sure it is using `otel` instead of `stack`. Even though the default log channel is otel in config/logging.php, the `.env` needs to use `otel` too. Verify this in `http://<ip address>/phpinfo`.
 
-# 21. Add trace_id and span_id to application logs using InjectTraceContext.php config file
+![signalfx php logs](otellogchannel.png "signalfx php logs")
+
+![signalfx php logs](otellogchannel2.png "signalfx php logs")
+
+
+# 18. Add trace_id and span_id to application logs using InjectTraceContext.php config file
 The above setting `App\Logging\InjectTraceContext::class` refers to the config `/var/www/html/travellist/app/Logging/InjectTraceContext.php` file added separately.
 So let us add this config file now. 
 ```bash
@@ -380,7 +387,7 @@ class InjectTraceContext
 }
 ```
 
-# 22. Add code logging to PHP web.php code
+# 19. Add code logging to PHP web.php code
 ```bash
 sudo vim /var/www/html/travellist/routes/web.php
 ```
@@ -403,10 +410,10 @@ Route::get('phpinfo', function () {
 ---
 
 # Troubleshooting
-- View Apache logs in `/var/log/apache2/error.log`
-- View Splunk OTel Collector logs `journalctl -u splunk-otel-collector.service -e` or `journalctl -u splunk-otel-collector.service -f`
+- View Apache logs in `cat /var/log/apache2/error.log`
+- View Splunk OTel Collector logs `journalctl -u splunk-otel-collector.service -e` or `journalctl -u splunk-otel-collector.service -f` or `journalctl -u splunk-otel-collector.service | grep jek-log`
 
-# To Do
+# Future To Do
 - Could document about SSH Tunneling
 - Rearrange the materials here
 
@@ -419,4 +426,4 @@ Ref: https://github.com/signalfx/signalfx-php-tracing
 
 Proof: ![proof](proof.png "working proof")
 
-Last updated: 19 Apr 2022
+Last updated: 8 Jul 2022
