@@ -261,12 +261,14 @@ Add the SetEnv and the LogLevel debug
 ```
 Ref: https://stackoverflow.com/a/10902492/3073280 & https://stackoverflow.com/a/48701463/3073280 
 
-We are setting it as `SetEnv SIGNALFX_ENDPOINT_URL "http://localhost:9411/api/v2/traces"` because we sending it to Spunk OTel Collector's zipkin receiver
+- We could add `SetEnv SIGNALFX_TRACE_CLI_ENABLED "true"` to the above snippet. This is encouraged for the later `php artisan tinker` however, I did not test this personally.
 
----
-These might not be important:
+- We are setting it as `SetEnv SIGNALFX_ENDPOINT_URL "http://localhost:9411/api/v2/traces"` because we sending it to Spunk OTel Collector's zipkin receiver. It can work with sending `http://localhost:9080/v1/trace` i.e. smartagent/signalfx-forwarder too. So it is not necessary Zipkin at port 9411. This is also confirmed by testing that both work. 
+
+- The paragraph might not be important:
 Or set it in .env ref: https://stackoverflow.com/a/34844105/3073280 for example
 ![signalfx php tracing](further-environment-settings.png "signalfx php tracing") These maybe optional in the .env. Will need to test it further.
+
 ---
 
 Once done the setup via SetEnv, we need to restart
@@ -278,13 +280,23 @@ sudo apache2ctl configtest
 sudo systemctl restart apache2
 ```
 
-# 12. Configure Splunk OTel Collector to add debug traces logging
+# 12a. Optional: Configure Splunk OTel Collector to add debug traces logging
 ```bash
 sudo vim /etc/otel/collector/agent_config.yaml
 ```
 ![signalfx php tracing](add-logging-traces.png "signalfx php tracing")
 
-# 13. Configure Splunk OTel Collector to add debub logs logging
+# 12b. Make sure splunk-otel-collector is upgraded to minimally version v0.49.0
+Also make sure splunk-otel-collector is v0.49.0 at least before using syslog. So it is important to upgrade. The link to upgrade is here https://github.com/signalfx/splunk-otel-collector/blob/main/docs/getting-started/linux-installer.md#collector-upgrade 
+
+```bash
+sudo apt-get update
+
+sudo apt-get --only-upgrade splunk-otel-collector
+```
+It will auto restart splunk-otel-collector after upgrade
+
+# 13. Configure Splunk OTel Collector to add debug logs logging
 
 and also add to
 ![signalfx php tracing](add-logging-traces-2nd.png "signalfx php tracing")
@@ -302,11 +314,10 @@ receivers:
 service:
   pipelines:
     logs:    
-      receivers: [fluentforward, otlp, syslog]
+      receivers: [syslog] # Add syslog only for the start
+      # receivers: [fluentforward, otlp] 
 ```
 ![signalfx php logs](syslogudp.png "signalfx php logs")
-
-![signalfx php logs](syslogudpreceiver.png "signalfx php logs")
 
 ```bash
 # Restart Splunk OTel Collector
@@ -345,22 +356,17 @@ Append the following to the list of channels.
 ],
 ```
 
-# 16. Importantly, modify the default `LOG_CHANNEL` to use `otel` 
-So instead of stack or etc use `otel`. This is very important.
+# 16. Importantly, keep the default `LOG_CHANNEL` to use `stack` 
+So instead in the stack add `otel`. This is very important.
+![signalfx php logs](add-otel-to-stack.png "signalfx php logs")
 
-# 17. Also important to modify the `.env` file in the application root
-Make sure it is using `otel` instead of `stack`. Even though the default log channel is otel in config/logging.php, the `.env` needs to use `otel` too. Verify this in `http://<ip address>/phpinfo`.
+# 17. Check that `.env` file is still pointing to `stack`
 ```bash
-sudo vim /var/www/html/travellist/.env
+vim /var/www/html/travellist/.env
 ```
+Verify this in `http://<ip address>/phpinfo`.
 
 ![signalfx php logs](otellogchannel.png "signalfx php logs")
-
-![signalfx php logs](otellogchannel2.png "signalfx php logs")
-
-```bash
-sudo systemctl restart apache2
-```
 
 
 # 18. Add trace_id and span_id to application logs using InjectTraceContext.php config file
@@ -422,6 +428,32 @@ sudo systemctl restart apache2
 ```bash
 sudo systemctl restart splunk-otel-collector
 ```
+
+# 20. Clear PHP config clear (clear the cache)
+```bash
+php artisan config:clear
+```
+![signalfx php logs](php-artisan-config-clear.png "signalfx php logs")
+
+
+
+# 21. Test with `php artisan tinker`
+
+```bash
+php artisan tinker
+```
+
+
+```php
+Log::info('abcdef');
+```
+This should print out the log line with trace_id and span_id. 
+
+![signalfx php logs](php-artisan-tinker.png "signalfx php logs")
+
+- If run into error while using `php artisan tinker` for trace_id to logs, check that `nano /etc/apache2/sites-available/travellist-project.conf` has  `SetEnv SIGNALFX_TRACE_CLI_ENABLED "true"`.
+
+- If we encounter HexConversion error try `composer require datadog/dd-trace --update-no-dev`. 
 
 ---
 
