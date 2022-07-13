@@ -264,6 +264,7 @@ Ref: https://stackoverflow.com/a/10902492/3073280 & https://stackoverflow.com/a/
 - We could add `SetEnv SIGNALFX_TRACE_CLI_ENABLED "true"` to the above snippet. This is encouraged for the later `php artisan tinker` however, I did not test this personally.
 
 - We are setting it as `SetEnv SIGNALFX_ENDPOINT_URL "http://localhost:9411/api/v2/traces"` because we sending it to Spunk OTel Collector's zipkin receiver. It can work with sending `http://localhost:9080/v1/trace` i.e. smartagent/signalfx-forwarder too. So it is not necessary Zipkin at port 9411. This is also confirmed by testing that both work. 
+- There is no functional difference between `smartagent/signalfx-forwarder` (9080) and `zipkin` (9411). `smartagent/signalfx-forwarder` is ported from smart agent for backward compatibility. My personal preference is to use `zipkin` (9411), but from my observation Splunk instrumentation distros use `smartagent/signalfx-forwarder` 9080 by default, don’t know why.
 
 - The paragraph might not be important:
 Or set it in .env ref: https://stackoverflow.com/a/34844105/3073280 for example
@@ -440,6 +441,11 @@ php artisan config:clear
 # 21. Test with `php artisan tinker`
 
 ```bash
+export SIGNALFX_TRACE_CLI_ENABLED=true
+```
+![signalfx php logs](export-env-var.png "signalfx php logs")
+
+```bash
 php artisan tinker
 ```
 
@@ -451,9 +457,13 @@ This should print out the log line with trace_id and span_id.
 
 ![signalfx php logs](php-artisan-tinker.png "signalfx php logs")
 
+![signalfx php logs](tinker-outcome.png "signalfx php logs")
+
 - If run into error while using `php artisan tinker` for trace_id to logs, check that `nano /etc/apache2/sites-available/travellist-project.conf` has  `SetEnv SIGNALFX_TRACE_CLI_ENABLED "true"`.
 
 - If we encounter HexConversion error try `composer require datadog/dd-trace --update-no-dev`. 
+
+- Remember to use only syslog for application logs. If we add with fluentforward there seemed to be some issues. Further investigation required.
 
 ---
 
