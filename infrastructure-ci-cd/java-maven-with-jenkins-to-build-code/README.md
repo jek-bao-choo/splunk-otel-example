@@ -30,11 +30,17 @@ After
 - Validate $ `echo $PATH`
 - Test that path is working with $ `mvn --version`
 
+# Install Maven Plugin via Jenkins GUI
+![](plugin.png)
+![](maven-plugin.png)
 
-# Install Maven Plugin
-
-# Configure Maven and Java
+# Configure Maven and Java via Jenkins GUI
+- e.g. `/usr/lib/jvm/java-11-openjdk-11.0.13.0.8-1.amzn2.0.3.x86_64`
+    - ![](jdk.png)
+- e.g. `/opt/apache-maven-3.8.6`
+    - ![](maven.png)
 
 # Build the Java Project using Maven
+![](maven-project.png)
 
 # Proof
