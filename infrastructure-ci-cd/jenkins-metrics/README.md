@@ -42,6 +42,9 @@
 ![](shell-command.png)
 ![](build-now.png)
 
+# See the metrics in Splunk Observability chart or metric finder
+WIP
+
 # Prove
 WIP
 
