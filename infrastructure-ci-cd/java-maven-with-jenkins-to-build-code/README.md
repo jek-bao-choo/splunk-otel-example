@@ -42,5 +42,13 @@ After
 
 # Build the Java Project using Maven
 ![](maven-project.png)
+![](repo.png)
+![](maven-goals.png)
+![](build.png)
+![](console-output.png)
+- We can view the build at $ `ls /var/lib/jenkins/workspace`. It's the same as going to Workshop folder in Jenkins GUI.
+![](webappwar.png)
+![](same.png)
 
-# Proof
+# Ref
+- OReilly DevOps Project - 2022: CI/CD with Jenkins Ansible Kubernetes by Valaxy Technologies
