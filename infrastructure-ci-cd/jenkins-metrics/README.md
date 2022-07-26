@@ -45,7 +45,7 @@
 # See the metrics in Splunk Observability chart or metric finder
 WIP
 
-# Prove
+# Proof
 WIP
 
 # Jek learned setup from:
