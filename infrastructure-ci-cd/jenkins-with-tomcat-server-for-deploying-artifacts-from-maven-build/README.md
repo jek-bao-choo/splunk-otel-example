@@ -33,6 +33,13 @@ This is a step by step continuation of
 
 # Automatically build and deploy artifacts (i.e. webapp.war) from Maven build to Tomcat server using Poll SCM
 - This is a continuation from the above manual step.
--  
+- ![](a.png)
+- ![](b.png)
+- ![](c.png)
+- ![](d.png)
+
+# Conclusion
+At the end of the whole series we would achieve auto build Java code with Maven (output webapp.war) and deploy to Tomcat server that is accessing to public internet.
 
 # Ref
+- OReilly DevOps Project - 2022: CI/CD with Jenkins Ansible Kubernetes by Valaxy Technologies
