@@ -67,5 +67,6 @@
 - Add Tomcat receiver to agent_config.yaml file https://docs.splunk.com/Observability/gdi/tomcat/tomcat.html
 - ![](tomcat-receiver.png)
 
-# Ref
+# Jek learned setup from:
 - https://github.com/yankils/Simple-DevOps-Project/blob/master/Tomcat/tomcat_installation.MD
+- OReilly DevOps Project - 2022: CI/CD with Jenkins Ansible Kubernetes by Valaxy Technologies
