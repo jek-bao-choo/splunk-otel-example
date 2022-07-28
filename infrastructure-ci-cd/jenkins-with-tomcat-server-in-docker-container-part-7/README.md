@@ -25,5 +25,32 @@ This is a step by step continuation of
 - `cp -r webapps webapps-backup`
 - `cp -r webapps.dist/* webapps`
 - This video explains why we need to fix it https://learning.oreilly.com/videos/devops-project/9781803248196/9781803248196-video4_3/
+- So we could bake the above fixing steps into a Dockerfile
+- See the Dockerfile in this folder.
+    - ![](where-is-tomcat.png)
+```dockerfile
+FROM tomcat:latest
+RUN cp -R /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps
+```
+- `docker build -t demo-tomcat-image .`
+- `docker run -d --name demo-tomcat-container -p 8085:8080 demo-tomcat-image` 
+
+
+# Optional (for learning Dockerfile): Create a Tomcat fully customised Dockerfile instead of using existing image from Dockerhub then modifying it.
+- ![](dockerfile1.png)
+- ![](dockerfile2.png)
+- Learning from https://learning.oreilly.com/videos/devops-project/9781803248196/9781803248196-video4_4/
+
+
+# Integrate Tomcat container with Jenkins: Install "Publish Over SSH plugin"
+- 
+- 
+- 
+
+# Integrate Tomcat container with Jenkins: Add Dockerhost to Jenkins "configure systems"
+- 
+- 
+- 
 
 # 
+
