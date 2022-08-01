@@ -48,8 +48,62 @@ console.log(`Graphql Apollo Server running on ${myPort}`)
 - Go to localhost:<the port number> e.g. localhost:9000
 
 # Set up client.js with client.html 
+- Create client.js with
+```javascript
+const GRAPHQL_SERVER = "http://localhost:9000/" // change the port accordingly
+
+async function fetchJekGreeting() {
+    const response = await fetch(GRAPHQL_SERVER, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            query: `
+                query {
+                    jekGreeting
+                }
+            `
+        }),
+    })
+
+    const { data } = await response.json()
+
+    return data
+}
+
+const element = document.getElementById('greeting');
+element.textContent = 'Loading...';
+fetchJekGreeting().then(({ jekGreeting }) => {
+  element.textContent = jekGreeting;
+});
+```
+- Create client.html
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraphQL Client</title>
+</head>
+<body>
+  <h1>GraphQL Client</h1>
+  <p>
+    The server says:
+    <strong id="greeting">
+      <!-- dynamically inserted content -->
+    </strong>
+  </p>
+  <script src="client.js"></script>
+</body>
+</html>
+```
+- Open client.html in a browser
 
 # Instrument server.js with splunk-otel-js plus otel graphql library
+- 
 
 # Proof 
 
