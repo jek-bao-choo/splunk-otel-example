@@ -1,3 +1,5 @@
+Node.js version is v16.13.0
+
 # Set up server.js with package.json
 - Create server.js
 - `npm init`
@@ -103,9 +105,25 @@ fetchJekGreeting().then(({ jekGreeting }) => {
 - Open client.html in a browser
 
 # Instrument server.js with splunk-otel-js plus otel graphql library
-- 
+- `npm install @splunk/otel --save`
+- `npm install @opentelemetry/instrumentation-graphql --save`
+- `export OTEL_SERVICE_NAME='jek-graphql-auto-instr'`
+- `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
+- `export SPLUNK_PROFILER_ENABLED='true'`
+- `export SPLUNK_METRICS_ENABLED='true'`
+- `export OTEL_EXPORTER_JAEGER_ENDPOINT=https://ingest.<realm from splunk o11y>.signalfx.com/v2/trace`
+- `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
+- `export OTEL_RESOURCE_ATTRIBUTES='deploymentenvironment=jek-sandbox'`
+- View variables are added with `printenv`
+- `node -r @splunk/otel/instrument server.js`
+- Open client.html and refresh a few times
 
 # Proof 
+![](working1.png)
+![](working2.png)
+
+# Note
+![](note-that-send-direct-has-error-connect-issue-probably-need-to-send-through-collector-to-avoid-this-error.png)
 
 # Learning Ref
 - https://www.udemy.com/course/graphql-by-example/ 
