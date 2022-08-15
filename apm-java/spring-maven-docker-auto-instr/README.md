@@ -1,4 +1,15 @@
-This is a work in progress.
+Preparation
+
+Install Java & Spring CLI 
+- `sudo apt-get install wget`
+- Install Java https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-22-04
+- Download Spring CLI from https://docs.spring.io/spring-boot/docs/current/reference/html/getting-started.html#getting-started.installing.cli.manual-installation
+- e.g. `wget https://repo.spring.io/release/org/springframework/boot/spring-boot-cli/2.7.2/spring-boot-cli-2.7.2-bin.tar.gz`
+- Unzip e.g. `tar -xvzf spring-boot-cli-2.7.2-bin.tar.gz`
+- e.g. `cd spring-2.7.2/bin`
+- `./spring --version`
+
+---
 
 1. Use the Spring CLI to build a simple web app
 with the dependency web i.e. -dweb
