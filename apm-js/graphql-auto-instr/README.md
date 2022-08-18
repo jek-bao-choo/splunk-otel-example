@@ -111,6 +111,7 @@ fetchJekGreeting().then(({ jekGreeting }) => {
 - `export OTEL_TRACES_EXPORTER="jaeger-thrift-splunk"`
 - `export SPLUNK_PROFILER_ENABLED='true'`
 - `export SPLUNK_METRICS_ENABLED='true'`
+- `export SPLUNK_METRICS_ENDPOINT='https://ingest.<REALM from splunk o11y>.signalfx.com/v2/datapoint'`
 - `export OTEL_EXPORTER_JAEGER_ENDPOINT=https://ingest.<realm from splunk o11y>.signalfx.com/v2/trace`
 - `export SPLUNK_ACCESS_TOKEN=<ingest token from splunk o11y cloud>`
 - `export OTEL_RESOURCE_ATTRIBUTES='deploymentenvironment=jek-sandbox'`
