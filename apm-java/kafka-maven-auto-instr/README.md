@@ -1,6 +1,5 @@
 # Zookeeper and Kafka #
-- Start Zookeeper
-- Start Kafka on port 9092
+- Start Kafka on port 9092 and start Zookeeper
     - Using Docker, run the docker-compose.yml in this folder https://towardsdatascience.com/how-to-install-apache-kafka-using-docker-the-easy-way-4ceb00817d8b with `docker-compose -f docker-compose.yml up`
         - After compose successfully, exec into kafka container `docker exec -it kafka /bin/sh` to test that it works
         - See the Kafka version running with `ls /opt` because the kafka is in that folder of the Kafka container.
@@ -15,11 +14,10 @@
 > xyz
 ```
 - Pull messages using Kafka console consumer `kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic --from-beginning`
-- 
 
 # Java - Producer #
 - Open IntelliJ
-- Make sure it has Maven e.g. Maven 3 in the Preference > Build section
+- Make sure it has Maven e.g. Maven 3 in the Preference > Build section ![](maven.png)
 - Create new project using Maven
 - Go to Kafka Apache API docs https://kafka.apache.org/documentation/ 
     - We need to install Maven dependencies for Kafka from https://kafka.apache.org/documentation/#producerapi to get the dependencies snippet.
@@ -52,13 +50,11 @@ Also add `slf4j-simple`
     </dependencies>
 ```
 
-    - After which, go to Kafka javadocs for basic examples of how to create producer.java and consumer.java 
+- Reload all Maven dependencies ![](reload.png)
 
-    
+- After which, go to Kafka javadocs for basic examples of how to create producer.java and consumer.java 
 
-- Create Producer.java file in src > main > java folder
-
-https://kafka.apache.org/32/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html <-- the example code for Producer.java is here.
+- Create Producer.java file in src > main > java folder https://kafka.apache.org/32/javadoc/org/apache/kafka/clients/producer/KafkaProducer.html <-- the example code for Producer.java is here.
 
 It would like this.
 ```java
@@ -86,7 +82,9 @@ public class Producer {
 }
 ```
 
+
 # Java - Consumer #
+
 - Create Consumer.java file in src > main > java folder
 
 https://kafka.apache.org/32/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html <-- the example code for Consumer.java is here.
