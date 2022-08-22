@@ -15,8 +15,9 @@
 ```
 - Pull messages using Kafka console consumer `kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic --from-beginning`
 
-# Java - Producer #
+# Producer.java
 - Open IntelliJ
+- Create a new project calling it e.g., Jek-Kafka-Java-Producer
 - Make sure it has Maven e.g. Maven 3 in the Preference > Build section ![](maven.png)
 - Create new project using Maven
 - Go to Kafka Apache API docs https://kafka.apache.org/documentation/ 
@@ -82,8 +83,18 @@ public class Producer {
 }
 ```
 
+- Test run it with ![](test-producer.png)
 
-# Java - Consumer #
+- Go to terminal and run a consumer from the terminal `docker exec -it kafka /bin/sh` and `cd bin` and `kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic my-topic`
+
+- Re-run with ![](test-producer.png) to produce the messages to consumer.
+
+
+# Consumer.java
+
+- Open another IntelliJ following the steps above for Consumer.
+
+- Create another new project calling it e.g., Jek-Kafka-Java-Consumer and follow the above steps.
 
 - Create Consumer.java file in src > main > java folder
 
@@ -125,8 +136,25 @@ public class Consumer {
 }
 ```
 
+- Test run it with ![](test-consumer.png)
+
+- Go to terminal and run a consumer from the terminal `docker exec -it kafka /bin/sh` and `cd bin` and `kafka-console-producer.sh --bootstrap-server localhost:9092 --topic my-topic`
+
+- Push messages to my-topic
+```bash
+> jekv1
+> jekv2
+```
+
+- Test with the other IntelliJ project called Jek-Kafka-Java-Producer ![](test-producer.png) and we should see the messages populated in Java Consumer console.
+
 # Add splunk-otel-java agent to trace through Kafka
-- ... To be continued...
+- ... WIP... To be continued...
+- Package Jek-Kafka-Java-Producer into .jar
+- Run the producer .jar with splunk-otel-agent and verify that consumer can read from it.
+- Package Jek-Kafka-Java-Consumer into .jar
+- Run the consumer .jar with splunk-otel-agent and run the producer .jar to make sure the messages are shown in consumer .jar console.
+- Go to Splunk Observability console to verify that it is tracing through.
 
 # Ref #
 - https://learning.oreilly.com/videos/apache-kafka-complete 
