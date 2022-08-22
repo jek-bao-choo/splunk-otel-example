@@ -290,12 +290,75 @@ Ref: https://stackoverflow.com/a/49451658/3073280
 
 
 # Add splunk-otel-java agent to trace through Kafka
-- ... WIP... To be continued...
 
-- Run the producer .jar with splunk-otel-agent and verify that consumer can read from it.
-- Package Jek-Kafka-Java-Consumer into .jar
-- Run the consumer .jar with splunk-otel-agent and run the producer .jar to make sure the messages are shown in consumer .jar console.
-- Go to Splunk Observability console to verify that it is tracing through.
+## Run the consumer .jar with splunk-otel-agent and run the consumer .jar to make sure the messages are shown in consumer .jar console.
+- Run the jar file with splunk-otel-java to send traces directly to Splunk backend
+```bash
+curl -L https://github.com/signalfx/splunk-otel-java/releases/latest/download/splunk-otel-javaagent.jar \
+-o splunk-otel-javaagent.jar
+```
+
+- Execute the built jar file with splunk-otel-javaagent.jar
+```bash
+export OTEL_RESOURCE_ATTRIBUTES=deployment.environment=jek-sandbox
+```
+---
+```bash
+export OTEL_SERVICE_NAME=jek-java-kafka-consumer
+```
+---
+```bash
+export OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com
+```
+Note: 
+- For Java to send directly to the backend using OTLP endpoint is https://ingest.<YOUR REALM>.signalfx.com without the path
+- While for Python the OTLP endpoint is https://ingest.<YOUR REALM>.signalfx.com/v2/trace with the /v2/trace path.
+- Alternatively, can you use Jaeger Thrift to send directly https://docs.splunk.com/Observability/gdi/get-data-in/application/java/instrumentation/instrument-java-application.html#send-data-directly-to-observability-cloud
+- To configure the endpoint variable it can be complex, this is the doc for Java https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/README.md
+---
+```bash
+export SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY>
+```
+---
+```bash
+java -javaagent:./splunk-otel-javaagent.jar -jar target/Jek-Java-Kafka-Consumer-22Aug2022-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+## Run the producer .jar with splunk-otel-agent and verify that consumer can read from it.
+- Run the jar file with splunk-otel-java to send traces directly to Splunk backend
+```bash
+curl -L https://github.com/signalfx/splunk-otel-java/releases/latest/download/splunk-otel-javaagent.jar \
+-o splunk-otel-javaagent.jar
+```
+
+- Execute the built jar file with splunk-otel-javaagent.jar
+```bash
+export OTEL_RESOURCE_ATTRIBUTES=deployment.environment=jek-sandbox
+```
+---
+```bash
+export OTEL_SERVICE_NAME=jek-java-kafka-producer
+```
+---
+```bash
+export OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com
+```
+Note: 
+- For Java to send directly to the backend using OTLP endpoint is https://ingest.<YOUR REALM>.signalfx.com without the path
+- While for Python the OTLP endpoint is https://ingest.<YOUR REALM>.signalfx.com/v2/trace with the /v2/trace path.
+- Alternatively, can you use Jaeger Thrift to send directly https://docs.splunk.com/Observability/gdi/get-data-in/application/java/instrumentation/instrument-java-application.html#send-data-directly-to-observability-cloud
+- To configure the endpoint variable it can be complex, this is the doc for Java https://github.com/open-telemetry/opentelemetry-java/blob/main/sdk-extensions/autoconfigure/README.md
+---
+```bash
+export SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY>
+```
+---
+```bash
+java -javaagent:./splunk-otel-javaagent.jar -jar target/Jek-Kafka-Java-Producer-22Aug2022-1.0-SNAPSHOT-jar-with-dependencies.jar 
+```
+
+## Go to Splunk Observability console to verify that it is tracing through.
+
 
 # Ref #
 - https://learning.oreilly.com/videos/apache-kafka-complete 
