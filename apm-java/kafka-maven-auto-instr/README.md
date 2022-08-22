@@ -148,9 +148,43 @@ Ref: https://stackoverflow.com/a/49451658/3073280
 
 # Consumer.java
 
-- Open another IntelliJ following the steps above for Consumer.
+- Open another IntelliJ for Java Kafka Consumer.
 
 - Create another new project calling it e.g., Jek-Kafka-Java-Consumer and follow the above steps.
+
+ add the dependency to pom.xml 
+```xml
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+    </dependencies>
+```
+Also add `slf4j-simple`
+```xml
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+    </dependencies>
+```
+
+- Load changes ![](dependencies.png)
+
+- Reload all Maven dependencies ![](reload.png)
+
+ 
+- Create a package in src > main as org.example ![](producer.png)
+
 
 - Create Consumer.java file in src > main > java folder
 
@@ -202,7 +236,58 @@ public class Consumer {
 > jekv2
 ```
 
-- Test with the other IntelliJ project called Jek-Kafka-Java-Producer ![](test-producer.png) and we should see the messages populated in Java Consumer console.
+- Test with the other IntelliJ project called Jek-Kafka-Java-Consumer ![](test-producer.png) and we should see the messages populated in Java Consumer console.
+
+- Add the following to Jek-Kafka-Java-Consumer pom.xml
+
+```xml
+ <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.example.Consumer</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- Building an executable jar -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- give full qualified name of your main class-->
+                            <mainClass>org.example.Consumer</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+```
+
+![](producerpom.png)
+
+Ref: https://stackoverflow.com/a/49451658/3073280 
+
+- Package Jek-Kafka-Java-Producer into .jar and run ![](run-producer.png)
+
 
 # Add splunk-otel-java agent to trace through Kafka
 - ... WIP... To be continued...
