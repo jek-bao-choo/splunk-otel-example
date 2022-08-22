@@ -359,6 +359,12 @@ java -javaagent:./splunk-otel-javaagent.jar -jar target/Jek-Kafka-Java-Producer-
 
 ## Go to Splunk Observability console to verify that it is tracing through.
 
+# Proof
 
-# Ref #
+- Proof 1 ![](proof1.png)
+- Proof 2 ![](proof2.png)
+- Proof 3 ![](proof3.png)
+ 
+# Ref
+
 - https://learning.oreilly.com/videos/apache-kafka-complete 
