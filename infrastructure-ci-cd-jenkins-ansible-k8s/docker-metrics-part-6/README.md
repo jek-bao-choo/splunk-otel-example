@@ -1,4 +1,4 @@
-# Setup a Linux EC2 Instance
+# Part 1 - Setup a Linux EC2 Instance
 - Note that it is not Ubuntu EC2 instance. It is Amazon Linux EC2.
 - Launch a new Amazon Linux EC2 Instance
 - Choose something with at least 2 vCPU and 8 GB Memory
@@ -7,7 +7,7 @@
 - Connect to the newly created Amazon Linux EC2 instance
 - Use root user privilege `sudo su -`
 
-# Install & Start Docker
+# Part 2 - Install & Start Docker
 - Install Docker on Amazon Linux EC2 instance for CentOS
     - `sudo yum update`
     - `sudo yum search docker`
@@ -22,14 +22,20 @@
 - Add a user to docker group to manage docker 
     - `usermod -aG docker dockeradmin`
 
-# Run a simple docker container
+# Part 3 - Run a simple docker container
 - `docker run -d -p 80:80 docker/getting-started`
 - See that it is running `docker ps`
 
-# Install OTel Collector
+# Part 4 - Install OTel Collector
 - Install Splunk OTel Collector https://docs.splunk.com/Observability/gdi/opentelemetry/opentelemetry.html
+- ![](part4.png)
 
-# Add Docker Containers Receiver in OTel Collector Config
+# Part 5 - Add Docker Containers Receiver in OTel Collector Config
 - Add Docker Containers receiver to agent_config.yaml file https://docs.splunk.com/Observability/gdi/docker/docker.html
 
 
+# Proof
+- ![](proof1.png)
+- ![](proof4.png)
+- ![](proof2.png)
+- ![](proof3.png)
