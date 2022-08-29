@@ -22,6 +22,10 @@
 - Add a user to docker group to manage docker 
     - `usermod -aG docker dockeradmin`
 
+# Run a simple docker container
+- `docker run -d -p 80:80 docker/getting-started`
+- See that it is running `docker ps`
+
 # Install OTel Collector
 - Install Splunk OTel Collector https://docs.splunk.com/Observability/gdi/opentelemetry/opentelemetry.html
 
