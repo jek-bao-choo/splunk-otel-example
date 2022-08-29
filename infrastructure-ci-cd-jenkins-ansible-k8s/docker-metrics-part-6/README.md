@@ -35,7 +35,8 @@
 
 
 # Proof
-- ![](proof1.png)
-- ![](proof4.png)
-- ![](proof2.png)
-- ![](proof3.png)
+- ![](Proof1.png)
+- ![](Proof4.png)
+- ![](Proof2.png)
+- ![](Proof3.png)
+- Date: 29 Aug 2022
