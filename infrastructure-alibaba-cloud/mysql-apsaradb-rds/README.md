@@ -2,7 +2,7 @@
 - Create Account and Database in the newly created instance ![](account.png)
 - Do infrastructure-alibaba-cloud > ecs > README.md steps
 - In the ECS instance install mysql client `yum install mysql`
-- Test account to the RDS database `mysql -h<the internal url from ApsaraRDS Database Connection tab remember to whitelist the ECS instance connecting to RDS> -P3306 -u<the account name when creating the ApsaraDB RDS instance Account> -p<the password when creating the ApsaraDB RDS instance Account>` ![](connection.png)
+- Test account to the RDS database `mysql -h<the internal url from ApsaraRDS Database Connection tab remember to whitelist the ECS instance private ip address for connecting to RDS> -P3306 -u<the account name when creating the ApsaraDB RDS instance Account> -p<the password when creating the ApsaraDB RDS instance Account>` ![](connection.png)
 - Add MySQL receiver to splunk-otel-collector agent_config in the ECS instance yaml file by following https://docs.splunk.com/Observability/gdi/mysql/mysql.html
 - In the ECS instance do `vim /etc/otel/collector/agent_config.yaml`
 - ![](config.png)
