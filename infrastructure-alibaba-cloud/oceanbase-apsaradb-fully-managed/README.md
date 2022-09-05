@@ -18,7 +18,7 @@ Set memory limit
 Add to receiver
 ```yml
   smartagent/mysql:
-    type: collected/mysql
+    type: collectd/mysql
     host: JJJJJJJJJ
     port: 3306
     username: YYYYYYY
