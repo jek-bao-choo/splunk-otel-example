@@ -45,7 +45,7 @@ Add debugging
 
 - Restart the splunk-otel-collector `sudo systemctl restart splunk-otel-collector`
 
-- Check the status `sudo systemctl status splunk-otel-collector`
+- Check the status `sudo systemctl status splunk-otel-collector -l`
 
 # Troubleshoot
 - View Splunk OTel Collector logs `journalctl -u splunk-otel-collector.service -e` or `journalctl -u splunk-otel-collector.service -f` or `journalctl --grep=jek-log -u splunk-otel-collector.service`
