@@ -46,3 +46,13 @@
 - Ref: https://github.com/signalfx/splunk-otel-js
 - Proof: ![proof](proof.png "working proof")
 - Last updated: 21 Nov 2021
+
+# Working with older version of Node.js e.g. Node 8.11.4
+The following config versions would work with Node 8.11.4.
+```json
+{ 
+    "@opentelemetry/instrumentation-http": "0.28.0",
+    "@splunk/otel": "0.18.0"
+}
+```
+It is recommend to use Node LTS version e.g. v16.17.0 and etc.
