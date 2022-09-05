@@ -9,7 +9,47 @@
 - In the ECS instance do `vim /etc/otel/collector/agent_config.yaml`
 - ![](config.png)
 - ![](config2.png)
+
+Set memory limit
+```yml
+
+```
+
+Add to receiver
+```yml
+  smartagent/mysql:
+    type: collected/mysql
+    host: JJJJJJJJJ
+    port: 3306
+    username: YYYYYYY
+    password: XXXXXXX
+    databases:
+      - name: mysql
+      - name: test
+      - name: oceanbase
+      - name: ZZZZZZZZ
+```
+
+Add to pipeline
+```yml
+service:
+  pipelines:
+    metrics:
+      receivers: [hostmetrics, otlp, signalfx, smartagent/signalfx-forwarder, smartagent/mysql]
+```
+
+Add debugging
+```yml
+
+```
+
 - Restart the splunk-otel-collector `sudo systemctl restart splunk-otel-collector`
+
+- Check the status `sudo systemctl status splunk-otel-collector`
+
+# Troubleshoot
+- View Splunk OTel Collector logs `journalctl -u splunk-otel-collector.service -e` or `journalctl -u splunk-otel-collector.service -f` or `journalctl --grep=jek-log -u splunk-otel-collector.service`
+
 
 # Outcome: Did NOT get the metrics
 - Troubleshoot...
