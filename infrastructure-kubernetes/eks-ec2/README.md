@@ -74,7 +74,14 @@ eksctl get cluster
 eksctl delete cluster jek-eks-ec2-cluster-<the date>
 ```
 
-#Misc
+# Troubleshoot
+- PodSecurityPolicy psp
+- ![](Troubleshoot.png)
+- ![](PodSecurityPolicy-PSP.png)
+- The solution to solve this is create the the PodSecurityPolicy
+    - deploy the default EKS policy  https://docs.aws.amazon.com/eks/latest/userguide/pod-security-policy.html
+
+# Proof
 
 - Ref: https://github.com/signalfx/splunk-otel-collector-chart
 - Proof: ![proof](proof.png "working proof")
