@@ -2,7 +2,7 @@
 Objective: Add manual instrumentation for span attributes (beyond auto instrumentation)
 
 # Option 1 - No Span Annotation
-Add to pom.xml of producer
+Add to pom.xml of producer project
 ![](add.png)
 ```xml
     <dependencies>
@@ -112,4 +112,5 @@ Proof
 ![](proof.png)
 
 # Option 2 - With Span Annotation
+Add to pom.xml of consumer project
 - 
