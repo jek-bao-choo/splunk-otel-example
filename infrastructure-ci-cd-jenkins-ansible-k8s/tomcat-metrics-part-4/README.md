@@ -70,3 +70,6 @@
 # Jek learned setup from:
 - https://github.com/yankils/Simple-DevOps-Project/blob/master/Tomcat/tomcat_installation.MD
 - OReilly DevOps Project - 2022: CI/CD with Jenkins Ansible Kubernetes by Valaxy Technologies
+
+# Other References for Tomcat:
+- https://github.com/signalfx/splunk-otel-collector/tree/main/examples
