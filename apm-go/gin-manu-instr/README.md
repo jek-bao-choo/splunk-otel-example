@@ -6,9 +6,10 @@
 - Ensure the following requirements are met https://docs.splunk.com/Observability/gdi/get-data-in/application/go/go-otel-requirements.html#ensure-you-are-using-supported-go-versions
     - See go.mod for the minimum version.
     - For splunk-otel-go support of go version 1.16, please use splunk-otel-go v1.0.0 because go version 1.16 support is dropped in splunk-otel-go v1.10 https://github.com/signalfx/splunk-otel-go/releases/tag/v1.1.0 so we go back to the latest previous supported version.
-- Follow the instruction here 
+- Follow the instruction here https://github.com/signalfx/splunk-otel-go
 
 ## Install the distribution
+Run the below command in the folder where go.mod is
 ```bash
 go get github.com/signalfx/splunk-otel-go/distro
 ```
@@ -36,4 +37,35 @@ func main() {
 	}()
 
 	// ...
+```
+
+## Add the relevant environment variables
+```bash
+export OTEL_RESOURCE_ATTRIBUTES="service.version=99.99.99,deployment.environment=jek-sandbox"
+
+export OTEL_SERVICE_NAME=go-gin-manu-instr
+
+export SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY>
+
+export SPLUNK_REALM=<realm>
+
+export OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com
+```
+
+
+After adding, run the code and test to invoke traffic
+```bash
+go run .
+
+curl http://localhost:8080/albums \
+    --include \
+    --header "Content-Type: application/json" \
+    --request "POST" \
+    --data '{"id": "4","title": "The Modern Sound of Betty Carter","artist": "Betty Carter","price": 49.99}'
+
+curl http://localhost:8080/albums \
+    --header "Content-Type: application/json" \
+    --request "GET"
+
+curl http://localhost:8080/albums/2
 ```

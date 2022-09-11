@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context" // Add for OTel Go
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/signalfx/splunk-otel-go/distro" // Add for OTel Go
 )
 
 // album represents data about a record album.
@@ -22,6 +24,22 @@ var albums = []album{
 }
 
 func main() {
+	// Optional setenv here. Can do it at OS e.g. export OTEL_RESOURCE_ATTRIBUTES="service.name=my-app,service.version=1.2.3,deployment.environment=production"
+	// os.Setenv("OTEL_RESOURCE_ATTRIBUTES", "service.name=my-app,service.version=1.2.3,deployment.environment=development")
+
+	// Start of OTel Go telemetry portion necessary
+	sdk, err := distro.Run()
+	if err != nil {
+		panic(err)
+	}
+	// Ensure all spans are flushed before the application exits.
+	defer func() {
+		if err := sdk.Shutdown(context.Background()); err != nil {
+			panic(err)
+		}
+	}()
+	// End of OTel Go telemetry portion necessary
+
 	router := gin.Default()
 	router.GET("/albums", getAlbums)
 	router.GET("/albums/:id", getAlbumByID)
