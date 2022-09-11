@@ -40,7 +40,11 @@ func main() {
 ```
 
 # Add the relevant Go http Otel modules 
-- 
+- Add Splunk specific instrumentation for the Golang `net/http` package. https://github.com/signalfx/splunk-otel-go/tree/main/instrumentation/net/http/splunkhttp
+    - Reference this example https://github.com/signalfx/splunk-otel-go/blob/main/example/main.go
+    - Also understand the difference between Splunk net/http/splunkhttp vs net/http from OTel Go
+ - If still no traces add other libraries from https://opentelemetry.io/registry/?language=go
+
 
 ## Add the relevant environment variables
 ```bash
@@ -52,7 +56,8 @@ export SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY>
 
 export SPLUNK_REALM=<realm>
 
-export OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com
+# Might not need this
+export OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com 
 
 # When things are not working, a good first step is to restart the program with debug logging enabled. Do this by setting the OTEL_LOG_LEVEL environment variable to debug.
 export OTEL_LOG_LEVEL="debug" 
