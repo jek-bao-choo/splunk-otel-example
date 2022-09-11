@@ -14,7 +14,7 @@ Run the below command in the folder where go.mod is
 go get github.com/signalfx/splunk-otel-go/distro
 ```
 
-## Configure OpenTelemetry using the distro package by adding the following code to main.go
+## Configure OpenTelemetry using the Splunk distro package by adding the following code to main.go
 ```go
 package main
 
@@ -39,16 +39,49 @@ func main() {
 	// ...
 ```
 
-# Add the relevant Go http Otel modules 
+## Add the relevant Go Gin OTel module
+```go
+import (
+	"context"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/signalfx/splunk-otel-go/distro"                                   
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin" // Add this for OTel Go Gin
+)
+
+```
+
+```go
+// ... omitted for brevity
+
+func main() {
+
+	// ... omitted for brevity
+
+	router := gin.Default()
+
+	router.Use(otelgin.Middleware("jek-server")) // Add this for OTel Go Gin
+
+	router.GET("/albums", getAlbums)
+	router.GET("/albums/:id", getAlbumByID)
+	router.POST("/albums", postAlbums)
+
+	router.Run("localhost:8080")
+}
+
+// ... omitted for brevity
+```
+
+## Add SplunkHttp for Net/Http to have Server-Timing for RUM <> APM linkage
 - Add Splunk specific instrumentation for the Golang `net/http` package. https://github.com/signalfx/splunk-otel-go/tree/main/instrumentation/net/http/splunkhttp
     - Reference this example https://github.com/signalfx/splunk-otel-go/blob/main/example/main.go
     - Also understand the difference between Splunk net/http/splunkhttp vs net/http from OTel Go
- - If still no traces add other libraries from https://opentelemetry.io/registry/?language=go
 
 
 ## Add the relevant environment variables
 ```bash
-export OTEL_RESOURCE_ATTRIBUTES="service.version=99.99.99,deployment.environment=jek-sandbox"
+export OTEL_RESOURCE_ATTRIBUTES="service.name=my-app-2,service.version=99.99.99,deployment.environment=jek-sandbox"
 
 export OTEL_SERVICE_NAME=go-gin-manu-instr
 
@@ -56,12 +89,12 @@ export SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY>
 
 export SPLUNK_REALM=<realm>
 
-# Might not need this
-export OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com 
+# Remember we do not need OTEL_EXPORTER_OTLP_ENDPOINT if we are sending directly to Splunk O11y Cloud
 
 # When things are not working, a good first step is to restart the program with debug logging enabled. Do this by setting the OTEL_LOG_LEVEL environment variable to debug.
 export OTEL_LOG_LEVEL="debug" 
 # Make sure to unset the environment variable after the issue is resolved, as its output might overload systems if left on indefinitely.
+unset OTEL_LOG_LEVEL
 ```
 
 
@@ -81,3 +114,7 @@ curl http://localhost:8080/albums \
 
 curl http://localhost:8080/albums/2
 ```
+
+# Proof
+![](proof1.png)
+![](proof2.png)

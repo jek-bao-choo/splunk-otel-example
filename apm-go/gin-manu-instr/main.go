@@ -5,7 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/signalfx/splunk-otel-go/distro" // Add for OTel Go
+	"github.com/signalfx/splunk-otel-go/distro"                                    // Add for OTel Go
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin" // Added for OTel Go Gin
+	// "github.com/signalfx/splunk-otel-go/instrumentation/net/http/splunkhttp" // Added for OTel Net Http by Splunk
 )
 
 // album represents data about a record album.
@@ -24,6 +26,7 @@ var albums = []album{
 }
 
 func main() {
+
 	// Optional setenv here. Can do it at OS e.g. export OTEL_RESOURCE_ATTRIBUTES="service.name=my-app,service.version=1.2.3,deployment.environment=production"
 	// os.Setenv("OTEL_RESOURCE_ATTRIBUTES", "service.name=my-app,service.version=1.2.3,deployment.environment=development")
 
@@ -41,6 +44,11 @@ func main() {
 	// End of OTel Go telemetry portion necessary
 
 	router := gin.Default()
+
+	router.Use(otelgin.Middleware("jek-server")) // Added for OTel Go Gin
+	// router.Use(splunkhttp.NewHandler)            // Added for OTel Net Http by Splunk for Server-Timing but it does not work like how it works with Mux
+	// ref: https://github.com/signalfx/splunk-otel-go/blob/main/example/main.go
+
 	router.GET("/albums", getAlbums)
 	router.GET("/albums/:id", getAlbumByID)
 	router.POST("/albums", postAlbums)
