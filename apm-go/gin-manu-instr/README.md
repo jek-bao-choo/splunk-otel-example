@@ -39,6 +39,9 @@ func main() {
 	// ...
 ```
 
+# Add the relevant Go http Otel modules 
+- 
+
 ## Add the relevant environment variables
 ```bash
 export OTEL_RESOURCE_ATTRIBUTES="service.version=99.99.99,deployment.environment=jek-sandbox"
@@ -50,6 +53,10 @@ export SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY>
 export SPLUNK_REALM=<realm>
 
 export OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com
+
+# When things are not working, a good first step is to restart the program with debug logging enabled. Do this by setting the OTEL_LOG_LEVEL environment variable to debug.
+export OTEL_LOG_LEVEL="debug" 
+# Make sure to unset the environment variable after the issue is resolved, as its output might overload systems if left on indefinitely.
 ```
 
 
