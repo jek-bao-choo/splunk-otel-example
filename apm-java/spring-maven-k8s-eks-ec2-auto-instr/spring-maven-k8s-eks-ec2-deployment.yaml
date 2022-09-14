@@ -45,3 +45,54 @@ spec:
         image: jekbao/jekspringwebapp:v2
         ports:
         - containerPort: 8080
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-maven-k8s-eks-ec2-init-container
+  labels:
+    app: javaspringmaven
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: javaspringmaven
+  template:
+    metadata:
+      labels:
+        app: javaspringmaven
+    spec:
+      containers:
+      - name: jekspringwebapp
+        image: jekbao/jekspringwebapp:v2
+        ports:
+        - containerPort: 8080
+        env:
+          - name: SPLUNK_OTEL_AGENT
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: deployment.environment=jek-sandbox
+          - name: OTEL_SERVICE_NAME
+            value: jek-spring-maven-k8s-eks-ec2-initcontainer-http
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://$(SPLUNK_OTEL_AGENT):4317
+          - name: JAVA_TOOL_OPTIONS
+            value: "-javaagent:/tmp/agent/splunk-otel-javaagent.jar -Dsplunk.metrics.enabled=true -Dsplunk.profiler.enabled=true"
+        volumeMounts:
+        - mountPath: /tmp/agent/
+          name: splunk-otel-java
+      initContainers:
+      - name: splunk-otel-init
+        image: busybox:1.28
+        command: ["/bin/sh","-c"]
+        args: ["wget https://github.com/signalfx/splunk-otel-java/releases/latest/download/splunk-otel-javaagent.jar -O /tmp/splunk-otel-javaagent.jar"]
+        volumeMounts:
+        - mountPath: /tmp
+          name: splunk-otel-java
+      volumes:
+      - emptyDir: {}
+        name: splunk-otel-java
