@@ -1,3 +1,5 @@
+# Outcome: There is no splunk-otel-javaagent.jar added to the Dockerfile.
+
 Preparation
 
 Install Java & Spring CLI 

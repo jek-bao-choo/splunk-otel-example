@@ -71,3 +71,4 @@ kubectl logs deployment/spring-maven-k8s-eks-fargate
 - Proof: ![proof](proof.png "working proof")
 - - Proof: ![proof2](proof2.png "working proof")
 - Last updated: 12 Mar 2022
+
