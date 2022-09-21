@@ -90,13 +90,14 @@ spec:
           - name: OTEL_RESOURCE_ATTRIBUTES
             value: deployment.environment=jek-sandbox
           - name: OTEL_SERVICE_NAME
-            value: jek-spring-maven-k8s-eks-ec2-initcontainer-http-v8
+            value: jek-spring-maven-k8s-eks-ec2-initcontainer-http-v10
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
             value: http://$(SPLUNK_OTEL_AGENT):4317
           - name: SPLUNK_METRICS_ENDPOINT
             value: http://$(SPLUNK_OTEL_AGENT):9943
           - name: JAVA_TOOL_OPTIONS
-            value: "-javaagent:/tmp/agent/splunk-otel-javaagent.jar -Dsplunk.metrics.enabled=true -Dsplunk.profiler.enabled=true"
+            value: -javaagent:/tmp/agent/splunk-otel-javaagent.jar -Dsplunk.metrics.enabled=true
+            # value: -javaagent:/tmp/agent/splunk-otel-javaagent.jar -Dsplunk.metrics.enabled=true -Dsplunk.profiler.enabled=true -Dotel.javaagent.debug=true -Xmx1500m -XX:+UseG1GC -XX:MinHeapFreeRatio=2 -XX:MaxHeapFreeRatio=10
         volumeMounts:
         - mountPath: /tmp/agent/
           name: splunk-otel-java

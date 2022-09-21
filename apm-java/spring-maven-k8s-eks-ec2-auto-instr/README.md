@@ -155,6 +155,17 @@ spec:
 
 ---
 
+# Q: What is JAVA_TOOL_OPTIONS? and all info I need to know about the Java JVM command line options?
+
+A: Read here
+- Google for Java JVM command line options. Below are the main sites with concise info.
+- https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/envvars002.html 
+- https://docs.oracle.com/en/java/javase/13/docs/specs/man/java.html
+- https://stackoverflow.com/questions/28327620/difference-between-java-options-java-tool-options-and-java-opts
+- https://stackoverflow.com/questions/3933300/difference-between-java-opts-and-java-tool-options
+
+---
+
 # Q: ...
 
 A: ...
