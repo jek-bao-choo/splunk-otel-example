@@ -56,3 +56,16 @@ The following config versions would work with Node 8.11.4.
 }
 ```
 It is recommend to use Node LTS version e.g. v16.17.0 and etc.
+
+# Working with older version of Node.js e.g. Node 8.9.4
+The following config versions would work with Node 8.11.4.
+```json
+{ 
+    "@opentelemetry/instrumentation-http": "0.28.0",
+    "@splunk/otel": "0.18.0"
+}
+```
+It is recommend to use Node LTS version e.g. v16.17.0 and etc.
+
+# Working with older version of Node.js e.g. Node 8.2.1
+Couldn't work because perf_hooks available up to v8.5 https://stackoverflow.com/a/54959678/3073280 . If really can't upgrade then consider https://github.com/signalfx/signalfx-nodejs-tracing which will be deprecated by June 8, 2023. Alternatively, just monitor the logs and metrics from that system.
