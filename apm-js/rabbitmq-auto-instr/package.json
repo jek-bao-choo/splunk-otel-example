@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@splunk/otel": "^2.0.0-rc2",
+    "amqplib": "^0.10.3"
+  }
+}
