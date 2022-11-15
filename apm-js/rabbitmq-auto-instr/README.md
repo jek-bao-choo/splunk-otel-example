@@ -5,3 +5,4 @@
 - More example of RabbitMQ codes https://www.rabbitmq.com/getstarted.html
 - Working code of RabbitMQ codes that generate tracing https://www.cloudamqp.com/blog/how-to-run-rabbitmq-with-nodejs.html
 - Docker start RabbitMQ https://www.rabbitmq.com/download.html
+- Proof ![](proof.png)
