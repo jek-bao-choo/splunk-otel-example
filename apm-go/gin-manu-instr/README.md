@@ -73,8 +73,12 @@ func main() {
 // ... omitted for brevity
 ```
 
-## Add SplunkHttp for Net/Http to have Server-Timing for RUM <> APM linkage
-- Add Splunk specific instrumentation for the Golang `net/http` package. https://github.com/signalfx/splunk-otel-go/tree/main/instrumentation/net/http/splunkhttp
+## Add manual instrumentation to have Server-Timing for RUM <> APM linkage
+- There is no need to add Splunk net/http because Gin is not compatible with Go http/net package hence not compatible with net/http/splunkhttp.
+- With that said, we need to create our own middleware to add “RUM support” if they need android, ios, or web linkage to Go Gin.
+    - here is the code that you can "use" to create it https://github.com/signalfx/splunk-otel-go/blob/ca189b7887ef5f4fc81106f7e02b66b772399fba/instrumentation/net/http/splunkhttp/handler.go#L40-L49 
+    - here are the docs how to create a custom middleware in Gin: https://github.com/gin-gonic/gin#custom-middleware 
+- Therefore, the way to add "RUM support" would NOT be similar to the reference example listed here
     - Reference this example https://github.com/signalfx/splunk-otel-go/blob/main/example/main.go
     - Also understand the difference between Splunk net/http/splunkhttp vs net/http from OTel Go
 
