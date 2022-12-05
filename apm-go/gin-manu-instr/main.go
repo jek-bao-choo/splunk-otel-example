@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/signalfx/splunk-otel-go/distro"                                    // Add for OTel Go
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin" // Added for OTel Go Gin
-	// "github.com/signalfx/splunk-otel-go/instrumentation/net/http/splunkhttp" // Added for OTel Net Http by Splunk
 )
 
 // album represents data about a record album.
@@ -46,8 +45,6 @@ func main() {
 	router := gin.Default()
 
 	router.Use(otelgin.Middleware("jek-server")) // Added for OTel Go Gin
-	// router.Use(splunkhttp.NewHandler)            // Added for OTel Net Http by Splunk for Server-Timing but it does not work like how it works with Mux
-	// ref: https://github.com/signalfx/splunk-otel-go/blob/main/example/main.go
 
 	router.GET("/albums", getAlbums)
 	router.GET("/albums/:id", getAlbumByID)

@@ -104,6 +104,8 @@ unset OTEL_LOG_LEVEL
 
 After adding, run the code and test to invoke traffic
 ```bash
+go get .
+
 go run .
 
 curl http://localhost:8080/albums \
@@ -118,7 +120,64 @@ curl http://localhost:8080/albums \
 
 curl http://localhost:8080/albums/2
 ```
-
-# Proof
+## Proof of OTel Gin and Splunk distro working
 ![](proof1.png)
 ![](proof2.png)
+
+## Create manual span attributes
+- https://opentelemetry.io/docs/instrumentation/go/manual/
+```go
+...
+```
+
+## Proof of manual instrumentation adding span attributes
+...
+
+## Dockerize the app (not working yet)
+Create a Dockerfile in the folder
+```
+FROM golang:latest
+
+WORKDIR /app
+
+ADD . /app/
+
+RUN go mod tidy
+RUN go mod verify
+
+EXPOSE 8080
+
+CMD ["go", "run", "main.go"]
+```
+
+Build the docker file
+```bash
+docker build -t jchoo/gin-manu-instr . --no-cache
+```
+
+Run the docker image
+```bash
+docker run -it --rm \
+-e OTEL_RESOURCE_ATTRIBUTES="service.name=my-app-2,service.version=99.99.99,deployment.environment=jek-sandbox" \
+-e OTEL_SERVICE_NAME=jek-docker-go-gin-manu-instr \
+-e SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY> \
+-e SPLUNK_REALM=<realm> \
+-e OTEL_LOG_LEVEL=debug \
+-p 8080:8080 --name jek_gin-manu-instr jchoo/gin-manu-instr
+```
+
+Send to endpoint 
+```bash
+curl http://localhost:8080/albums \
+    --include \
+    --header "Content-Type: application/json" \
+    --request "POST" \
+    --data '{"id": "4","title": "The Modern Sound of Betty Carter","artist": "Betty Carter","price": 49.99}'
+
+curl http://localhost:8080/albums \
+    --header "Content-Type: application/json" \
+    --request "GET"
+
+curl http://localhost:8080/albums/2
+```
+* The dockerized app and curl are not working yet. Need to configure further.
