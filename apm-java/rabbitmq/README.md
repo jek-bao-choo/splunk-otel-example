@@ -1,0 +1,1 @@
+https://github.com/breedx-splk/java-rabbitmq-example
