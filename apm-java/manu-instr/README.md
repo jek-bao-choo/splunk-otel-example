@@ -1,0 +1,1 @@
+- 5 ways to manually instrument Java https://github.com/breedx-splk/java-span-attribute-examples
