@@ -1,1 +1,3 @@
 - 5 ways to manually instrument Java https://github.com/breedx-splk/java-span-attribute-examples or here https://community.splunk.com/t5/Community-Blog/Five-Subtly-Different-Ways-of-Adding-Manual-Instrumentation-in/ba-p/621891
+- Add HTTP response header as span tags / attributes https://github.com/breedx-splk/java-http-header-attributes or here https://community.splunk.com/t5/Community-Blog/Capturing-HTTP-Headers-As-Span-Attributes/ba-p/624484
+- 
