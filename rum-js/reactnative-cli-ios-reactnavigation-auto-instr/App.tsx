@@ -1,118 +1,107 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import * as React from 'react';
+import { Button, View, Text } from 'react-native';
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+// added for backend networking call
+import {useEffect, useState} from 'react';
+import {ActivityIndicator, FlatList} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+// added for splunk-otel-react-native
+import { OtelWrapper, ReactNativeConfiguration, startNavigationTracking } from '@splunk/otel-react-native';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+function HomeScreen({ navigation }) {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Home Screen</Text>
+      <Button
+        title="Go to Details"
+        onPress={() => navigation.navigate('Details')}
+      />
     </View>
   );
 }
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+function DetailsScreen({ navigation }) {
+  // added for calling backend resources
+  type Movie = {
+    id: string;
+    title: string;
+    releaseYear: string;
   };
 
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState<Movie[]>([]);
+
+  const getMovies = async () => {
+    try {
+      const response = await fetch('https://reactnative.dev/movies.json');
+      const json = await response.json();
+      setData(json.movies);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getMovies();
+  }, []);
+  // end of addition for calling backend resources
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Details Screen</Text>
+      <FlatList
+        data={data}
+        keyExtractor={({id}) => id}
+        renderItem={({item}) => (
+          <Text>
+            {item.title}, {item.releaseYear}
+          </Text>
+        )}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <Button
+        title="Go to Details... again"
+        onPress={() => navigation.push('Details')}
+      />
+      <Button title="Go to Home" onPress={() => navigation.navigate('Home')} />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+      <Button
+        title="Go back to first screen in stack"
+        onPress={() => navigation.popToTop()}
+      />
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+const Stack = createNativeStackNavigator();
+
+function App() {
+
+  // added for
+  const RumConfig: ReactNativeConfiguration = {
+    realm: 'usN',
+    applicationName: 'jekReactNativev2',
+    rumAccessToken: 'XXXXXXXXXXXXXXX',
+  };
+
+  const navigationRef = useNavigationContainerRef();
+  return (
+    <OtelWrapper configuration={RumConfig}>
+      <NavigationContainer
+        ref={navigationRef}
+        onReady={() => {
+          startNavigationTracking(navigationRef);
+        }}>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Details" component={DetailsScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </OtelWrapper>
+  );
+}
 
 export default App;
