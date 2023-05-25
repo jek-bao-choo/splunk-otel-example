@@ -19,7 +19,7 @@ const Rum = SplunkRum.init({
 });
 ```
 
-- After that go to the ios folder in a new terminal 3 do `bundle install` and `pod install`.
+- After that go to the ios folder `cd ios` in a new terminal 3 do `bundle install` and CocoaPods installed `pod install` then return to root folder `cd ..`.
 
 - Reboot the app with `npx react-native start` in terminal 1 and `npx react-native run-ios` in new terminal 2.
 

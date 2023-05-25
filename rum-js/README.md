@@ -1,1 +1,0 @@
-Todo: Jek to setup with Angular
