@@ -3,8 +3,9 @@
 - The project and code in this folder are created using the steps below. 
 
 # Env
-- Tested on React Native v
-- With React Navigation v
+- Tested on React is version 18.2.0
+- with React Native is version 0.71.8
+- With React Navigation version 6.1.6
 
 # Get started
 - Start with https://reactnative.dev/docs/environment-setup.
