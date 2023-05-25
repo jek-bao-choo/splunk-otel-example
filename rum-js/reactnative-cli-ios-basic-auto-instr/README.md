@@ -1,5 +1,5 @@
 - Start with https://reactnative.dev/docs/environment-setup.
-    - Select ![](i1.png) these options based on my workstation setup. React Native CLI >> macOS >> iOS.
+    - Select ![](i1.png) these options based on my workstation setup e.g. React Native CLI >> macOS >> iOS.
     - Follow through the docs environment setup.
     - Build a simple app following the setup doc.
     - After completion, open `App.tsx` in my text editor of choice and edit some lines.
