@@ -34,7 +34,7 @@ Validate Nest.js v7 with Node.js v12.12 using splunk-otel-js v1.4.1
 ![](proof3.png)
 
 
-# Optional: Containerise this
+# Optional 1 of 2: Containerise this
 ```Dockerfile
 FROM node:12-alpine
 
@@ -58,7 +58,7 @@ CMD ["npm", "run", "start:prodotel"]
 ![](proof4.png)
 ![](proof5.png)
 
-# Optional: Kubernise this
+# Optional 2 of 2: Kubernise this
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -94,3 +94,7 @@ spec:
             value: http://$(SPLUNK_OTEL_AGENT):4317
 ```
 - Create deployment.yaml file
+- `kubectl apply -f deployment.yaml`
+- `kubectl port-forward deployment/jek-nestjs-v7-kubernized 3000:3000`
+- `curl localhost:3000`
+  ![](proof6.png)
