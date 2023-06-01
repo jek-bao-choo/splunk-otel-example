@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jek-nestjs-v7-kubernized
+  labels:
+    app: jeknestjsv7kubernized
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jeknestjsv7kubernized
+  template:
+    metadata:
+      labels:
+        app: jeknestjsv7kubernized
+    spec:
+      containers:
+        - name: jeknestjsv7kubernized
+          image: jchoo/nestjsv7autoinstr:v1.0.2
+          ports:
+            - containerPort: 3000
+          env:
+            - name: SPLUNK_OTEL_AGENT
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: deployment.environment=jekdev
+            - name: OTEL_SERVICE_NAME
+              value: jek-nestjs-v7-kubernized
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: http://$(SPLUNK_OTEL_AGENT):4317
