@@ -24,6 +24,8 @@ Validate Nest.js v7 with Node.js v12.12 using splunk-otel-js v1.4.1
 - `node --version`
 - `npm run build`
 - `node -r @splunk/otel/instrument dist/main`
+- Add `node -r @splunk/otel/instrument dist/main` to package.json as `start:prodotel`
+- `npm run start:prodotel`
 - Invoke request http://localhost:3000
 
 # Proof
@@ -32,3 +34,5 @@ Validate Nest.js v7 with Node.js v12.12 using splunk-otel-js v1.4.1
 ![](proof3.png)
 
 
+# Optional: Containerise this
+- 
