@@ -4,8 +4,9 @@
 
 # Env
 - Tested on React is version 18.2.0
-- with React Native is version 0.71.8
+- with React Native is version 0.71.8.
 - With React Navigation version 6.1.6
+- Using @splunk/otel-react-native version ^0.1.0-alpha.3. It also works with React Native 0.64.3 as tested but with newer version of @splunk/otel-react-native version would break with React Native 0.64.3 because at the time of testing the mini is: we "officially" support 0.67
 
 # Get started
 - Start with https://reactnative.dev/docs/environment-setup.
