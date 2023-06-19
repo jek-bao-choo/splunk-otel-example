@@ -1,0 +1,99 @@
+# Deployment of nginx, to be scaled by Keda http-add-on
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-http
+spec:
+  selector:
+    matchLabels:
+      app: nginx-http
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-http
+    spec:
+      containers:
+        - name: nginx-http
+          image: nginx
+          resources:
+            limits:
+              memory: 256Mi
+              cpu: 200m
+          ports:
+            - containerPort: 80
+
+---
+
+# Expose nginx deployment as a service, to connect to it and generate load
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-http-service
+  labels: 
+    app: nginx-http
+spec:
+  selector:
+    app: nginx-http
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 80
+
+---
+
+# The HTTPScaledObject configuration that will scale the nginx-http deployment 
+# when there are more than 10 pending request to it.
+# minimum replica is 1 and max is 20
+
+kind: HTTPScaledObject
+apiVersion: http.keda.sh/v1alpha1
+metadata:
+    name: nginx-http
+spec:
+    host: "nginx-http.default.svc.cluster.local"
+    targetPendingRequests: 10
+    scaleTargetRef:
+        deployment: nginx-http
+        service: nginx-http-service
+        port: 8082
+    replicas:
+      min: 1
+      max: 20
+
+---
+
+# deployment use to generate traffic on our application
+# the traffic needs to be generated to the keda keda-add-ons-http-interceptor-proxy service on port 8080!
+# the keda-add-ons-http-interceptor-proxy service will forward the traffic to the configured application service - nginx-http-service
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: load-http
+  name: load-http
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: load-http
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: load-http
+    spec:
+      containers:
+      - image: ubuntu:22.04
+        command: ["/bin/sh"]
+        args: ["-c","/usr/bin/apt update ; /usr/bin/apt install siege -y ; siege -d 1 -c 60 -t 3600s -H 'Host: nginx-http.default.svc.cluster.local' http://keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local:8080"]
+        imagePullPolicy: Always
+        name: load-http
+        resources:
+          limits:
+            memory: 128Mi
+            cpu: 500m
