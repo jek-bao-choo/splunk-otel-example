@@ -30,8 +30,9 @@
 - `kubectl get hpa -w`
 - Another terminal `kubectl get pods -w`
 - Third terminal, scale up load test `kubectl scale deploy/load-http --replicas 10`
-- Third terminal, scale down load test `kubectl scale deploy/load-http --replicas 0`
 - Observe the first two terminals to see it auto scale the deployment.
+- Third terminal, scale down load test `kubectl scale deploy/load-http --replicas 0`
+- `kubectl get pods`
 
 # Proof
 - ![](1.png)
