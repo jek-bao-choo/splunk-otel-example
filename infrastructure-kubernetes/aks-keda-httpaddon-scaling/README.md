@@ -51,5 +51,5 @@ kubectl delete $(kubectl get scaledobjects.keda.sh,scaledjobs.keda.sh -A \
 helm uninstall keda -n keda
 ```
 - Uninstall KEDA via Helm Chart `helm uninstall -n keda keda`
-- Delete the AKS cluster `az aks delete --name JekAKSCluster16June2023`
+- Delete the AKS cluster `az aks delete --resource-group JekAKSResourceGroup --name JekAKSCluster16June2023`
 - Delete the created Azure Resource Group https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-delete `az group delete --name JekAKSResourceGroup`
