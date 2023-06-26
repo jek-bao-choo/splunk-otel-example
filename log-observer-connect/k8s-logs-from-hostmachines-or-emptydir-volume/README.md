@@ -28,4 +28,5 @@ The values.yaml here can send to two separate Splunk Enterprise endpoints. Good 
 - Now let’s attempt to further customize our pipeline to use the k8s.pod.uid to enrich the event further with the k8sattributes processor. To accomplish this we will need to override the default logs/host pipeline to route our emptyDir sourced logs through the existing k8sattributes processor. ![](5.png)
 - `helm -n otel upgrade splunk-otel-col -f values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 
-
+Other ref:
+- https://github.com/signalfx/splunk-otel-collector-chart/blob/main/docs/advanced-configuration.md#add-log-files-from-kubernetes-host-machinesvolumes
