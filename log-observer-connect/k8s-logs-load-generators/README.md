@@ -1,0 +1,4 @@
+- `kubectl create ns loggen`
+- Change to my preferred directory and create `vi loggen.yaml`
+- `kubectl apply -f loggen.yaml`
+- You can choose the MESSAGE_COUNT to set the number of messages to be generated, the SIZE to govern how big the messages should be in bytes, and the FREQ to control the frequency of the messages. 

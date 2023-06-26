@@ -408,7 +408,17 @@ agent:
   # Any additional fields will be merged into the defaults,
   # existing fields can be disabled by setting them to null value.
   config:
+    extensions:
+      pprof:
+        endpoint: localhost:1777
     service:
+      extensions:
+        - health_check
+        - file_storage
+        - k8s_observer
+        - memory_ballast
+        - zpages
+        - pprof
       pipelines:
         logs/host:
           exporters:
