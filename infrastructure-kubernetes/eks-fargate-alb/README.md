@@ -224,6 +224,8 @@ frontend   alb     *       k8s-default-frontend-XXXXXXXXXXXXXXXXXX.ap-southeast-
 ``````
 ![](1.png)
 
+- View logs to see anything amiss `kubectl logs -f -n kube-system -l app.kubernetes.io/instance=aws-load-balancer-controller`
+
 - Clean up Kubernetes official example app
 ```bash
 #
