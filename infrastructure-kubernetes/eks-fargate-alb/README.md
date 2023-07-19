@@ -236,7 +236,7 @@ kubectl delete deployment frontend
 kubectl delete service frontend
 
 # 
-helm delete aws-alb-ingress-controller -n kube-system
+helm delete aws-load-balancer-controller -n kube-system
 ``````
 
 - Clean up EKS EC2 using eksctl
