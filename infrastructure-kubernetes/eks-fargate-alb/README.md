@@ -92,7 +92,7 @@ eksctl create iamserviceaccount \
   --namespace=kube-system \
   --name=aws-load-balancer-controller \
   --role-name AmazonEKSLoadBalancerControllerRole \
-  --attach-policy-arn=arn:aws:iam::< your vpc id >:policy/AWSLoadBalancerControllerIAMPolicy \
+  --attach-policy-arn=arn:aws:iam::< your account id >:policy/AWSLoadBalancerControllerIAMPolicy \
   --approve
 
 # helm repo add eks https://aws.github.io/eks-charts
@@ -236,7 +236,7 @@ kubectl delete deployment frontend
 kubectl delete service frontend
 
 # 
-helm delete aws-alb-ingress-controller -n kube-system
+helm delete aws-load-balancer-controller -n kube-system
 ``````
 
 - Clean up EKS EC2 using eksctl
