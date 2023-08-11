@@ -15,3 +15,6 @@ ____
 
 
     $ rebar3 shell --config config/sys.config
+
+
+    $ OTEL_EXPORTER_OTLP_PROTOCOL=grpc OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317 rebar3 shell
