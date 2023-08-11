@@ -6,6 +6,10 @@
   {applications,
    [kernel,
     stdlib,
+    opentelemetry_api,
+    opentelemetry,
+    opentelemetry_exporter,
+    opentelemetry_cowboy,
     cowboy
    ]},
   {env,[]},
