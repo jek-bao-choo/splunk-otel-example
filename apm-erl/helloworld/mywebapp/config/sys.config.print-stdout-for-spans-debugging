@@ -1,5 +1,5 @@
 [
- {mywebapp, 
+ {mywebappstdoutspansfordebugging, 
   [
    {key1, value1},
    {key2, value2}
@@ -8,9 +8,9 @@
  {opentelemetry,
   [
    {span_processor, batch},
-   {traces_exporter, otlp},
+   {traces_exporter, {otel_exporter_stdout, []}},
    {resource, [
-     {service, #{name => "jek-erlang-v22-cowboy-webapp", version => "99.88.77"}},
+     {service, #{name => "jek-erlang-v22-debugging-cowboy-webapp", version => "11.22.33"}},
      {deployment, #{environment => "jek-sandbox"}}
    ]},
    {readers, [#{module => otel_metric_reader,

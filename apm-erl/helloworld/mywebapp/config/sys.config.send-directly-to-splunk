@@ -1,5 +1,5 @@
 [
- {mywebapp, 
+ {mywebappdirect, 
   [
    {key1, value1},
    {key2, value2}
@@ -10,7 +10,7 @@
    {span_processor, batch},
    {traces_exporter, otlp},
    {resource, [
-     {service, #{name => "jek-erlang-v22-cowboy-webapp", version => "99.88.77"}},
+     {service, #{name => "jek-erlang-v22-direct-cowboy-webapp", version => "77.88.99"}},
      {deployment, #{environment => "jek-sandbox"}}
    ]},
    {readers, [#{module => otel_metric_reader,
@@ -21,7 +21,8 @@
  {opentelemetry_exporter, 
   [
    {otlp_protocol, grpc},
-   {otlp_endpoint, "http://localhost:4317"}
+   {otlp_traces_headers, "x-sf-token=< the ingest access token >"},
+   {otlp_endpoint, "https://ingest.< the realm >.signalfx.com"}
   ]
  },
  {kernel,

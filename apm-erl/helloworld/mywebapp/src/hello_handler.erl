@@ -10,15 +10,18 @@ init(Req, State) ->
 
 hello() ->
     %% start an active span and run a local function
-    ?with_span(<<"operation">>, #{}, fun nice_operation/1).
+    ?with_span(<<"Jek My Main Span hello() Operation Value">>, #{}, fun mynice_operation/1).
 
-nice_operation(_SpanCtx) ->
-    ?add_event(<<"Nice operation!">>, [{<<"bogons">>, 100}]),
-    ?set_attributes([{another_key, <<"yes">>}]),
+mynice_operation(_SpanCtx) ->
+    ?add_event(<<"My Span Event 1 Without Key so this is the value">>, [{<<"My Span Event 2 Key and 100 is the value">>, 100}]),
+    ?set_attributes([{my_span_tag_key_1, <<"My Span Tag Value 1">>}]),
+    ?set_attributes([{my_span_attribute_key_2, <<"My Span Attribute Value 2">>}]),
 
     %% start an active span and run an anonymous function
-    ?with_span(<<"Sub operation...">>, #{},
+    ?with_span(<<"Jek My Sub Span mynice_operation() Operation Value...">>, #{},
                 fun(_ChildSpanCtx) ->
-                      ?set_attributes([{lemons_key, <<"five">>}]),
-                      ?add_event(<<"Sub span event!">>, [])
+                      timer:sleep(500),
+                      ?set_attributes([{my_sub_span_tag_key_1, <<"my sub tag tag valuE 1">>}]),
+                      ?add_event(<<"Jek My Sub Span Event Value!">>, []),
+                      ok % to indicate that the anonymous function is done
                 end).
