@@ -203,10 +203,157 @@ curl http://localhost:8080
 ![](4.png)
 
 # Add OTel Erlang agent to send traces to Splunk Observability Cloud
-- 
+
+- Add opentelemetry and sys.config to `rebar.config` file.
+```erlang
+{erl_opts, [debug_info]}.
+{deps, [
+    {opentelemetry_api, "1.0.3"},
+    {opentelemetry, "1.0.5"},
+    {opentelemetry_exporter, "1.0.4"},
+    {opentelemetry_cowboy, "0.2.1"},
+    {cowboy, "2.9.0"}
+]}.
+
+{shell, [
+    {config, "config/sys.config"},
+    {apps, [mywebapp]}
+]}.
+```
+
+- Add opentelemetry to `src/mywebapp_app.src` file.
+```erlang
+{application, mywebapp,
+ [{description, "An OTP application"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {mywebapp_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    opentelemetry_api,
+    opentelemetry,
+    opentelemetry_exporter,
+    opentelemetry_cowboy,
+    cowboy
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {licenses, ["Apache-2.0"]},
+  {links, []},
+  {build_tools, ["rebar3"]}
+ ]}.
+```
+
+- Create sys.config and add config (change the variable realm and access token to your own).
+
+```erlang
+[
+ {mywebappdirect, 
+  [
+   {key1, value1},
+   {key2, value2}
+  ]
+ },
+ {opentelemetry,
+  [
+   {span_processor, batch},
+   {traces_exporter, otlp},
+   {resource, [
+     {service, #{name => "jek-erlang-v22-direct-cowboy-webapp", version => "77.88.99"}},
+     {deployment, #{environment => "jek-sandbox"}}
+   ]},
+   {readers, [#{module => otel_metric_reader,
+                config => #{export_interval_ms => 1000,
+                            exporter => {opentelemetry_exporter, #{}}}}]}
+  ]
+ },
+ {opentelemetry_exporter, 
+  [
+   {otlp_protocol, grpc},
+   {otlp_traces_headers, "x-sf-token=< the ingest access token >"},
+   {otlp_endpoint, "https://ingest.< the realm >.signalfx.com"}
+  ]
+ },
+ {kernel,
+  [
+   {logger_level, debug},
+   {logger,
+    [
+     {handler, default, logger_std_h,
+      #{formatter => {logger_formatter, #{}}}
+     }
+    ]
+   }
+  ]
+}
+].
+```
+
+- Add spans to `src/hello_handler.erl` file.
+
+```erlang
+-module(hello_handler).
+-behaviour(cowboy_handler).
+-export([init/2]).
+
+-include_lib("opentelemetry_api/include/otel_tracer.hrl").
+
+init(Req, State) ->
+    hello(),
+    {ok, cowboy_req:reply(200, #{}, <<"Hello, Jek!">>, Req), State}.
+
+hello() ->
+    %% start an active span and run a local function
+    ?with_span(<<"Jek My Main Span hello() Operation Value">>, #{}, fun mynice_operation/1).
+
+mynice_operation(_SpanCtx) ->
+    ?add_event(<<"My Span Event 1 Without Key so this is the value">>, [{<<"My Span Event 2 Key and 100 is the value">>, 100}]),
+    ?set_attributes([{my_span_tag_key_1, <<"My Span Tag Value 1">>}]),
+    ?set_attributes([{my_span_attribute_key_2, <<"My Span Attribute Value 2">>}]),
+
+    %% start an active span and run an anonymous function
+    ?with_span(<<"Jek My Sub Span mynice_operation() Operation Value...">>, #{},
+                fun(_ChildSpanCtx) ->
+                      timer:sleep(500),
+                      ?set_attributes([{my_sub_span_tag_key_1, <<"my sub tag tag valuE 1">>}]),
+                      ?add_event(<<"Jek My Sub Span Event Value!">>, []),
+                      ok % to indicate that the anonymous function is done
+                end).
+```
+- the include library in the above code is important to include the otel_tracer.hrl file. Without it, the ?with_span macro will not work.
+
+- We can send direct without OTel Collector. We can send through OTel Collector as well. We can also do a debug spans.
+
+- Do a clean build and run the app.
+
+```bash
+rm -rf _build && rm -f rebar.lock && rebar3 compile
+```
+
+- Run the app.
+
+```bash
+rebar3 shell
+``` 
+
+- The highest version that work with erlang/otp version 22 is opentelemetry, opentelemetry_api, and opentelemetry_exporter are all 1.0.X that would build without failure at the time of test 14 Aug 2023. 
+
 
 # Proof
 ![](proof.png)
+![](proof1.png)
 
 # Reference
 - There are two types of Erlang Build Tools.  that can help you organize your code, manage dependencies, build releases, run tests, and more. The two are erlang.mk and rebar3 https://app.pluralsight.com/guides/10-essential-erlang-tools-for-erlang-developers
+- https://opentelemetry.io/docs/instrumentation/erlang/exporters/
+- https://hex.pm/packages/opentelemetry_cowboy
+- https://hex.pm/packages/opentelemetry_exporter/versions
+- https://hex.pm/packages/opentelemetry/versions
+- https://hex.pm/packages/opentelemetry_api/versions
+- https://docs.splunk.com/observability/gdi/get-data-in/application/other-languages.html#apm-instrumentation-other-langs
+- An example app from Tristan https://github.com/open-telemetry/opentelemetry-erlang-contrib/tree/4ba1f66ec9a3d8353cc0a892357929422fa20407/examples/roll_dice_elli
+- Not Erlang but Phoenix and Ecto https://github.com/open-telemetry/opentelemetry-erlang-contrib/tree/main/examples/basic_phoenix_ecto
+- Pair programmed with Michael to resolve exporter and he is using Docker Compose. Another approach to quickly test https://github.com/mcheo/getting-data-in/tree/main/apm/apm-erlang
+- 
