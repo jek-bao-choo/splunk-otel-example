@@ -190,6 +190,14 @@ DEPS = cowboy my_dependency
 dep_cowboy_commit = 2.9.0
 dep_my_dependency = git https://github.com/user/my_dependency master
 ```
+
+- Fetching and Building: With erlang.mk, you can fetch and build your dependencies using:
+```
+make deps
+
+make run
+```
+
 ... But... apparently it's not that easy. I tried to add the following to the Makefile but it didn't work.
 ... opentelemetry-erlang library needs to support Makefile build. Otherwise run into the following noop issue in the dependency build Makefile with noop.
 
