@@ -165,11 +165,12 @@ REL_DEPS = relx
 include ./erlang.mk
 ```
 
-Get erlang.mk from https://github.com/ninenines/cowboy and put it in the root folder of the project.
+The correct way to get erlang.mk is from https://erlang.mk/guide/getting_started.html
+Alternatively, get erlang.mk from https://github.com/ninenines/cowboy and put it in the root folder of the project.
 
 ### Step 4: Instructions
 
-To try this example, you need GNU make and git in your PATH.
+To try this example, you need GNU make (version 4; ensure not version 3 or lower) and git in your PATH.
 
 To build and run the example, use the following command:
 
@@ -182,8 +183,15 @@ Then point your browser to http://localhost:8080
 This hello_world example app is referencing https://github.com/ninenines/cowboy/tree/master/examples
 
 # Add OTel Erlang to the project
-... Apparently it's not that easy. I tried to add the following to the Makefile but it didn't work.
-... opentelemetry-erlang library needs to support Makefile build.
+- Specify the OTel Erlang Dependency in Your Project's Makefile: In the Makefile of the project where you want to add the dependency, specify the dependency using the DEPS variable and the corresponding git URL and version or branch:
+
+```
+DEPS = cowboy my_dependency
+dep_cowboy_commit = 2.9.0
+dep_my_dependency = git https://github.com/user/my_dependency master
+```
+... But... apparently it's not that easy. I tried to add the following to the Makefile but it didn't work.
+... opentelemetry-erlang library needs to support Makefile build. Otherwise run into the following noop issue in the dependency build Makefile with noop.
 
 # Ref
 - https://github.com/ninenines/cowboy/tree/master/examples
