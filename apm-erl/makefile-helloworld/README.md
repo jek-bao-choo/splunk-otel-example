@@ -191,6 +191,8 @@ dep_cowboy_commit = 2.9.0
 dep_my_dependency = git https://github.com/user/my_dependency master
 ```
 
+But need to use sub-folder because https://github.com/ninenines/erlang.mk/issues/917#issuecomment-735419333 which came from this thread https://github.com/open-telemetry/opentelemetry-erlang/issues/178
+
 - Fetching and Building: With erlang.mk, you can fetch and build your dependencies using:
 ```
 make deps
