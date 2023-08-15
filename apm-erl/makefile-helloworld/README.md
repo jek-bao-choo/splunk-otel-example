@@ -182,7 +182,8 @@ Then point your browser to http://localhost:8080
 This hello_world example app is referencing https://github.com/ninenines/cowboy/tree/master/examples
 
 # Add OTel Erlang to the project
-
+... Apparently it's not that easy. I tried to add the following to the Makefile but it didn't work.
+... opentelemetry-erlang library needs to support Makefile build.
 
 # Ref
 - https://github.com/ninenines/cowboy/tree/master/examples
