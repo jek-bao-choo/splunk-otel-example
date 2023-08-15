@@ -65,3 +65,124 @@ This example provides a basic structure. As the project grows, you may want to a
 
 # Hello World Cowboy Web App
 
+### Step 1: Project structure
+
+Create a project with this folder structure:
+
+```
+hello_world/
+|-- src/
+|   |-- hello_world_app.erl
+|   |-- hello_world_sup.erl
+|   |-- toppage_h.erl
+|-- Makefile
+|-- erlang.mk
+|-- relx.config
+```
+
+### Step 2: Code
+
+**toppage_h.erl** (inside `src` directory)
+
+```erlang
+-module(toppage_h).
+
+-export([init/2]).
+
+init(Req0, Opts) ->
+	Req = cowboy_req:reply(200, #{
+		<<"content-type">> => <<"text/plain">>
+	}, <<"Hello Jek this is Makefile hello world app v1!">>, Req0),
+	{ok, Req, Opts}.
+```
+
+**hello_world_app.erl** (inside `src` directory)
+
+```erlang
+%% @private
+-module(hello_world_app).
+-behaviour(application).
+
+%% API.
+-export([start/2]).
+-export([stop/1]).
+
+%% API.
+
+start(_Type, _Args) ->
+	Dispatch = cowboy_router:compile([
+		{'_', [
+			{"/", toppage_h, []}
+		]}
+	]),
+	{ok, _} = cowboy:start_clear(http, [{port, 8080}], #{
+		env => #{dispatch => Dispatch}
+	}),
+	hello_world_sup:start_link().
+
+stop(_State) ->
+	ok = cowboy:stop_listener(http).
+```
+
+**hello_world_sup.erl** (inside `src` directory)
+
+```erlang
+%% @private
+-module(hello_world_sup).
+-behaviour(supervisor).
+
+%% API.
+-export([start_link/0]).
+
+%% supervisor.
+-export([init/1]).
+
+%% API.
+
+-spec start_link() -> {ok, pid()}.
+start_link() ->
+	supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+
+%% supervisor.
+
+init([]) ->
+	Procs = [],
+	{ok, {{one_for_one, 10, 10}, Procs}}.
+```
+
+### Step 3: Makefile
+
+```make
+PROJECT = hello_world
+PROJECT_DESCRIPTION = Cowboy Hello World example
+PROJECT_VERSION = 1
+
+DEPS = cowboy
+dep_cowboy_commit = master
+
+REL_DEPS = relx
+
+include ./erlang.mk
+```
+
+Get erlang.mk from https://github.com/ninenines/cowboy and put it in the root folder of the project.
+
+### Step 4: Instructions
+
+To try this example, you need GNU make and git in your PATH.
+
+To build and run the example, use the following command:
+
+```bash
+make run
+```
+
+Then point your browser to http://localhost:8080
+
+This hello_world example app is referencing https://github.com/ninenines/cowboy/tree/master/examples
+
+# Add OTel Erlang to the project
+
+
+# Ref
+- https://github.com/ninenines/cowboy/tree/master/examples
