@@ -2,14 +2,14 @@ PROJECT = hello_world
 PROJECT_DESCRIPTION = Cowboy Hello World example
 PROJECT_VERSION = 2
 
-DEPS = cowboy opentelemetry_api opentelemetry
-# DEPS = cowboy opentelemetry_api opentelemetry opentelemetry_exporter
+DEPS = cowboy opentelemetry_api opentelemetry opentelemetry_exporter opentelemetry_cowboy
 dep_cowboy_commit = master
 
 # OpenTelemetry dependencies
-dep_opentelemetry_api = git-subfolder https://github.com/open-telemetry/opentelemetry-erlang v1.0.3 apps/opentelemetry_api
-dep_opentelemetry = git-subfolder https://github.com/open-telemetry/opentelemetry-erlang v1.0.5 apps/opentelemetry
-# dep_opentelemetry_exporter = git-subfolder https://github.com/open-telemetry/opentelemetry-erlang v1.0.0 apps/opentelemetry_exporter
+dep_opentelemetry_api = hex 1.0.3
+dep_opentelemetry = hex 1.0.5
+dep_opentelemetry_exporter = hex 1.0.4
+dep_opentelemetry_cowboy = hex 0.2.1
 
 REL_DEPS = relx
 
