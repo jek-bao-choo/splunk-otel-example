@@ -331,5 +331,42 @@ make clean
 ![](proof1.png)
 ![](proof2.png)
 
+# Updates from my colleague that we can use the latest version of OTel Erlang for Erlang/OTP v 22 now. Colleague made some changes.
+-  Accordin to colleague can use: hex 1.2.2 for the api and hex 1.3.0 for the sdk (dep_opentelemetry) now. and hex 1.6.0 for the exporter.... However, it would still fail.
+- Update it in the Makefile
+
+```erlang
+PROJECT = hello_world
+PROJECT_DESCRIPTION = Cowboy Hello World example
+PROJECT_VERSION = 3
+
+DEPS = cowboy opentelemetry_api opentelemetry opentelemetry_exporter opentelemetry_cowboy
+dep_cowboy_commit = master
+
+# OpenTelemetry dependencies
+dep_opentelemetry_api = hex 1.2.2
+dep_opentelemetry = hex 1.3.0
+dep_opentelemetry_exporter = hex 1.6.0
+dep_opentelemetry_cowboy = hex 0.2.1
+
+REL_DEPS = relx
+
+include ./erlang.mk
+```
+
+```makefile
+make clean
+
+rm -rf deps .erlang.mk _rel 
+
+make deps
+
+make run
+```
+
+See failure image if using latest version of OTel Erlang with Erlang/OTP v22. ![](fail.png)
+
+Hence, it is confirmed that the 1.0.X versions are still working with Erlang/OTP v22.
+
 # Ref
 - https://github.com/ninenines/cowboy/tree/master/examples
