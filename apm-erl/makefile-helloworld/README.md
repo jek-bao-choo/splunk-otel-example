@@ -194,6 +194,29 @@ dep_my_dependency = git https://github.com/user/my_dependency master
 But need to use sub-folder because https://github.com/ninenines/erlang.mk/issues/917#issuecomment-735419333 which came from this thread https://github.com/open-telemetry/opentelemetry-erlang/issues/178
     - Learn more about it from https://erlang.mk/guide/deps.html 
 
+So the recommended way is to do this.
+
+```
+PROJECT = hello_world
+PROJECT_DESCRIPTION = Cowboy Hello World example
+PROJECT_VERSION = 2
+
+DEPS = cowboy opentelemetry_api opentelemetry opentelemetry_exporter opentelemetry_cowboy
+dep_cowboy_commit = master
+
+# OpenTelemetry dependencies
+dep_opentelemetry_api = hex 1.0.3
+dep_opentelemetry = hex 1.0.5
+dep_opentelemetry_exporter = hex 1.0.4
+dep_opentelemetry_cowboy = hex 0.2.1
+
+REL_DEPS = relx
+
+include ./erlang.mk
+```
+
+In Makefile add the `dep_opentelemetry...` using `hex <version>`.
+
 - Fetching and Building: With erlang.mk, you can fetch and build your dependencies using:
 ```
 make deps
@@ -201,8 +224,63 @@ make deps
 make run
 ```
 
-... But... apparently it's not that easy. I tried to add the following to the Makefile but it didn't work.
-... opentelemetry-erlang library needs to support Makefile build. Otherwise run into the following noop issue in the dependency build Makefile with noop.
+
+- Next create config/sys.config
+
+```erlang
+[
+ {mywebapp, 
+  [
+   {key1, value1},
+   {key2, value2}
+  ]
+ },
+ {opentelemetry,
+  [
+   {span_processor, batch},
+   {traces_exporter, otlp},
+   {resource, [
+     {service, #{name => "jek-erlang-v22-makefile-webapp", version => "33.44.55"}},
+     {deployment, #{environment => "jek-sandbox"}}
+   ]},
+   {readers, [#{module => otel_metric_reader,
+                config => #{export_interval_ms => 1000,
+                            exporter => {opentelemetry_exporter, #{}}}}]}
+  ]
+ },
+ {opentelemetry_exporter, 
+  [
+   {otlp_protocol, grpc},
+   {otlp_endpoint, "http://localhost:4317"}
+  ]
+ },
+ {kernel,
+  [
+   {logger_level, debug},
+   {logger,
+    [
+     {handler, default, logger_std_h,
+      #{formatter => {logger_formatter, #{}}}
+     }
+    ]
+   }
+  ]
+}
+].
+```
+
+- The key here is the opentelemetry_exporter section. We are using OTLP exporter and the endpoint is http://localhost:4317. This is the default endpoint for the collector. Also well as the opentelemetry section. We are using the batch span processor and the OTLP exporter. We also specify the service name and version as well as the deployment environment.
+
+
+
+```makefile
+make run
+```
+
+![](1.png) We would see OTLP exporter successfully initialized.
+
+- 
+
 
 # Ref
 - https://github.com/ninenines/cowboy/tree/master/examples
