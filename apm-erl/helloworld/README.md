@@ -325,6 +325,7 @@ mynice_operation(_SpanCtx) ->
 - the include library in the above code is important to include the otel_tracer.hrl file. Without it, the ?with_span macro will not work.
 
 - We can send direct without OTel Collector. We can send through OTel Collector as well. We can also do a debug spans.
+    - See mywebapp/config/sys.config and other files in the folder for more details of how to change between the various ways.
 
 - Do a clean build and run the app.
 
