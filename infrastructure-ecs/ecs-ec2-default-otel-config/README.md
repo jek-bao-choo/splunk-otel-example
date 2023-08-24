@@ -15,7 +15,7 @@ ecs-cli --version
 aws ecs list-clusters
 ```
 
-# 4. Create ECS cluster with launch-type FARGATE
+# 4. Create ECS cluster with launch-type EC2
 ```bash
 ecs-cli up --capability-iam --launch-type EC2 --keypair jchoo-splunk-aws-key-pair --size 2 --instance-type t3.medium --cluster jek-ecs-ec2-cli-cluster-<today date>
 ```
