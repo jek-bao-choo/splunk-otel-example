@@ -199,3 +199,5 @@ README.html
 *.iml
 .idea
 .exercism
+*-SNAPSHOT.jar
+*-java.jar
