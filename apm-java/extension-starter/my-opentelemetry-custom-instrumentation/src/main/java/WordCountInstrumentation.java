@@ -44,21 +44,21 @@ public class WordCountInstrumentation implements TypeInstrumentation {
 //        public static final Logger logger = Logger.getLogger(WordCountInstrumentation.class.getName()); // no use because can't use logger.info...
 
         @Advice.OnMethodEnter(suppress = Throwable.class)
-        public static Scope onEnter(@Advice.Argument(value = 0) String input, @Advice.Local("otelSpan") Span span) {
+        public static Scope onEnter(@Advice.Argument(value = 0) String myUserInput, @Advice.Local("otelSpan") Span span) {
 //            logger.info("TEST onEnter"); // having this would crash
             // Create a new span.
             Tracer tracer = GlobalOpenTelemetry.getTracer("my-instrumentation-library-name", "semver:1.0.1");
             System.out.print("my-instrumentation-library-name is entering the method");
             span = tracer.spanBuilder("mySpanName").startSpan();
             // Set some attributes on the span.
-            span.setAttribute("input", input);
+            span.setAttribute("thisIsMyUserInput", myUserInput);
             // Make the span active.
             // Return the Scope instance. This will be used in the exit advice to end the span's scope.
             return span.makeCurrent();
         }
 
         @Advice.OnMethodExit(onThrowable = Throwable.class, suppress = Throwable.class)
-        public static void onExit(@Advice.Return(readOnly = false) int wordCount,
+        public static void onExit(@Advice.Return(readOnly = false) int userWordCount,
                                   @Advice.Thrown Throwable throwable,
                                   @Advice.Local("otelSpan") Span span,
                                   @Advice.Enter Scope scope) {
@@ -70,7 +70,7 @@ public class WordCountInstrumentation implements TypeInstrumentation {
                 span.setStatus(StatusCode.ERROR, "Exception thrown in method");
             } else {
                 // If no exception was thrown, set a custom attribute "wordCount" on the span.
-                span.setAttribute("wordCount", wordCount);
+                span.setAttribute("myUserInputWordCount", userWordCount);
             }
 
             // End the span. This makes it ready to be exported to the configured exporter (e.g., Jaeger, Zipkin).
