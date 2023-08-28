@@ -280,3 +280,4 @@ java -javaagent:../splunk-otel-javaagent.jar -Dotel.resource.attributes=service.
 - https://alexey-anufriev.com/blog/advanced-instrumentation-with-bytebuddy-agent/
 - https://blogs.oracle.com/javamagazine/post/runtime-code-generation-with-byte-buddy
 - https://medium.com/@nishada/introduction-to-byte-buddy-advice-annotations-48ac7dae6a94
+- https://sergiomartinrubio.com/articles/java-code-manipulation-with-byte-buddy/
