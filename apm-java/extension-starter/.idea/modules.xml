@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/extension-starter.iml" filepath="$PROJECT_DIR$/extension-starter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/simple-java.iml" filepath="$PROJECT_DIR$/simple-java.iml" />
     </modules>
   </component>
 </project>
