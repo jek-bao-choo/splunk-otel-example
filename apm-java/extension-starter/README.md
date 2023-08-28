@@ -1,4 +1,6 @@
-Create a simple java program (folder `./simple-java`) that even after instrumenting splunk-otel-java agent, it should not show any traces in Splunk Observability UI.
+Create an empty project using IntelliJ.
+
+Create a simple java module called `my-simple-java` (folder structure would be `./my-simple-java`) that even after instrumenting splunk-otel-java agent, it should not show any traces in Splunk Observability UI.
 
 Add the following dependency in `pom.xml` file
 ```xml
@@ -23,7 +25,7 @@ Add the following dependency in `pom.xml` file
 
 ```
 
-Package the simple java program using IntelliJ UI that has Maven support ![Package](1.png)
+Package the my simple java program using IntelliJ UI that has Maven support ![Package](1.png)
 
 ## Steps to package and run via command line
 ```bash
