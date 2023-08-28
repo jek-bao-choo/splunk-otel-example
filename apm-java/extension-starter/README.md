@@ -268,6 +268,9 @@ java -javaagent:../splunk-otel-javaagent.jar -Dotel.resource.attributes=service.
 
 # Reference
 - https://opentelemetry.io/docs/instrumentation/java/automatic/extensions/
+- https://gethelios.dev/blog/deploy-opentelemetry-java-guide-getting-started/
+- https://bytebuddy.net/#/
 - https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/examples/extension
 - https://www.youtube.com/watch?v=hXTlV_RnELc and https://github.com/davidgeorgehope/custom-instrumentation-examples/tree/main
 - https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/kafka/kafka-clients/kafka-clients-0.11/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/kafkaclients/v0_11
+- https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/contributing/writing-instrumentation.md
