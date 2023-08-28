@@ -41,9 +41,11 @@ public class WordCountInstrumentation implements TypeInstrumentation {
 
     public static class WordCountAdvice {
 
+//        public static final Logger logger = Logger.getLogger(WordCountInstrumentation.class.getName()); // no use because can't use logger.info...
+
         @Advice.OnMethodEnter(suppress = Throwable.class)
         public static Scope onEnter(@Advice.Argument(value = 0) String input, @Advice.Local("otelSpan") Span span) {
-            logger.info("TEST onEnter");
+//            logger.info("TEST onEnter"); // having this would crash
             // Create a new span.
             Tracer tracer = GlobalOpenTelemetry.getTracer("my-instrumentation-library-name", "semver:1.0.1");
             System.out.print("my-instrumentation-library-name is entering the method");
@@ -60,7 +62,7 @@ public class WordCountInstrumentation implements TypeInstrumentation {
                                   @Advice.Thrown Throwable throwable,
                                   @Advice.Local("otelSpan") Span span,
                                   @Advice.Enter Scope scope) {
-            logger.info("TEST onExit");
+//            logger.info("TEST onExit"); // having this would crash
             // Close the scope to end it.
             scope.close();
             // If the method threw an exception, set the span's status to error.
@@ -70,6 +72,11 @@ public class WordCountInstrumentation implements TypeInstrumentation {
                 // If no exception was thrown, set a custom attribute "wordCount" on the span.
                 span.setAttribute("wordCount", wordCount);
             }
+
+            // End the span. This makes it ready to be exported to the configured exporter (e.g., Jaeger, Zipkin).
+            span.end();
+
+            System.out.print("ByteBuddy Advice is exiting the method");
         }
 
     }
