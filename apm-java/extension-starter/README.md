@@ -273,15 +273,14 @@ java -javaagent:../splunk-otel-javaagent.jar -Dotel.resource.attributes=service.
 - https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/examples/extension
 - https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/instrumentation/rabbitmq-2.7/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/rabbitmq/RabbitChannelInstrumentation.java
 - https://www.youtube.com/watch?v=hXTlV_RnELc and https://github.com/davidgeorgehope/custom-instrumentation-examples/tree/main and https://www.elastic.co/blog/how-extensions-opentelemetry-java-agent-and-how-apm-works
+
+# Optional Reference
+- https://bytebuddy.net/#/
 - https://www.baeldung.com/byte-buddy
-- https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/instrumentation/kafka/kafka-clients/kafka-clients-0.11/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/kafkaclients/v0_11
+- https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/contributing/writing-instrumentation.md
 - https://alexey-anufriev.com/blog/advanced-instrumentation-with-bytebuddy-agent/
 - https://blogs.oracle.com/javamagazine/post/runtime-code-generation-with-byte-buddy
 - https://medium.com/@nishada/introduction-to-byte-buddy-advice-annotations-48ac7dae6a94
 - https://sergiomartinrubio.com/articles/java-code-manipulation-with-byte-buddy/
-
-# Optional Reference
-- https://bytebuddy.net/#/
-   https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/contributing/writing-instrumentation.md
 
   
