@@ -269,10 +269,11 @@ java -javaagent:../splunk-otel-javaagent.jar -Dotel.resource.attributes=service.
 # Reference
 - https://opentelemetry.io/docs/instrumentation/java/automatic/extensions/
 - https://gethelios.dev/blog/deploy-opentelemetry-java-guide-getting-started/
-- https://bytebuddy.net/#/
-- https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/examples/extension
-- https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/contributing/writing-instrumentation-module.md
 - https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/contributing/writing-instrumentation.md
+-  https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/contributing/writing-instrumentation-module.md
+- https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/examples/extension
+
+
 - https://www.baeldung.com/byte-buddy
 - https://gethelios.dev/blog/deploy-opentelemetry-java-guide-getting-started/
 - https://www.youtube.com/watch?v=hXTlV_RnELc and https://github.com/davidgeorgehope/custom-instrumentation-examples/tree/main and https://www.elastic.co/blog/how-extensions-opentelemetry-java-agent-and-how-apm-works
@@ -281,3 +282,8 @@ java -javaagent:../splunk-otel-javaagent.jar -Dotel.resource.attributes=service.
 - https://blogs.oracle.com/javamagazine/post/runtime-code-generation-with-byte-buddy
 - https://medium.com/@nishada/introduction-to-byte-buddy-advice-annotations-48ac7dae6a94
 - https://sergiomartinrubio.com/articles/java-code-manipulation-with-byte-buddy/
+
+# Optional Reference
+- https://bytebuddy.net/#/
+
+  
