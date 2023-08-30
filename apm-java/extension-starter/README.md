@@ -269,7 +269,6 @@ java -javaagent:../splunk-otel-javaagent.jar -Dotel.resource.attributes=service.
 # Reference
 - https://opentelemetry.io/docs/instrumentation/java/automatic/extensions/
 - https://gethelios.dev/blog/deploy-opentelemetry-java-guide-getting-started/
-- https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/contributing/writing-instrumentation.md
 -  https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/contributing/writing-instrumentation-module.md
 - https://github.com/open-telemetry/opentelemetry-java-instrumentation/tree/main/examples/extension
 
@@ -285,5 +284,6 @@ java -javaagent:../splunk-otel-javaagent.jar -Dotel.resource.attributes=service.
 
 # Optional Reference
 - https://bytebuddy.net/#/
+   https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/docs/contributing/writing-instrumentation.md
 
   
