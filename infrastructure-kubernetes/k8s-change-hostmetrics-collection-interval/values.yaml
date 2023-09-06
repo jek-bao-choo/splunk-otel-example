@@ -1,0 +1,132 @@
+
+################################################################################
+# clusterName is a REQUIRED. It can be set to an arbitrary value that identifies
+# your K8s cluster. The value will be associated with every trace, metric and
+# log as "k8s.cluster.name" attribute.
+################################################################################
+
+clusterName: "jek-aks-change-collection-interval"
+
+################################################################################
+# Splunk Observability configuration
+################################################################################
+
+# Specify `realm` and `accessToken` to telemetry data to Splunk Observability
+# Cloud.
+splunkObservability:
+  # Required for Splunk Observability. Splunk Observability realm to send
+  # telemetry data to. Setting this parameter enables Splunk Observability as a
+  # destination.
+  realm: "<CHANGEME>"
+  # Required for Splunk Observability (if `realm` is specified). Splunk
+  # Alternatively the accessToken can be provided as a secret.
+  # Refer to https://github.com/signalfx/splunk-otel-collector-chart/blob/main/docs/advanced-configuration.md#provide-tokens-as-a-secret
+  # Observability org access token.
+  accessToken: "<CHANGEME>"
+
+  # Options to disable or enable particular telemetry data types.
+  metricsEnabled: true
+  tracesEnabled: true
+  logsEnabled: false
+
+  # Option to send Kubernetes events to Splunk Observability Infrastructure Monitoring as data events:
+  # https://docs.splunk.com/Observability/alerts-detectors-notifications/view-data-events.html
+  # To send Kubernetes events to Splunk Observability Log Observer, configure clusterReceiver.k8sObjects
+  # and set splunkObservability.logsEnabled to true.
+  infrastructureMonitoringEventsEnabled: false
+
+  # This option just enables the shared pipeline for logs and profiling data.
+  # There is no active collection of profiling data.
+  # Instrumentation libraries must be configured to send it to the collector.
+  # If you don't use AlwaysOn Profiling for Splunk APM, you can disable it.
+  profilingEnabled: false
+
+################################################################################
+# Cloud provider, if any, the collector is running on. Leave empty for none/other.
+# - "aws" (Amazon Web Services)
+# - "gcp" (Google Cloud Platform)
+# - "azure" (Microsoft Azure)
+################################################################################
+
+cloudProvider: "azure"
+
+################################################################################
+# Kubernetes distribution being run. Leave empty for other.
+# - "aks" (Azure Kubernetes Service)
+# - "eks" (Amazon Elastic Kubernetes Service)
+# - "eks/fargate" (Amazon Elastic Kubernetes Service with Fargate profiles )
+# - "gke" (Google Kubernetes Engine / Standard mode)
+# - "gke/autopilot" (Google Kubernetes Engine / Autopilot mode)
+# - "openshift" (RedHat OpenShift)
+################################################################################
+
+distribution: "aks"
+
+################################################################################
+# OpenTelemetry collector running as an deamonset agent on every node.
+# It collects metrics and traces and send them to Signalfx backend.
+################################################################################
+
+agent:
+  enabled: true
+
+  # OpenTelemetry Collector configuration for otel-agent daemonset can be overriden in this field.
+  # Default configuration defined in templates/config/_otel-agent.tpl
+  # Any additional fields will be merged into the defaults,
+  # existing fields can be disabled by setting them to null value.
+  # To update collection_interval only line 81 is required. The rest of the config is for reference.
+  config:
+    receivers:
+      hostmetrics:
+        collection_interval: 77s
+    #     scrapers:
+    #       cpu:
+    #       disk:
+    #       filesystem:
+    #       memory:
+    #       network:
+    #       # System load average metrics https://en.wikipedia.org/wiki/Load_(computing)
+    #       load:
+    #       # Paging/Swap space utilization and I/O metrics
+    #       paging:
+    #       # Aggregated system process count metrics
+    #       processes:
+    #       # System processes metrics, disabled by default
+    #       # process:
+
+    # service:
+    #   pipelines:
+    #     metrics:
+    #       receivers: [ hostmetrics ]
+
+################################################################################
+# OpenTelemetry Kubernetes cluster receiver
+# This is an extra 1-replica deployment of Open-temlemetry collector used
+# specifically for collecting metrics from kubernetes API.
+################################################################################
+
+# Cluster receiver collects cluster level metrics from the Kubernetes API.
+# It has to be running on one pod, so it uses its own dedicated deployment with 1 replica.
+
+clusterReceiver:
+  enabled: true
+
+  # OpenTelemetry Collector configuration for K8s Cluster Receiver deployment can be overriden in this field.
+  # Default configuration defined in templates/config/_otel-k8s-cluster-receiver-config.tpl
+  # Any additional fields will be merged into the defaults,
+  # existing fields can be disabled by setting them to null value.
+  config: {}
+
+################################################################################
+# OpenTelemetry "collector" k8s deployment configuration.
+# This is an additional deployment of Open-telemetry collector that can be used
+# to pass traces trough it, make k8s metadata enrichment and batching.
+# Another use case is to point tracing instrumentation libraries directly to
+# the collector endpoint instead of local agents. The collector running in the
+# passthrough mode is recommended for large k8s clusters, disabled by default.
+################################################################################
+
+gateway:
+  # Defines if collector deployment is enabled
+  # Recommended for large k8s clusters, disabled by default.
+  enabled: false
