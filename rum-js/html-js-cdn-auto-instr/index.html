@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe</title>
+  <style>
+    .board {
+      width: 300px;
+      height: 300px;
+      display: grid;
+      grid-template-columns: 100px 100px 100px;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      border: 1px solid black;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 32px;
+    }
+  </style>
+
+  <script src="https://cdn.signalfx.com/o11y-gdi-rum/v0.16.4/splunk-otel-web.js" integrity="sha384-gdJJy13ccMS6fSRtX5XVqUA8bwDATdtyEiuU1NT4pv1qcsCoaJ2YhjhU6tbbiCFv" crossorigin="anonymous"></script>
+
+  <script>
+    SplunkRum.init({
+      realm: "us1",
+      rumAccessToken: "<rum access token>",
+      applicationName: "jek-tic-tac-toe-v5",
+      deploymentEnvironment: "confgosingapore",
+      allowInsecureBeacon: true,
+      version: '88.89',
+      // debug: true
+    });
+  </script>
+
+  <script src="https://cdn.signalfx.com/o11y-gdi-rum/v0.16.4/splunk-otel-web-session-recorder.js" integrity="sha384-aPrqG7tNVrYippv4NAUqCussg5OcG013ljBDaRfc4Vs8pUz8DMfEVMF6ynhxKu3G" crossorigin="anonymous"></script>
+
+  <script>
+    SplunkSessionRecorder.init({
+      app: "jek-tic-tac-toe-v5",
+      beaconUrl: "https://rum-ingest.us1.signalfx.com/v1/rumreplay",
+      rumAuth: "<rum access token>",
+      // debug: true
+    });
+  </script>
+
+</head>
+<body>
+
+<h1>Beat Me If You Can!</h1>
+<h3>Tic Tac Toe</h3>
+<div id="board" class="board">
+  <div class="cell"></div>
+  <div class="cell"></div>
+  <div class="cell"></div>
+  <div class="cell"></div>
+  <div class="cell"></div>
+  <div class="cell"></div>
+  <div class="cell"></div>
+  <div class="cell"></div>
+  <div class="cell"></div>
+</div>
+
+<script>
+  if (window.SplunkRum) {
+    console.log('SplunkRum is loaded');
+    SplunkRum.setGlobalAttributes({
+      'enduser.id': 'Test User'
+    });
+
+    SplunkRum.addEventListener('session-changed', (event) => {
+      console.log('Session changed - event.payload.sessionId', event.payload.sessionId);
+    });
+
+  } else {
+    console.log('SplunkRum is not loaded');
+  }
+
+  const board = Array.from(document.querySelectorAll('.cell'));
+  let currentPlayer = 'X';
+  let gameActive = true;
+
+  const winningConditions = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  function checkWin() {
+    let winner = null;
+    winningConditions.forEach((condition) => {
+      const [a, b, c] = condition;
+      if (board[a].textContent && board[a].textContent === board[b].textContent && board[a].textContent === board[c].textContent) {
+        winner = board[a].textContent;
+        gameActive = false;
+      }
+    });
+
+    return winner;
+  }
+
+  board.forEach(cell => cell.addEventListener('click', function(event) {
+    if (event.target.textContent === '' && gameActive) {
+      event.target.textContent = currentPlayer;
+      const winner = checkWin();
+      if (winner) {
+        alert(`${winner} is the winner!`);
+      } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      }
+    }
+  }));
+
+</script>
+
+</body>
+</html>
