@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: synthetic-private
+  name: synthetic-private
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synthetic-private
+  template:
+    metadata:
+      labels:
+        app: synthetic-private
+    spec:
+      containers:
+      - image: quay.io/signalfx/splunk-synthetics-runner:latest
+        name: synthetic-private-agent
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+        env:
+        - name: RUNNER_TOKEN
+          value: < the long long runner token >
+        - name: DISABLE_NETWORK_SHAPING
+          value: "true"
