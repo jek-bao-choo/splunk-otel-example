@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "dependencies": {
+    "@splunk/otel-web": "^0.16.4",
+    "@splunk/otel-web-session-recorder": "^0.16.4",
+    "lodash": "^4.17.21",
+    "sweetalert2": "^6.6.1"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}

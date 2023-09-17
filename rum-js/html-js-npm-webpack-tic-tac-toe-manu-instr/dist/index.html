@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;  /* Dark background color */
+            color: #ffffff;  /* Light text color */
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .cell {
+            border: 1px solid #ffffff;  /* Light border color */
+            text-align: center;
+            vertical-align: middle;
+            font-size: 4vw;
+            padding: 20px;
+            background-color: #1e1e1e;  /* Slightly lighter dark color for cells */
+        }
+
+        /* Textbox and button styling */
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+        }
+
+        /* Hover effect for buttons */
+        button:hover {
+            background-color: #ffffff;
+            color: #121212;
+        }
+
+        @media (min-width: 600px) {
+            .cell {
+                font-size: 32px;
+                padding: 30px;
+            }
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <h1>Beat Me If You Can!</h1>
+
+    <div>
+        <label for="player1">Player 1 (X) name:</label>
+        <input type="text" id="player1"/>
+    </div>
+
+    <div>
+        <label for="player2">Player 2 (O) name:</label>
+        <input type="text" id="player2"/>
+    </div>
+
+    <button id="startGame">Start Game</button>
+    <button id="resetGame">Reset Game</button>
+
+    <div id="board" class="board">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
+    <script src="main.js"></script>
+</div>
+</body>
+</html>
