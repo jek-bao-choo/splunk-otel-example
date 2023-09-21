@@ -43,6 +43,16 @@
             border: 1px solid #ffffff;
         }
 
+        .flex-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .left-section {
+            padding: 20px;
+        }
+
         /* Hover effect for buttons */
         button:hover {
             background-color: #ffffff;
@@ -60,21 +70,20 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>Beat Me If You Can!</h1>
-
-    <div>
-        <label for="player1">Player 1 (X) name:</label>
-        <input type="text" id="player1"/>
+<div class="container flex-container">
+    <div class="left-section">
+        <h1>Beat Me If You Can!</h1>
+        <div>
+            <label for="player1">Player 1 (X) name:</label>
+            <input type="text" id="player1"/>
+        </div>
+        <div>
+            <label for="player2">Player 2 (O) name:</label>
+            <input type="text" id="player2"/>
+        </div>
+        <button id="startGame">Start Game</button>
+        <button id="resetGame">Reset Game</button>
     </div>
-
-    <div>
-        <label for="player2">Player 2 (O) name:</label>
-        <input type="text" id="player2"/>
-    </div>
-
-    <button id="startGame">Start Game</button>
-    <button id="resetGame">Reset Game</button>
 
     <div id="board" class="board">
         <div class="cell"></div>

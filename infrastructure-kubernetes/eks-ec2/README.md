@@ -17,7 +17,10 @@ eksctl create cluster \
 --managed \
 --dry-run
 ```
-
+or using the yaml file
+```bash
+eksctl create cluster -f ./eks-config.yaml --dry-run
+```
 
 2. Check that the cluster is created
 ```bash

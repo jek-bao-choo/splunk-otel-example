@@ -1,0 +1,12 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: jek-eks-ec2-cluster-<add a date>
+  region: ap-southeast-1
+
+managedNodeGroups:
+- name: jek-eks-ec2-managednodegroup-workers
+  instanceType: m5.large
+  desiredCapacity: 2
+ 
