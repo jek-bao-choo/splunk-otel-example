@@ -9,11 +9,13 @@ eksctl create cluster \
 --name=jek-eks-ec2-cluster-<add a date> \
 --nodegroup-name=jek-eks-ec2-workers \
 --version=1.21 \
---node-type=t3.xlarge \
+--node-type=t3.large \
 --nodes 2 \
 --region=ap-southeast-1 \
---tags=environment=jek-sandbox \
---tags=jek-environment=sandbox \
+--tags=Env=test \
+--tags=Criticality=low \
+--tags=Owner=email@email.com \
+--node-private-networking= true \
 --managed \
 --dry-run
 ```
