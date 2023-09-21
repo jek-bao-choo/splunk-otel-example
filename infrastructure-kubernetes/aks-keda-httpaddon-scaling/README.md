@@ -3,12 +3,14 @@
 - Login to your azure account `az login`
     - Set the cluster subscription `az account set --subscription XXXXX-XXXX-XXXX-XXXX`
 - List all Azure Resource Groups https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest `az group list`
-    - Or create Azure Resource Group `az group create --location southeastasia --name JekAKSResourceGroup --tags Criticality=Low Env=Test Owner=email@email.com`
+    - Or create Azure Resource Group `export AZURE_RESOURCE_GROUP="JekAKSResource"`
+    - Followed by `az group create --location southeastasia --name "${AZURE_RESOURCE_GROUP}" --tags Criticality=Low Env=Test Owner=email@email.com`
 
 # Create and connect to AKS Cluster
-- Create AKS cluster https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-create `az aks create --resource-group JekAKSResourceGroup --node-count 2 --ssh-key-value /path/to/publickey --name JekAKSCluster16June2023`
+- `export AKS_CLUSTER_NAME="JekAKSCluster"`
+- Create AKS cluster https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-create `az aks create --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}" --network-plugin none --node-count 2`
 - `az aks list`
-- `az aks get-credentials --resource-group JekAKSResourceGroup --name JekAKSCluster16June2023` 
+- `az aks get-credentials --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}"` 
 
 # Install KEDA
 - View the metrics server that is been setup in kube-system `kubectl get pod -A | grep -i metrics`
@@ -51,5 +53,5 @@ kubectl delete $(kubectl get scaledobjects.keda.sh,scaledjobs.keda.sh -A \
 helm uninstall keda -n keda
 ```
 - Uninstall KEDA via Helm Chart `helm uninstall -n keda keda`
-- Delete the AKS cluster `az aks delete --resource-group JekAKSResourceGroup --name JekAKSCluster16June2023`
-- Delete the created Azure Resource Group https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-delete `az group delete --name JekAKSResourceGroup`
+- Delete the AKS cluster `az aks delete --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}"`
+- Delete the created Azure Resource Group https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-delete `az group delete --name "${AZURE_RESOURCE_GROUP}"`
