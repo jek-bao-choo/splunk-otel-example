@@ -15,7 +15,6 @@ eksctl create cluster \
 --tags=Env=test \
 --tags=Criticality=low \
 --tags=Owner=email@email.com \
---node-private-networking= true \
 --managed \
 --dry-run
 ```
