@@ -130,3 +130,6 @@ eksctl delete cluster jek-eks-ec2-cluster-<the date>
 - Proof: ![proof](proof.png "working proof")
 - Proof: ![proof2](proof2.png "working proof 2")
 - Last updated: 29 Mar 2022
+
+    -- My colleague Michael last tried would look like this ![](1.png) ![](2.png)
+    -- 10 Oct 2023
