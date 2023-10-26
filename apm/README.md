@@ -10,28 +10,28 @@ A (Node.js Express) --> B (Node.js Nest.js) --> Kafka --> C (Node.js Express) --
 # How to run each app
 ## A
 ```
-cd /a
+cd a/
 npm install
 node a.js
 ```
 
 ## B
 ```
-cd /b
+cd b/
 npm install
 node b.js
 ```
 
 ## C
 ```
-cd /c
+cd c/
 npm install
 node c.js
 ```
 
 ## D
 ```
-cd /d
+cd d/
 go run main.go
 ```
 
