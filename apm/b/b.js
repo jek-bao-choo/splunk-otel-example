@@ -16,7 +16,8 @@ app.post('/b', (req, res) => {
 // WIP: try to send via Kafka instead of through REST API
 async function sendData() {
     const data = { message: 'Hello from /b' };
-    await axios.post('http://localhost:3003/c', data);
+    const targetURL = process.env.TARGET_SERVICE_URL || 'http://localhost:3003/c'
+    await axios.post(targetURL, data);
 }
 
 // Start the server

@@ -14,7 +14,8 @@ app.get('/a', (req, res) => {
 
 async function sendData() {
     const data = { message: 'Hello from /a' };
-    await axios.post('http://localhost:3002/b', data);
+    const targetURL = process.env.TARGET_SERVICE_URL || 'http://localhost:3002/b'
+    await axios.post(targetURL, data);
 }
 
 

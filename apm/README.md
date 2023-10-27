@@ -39,3 +39,5 @@ go run main.go
 ```
 curl http://localhost:3001/a
 ```
+
+# Containerize
