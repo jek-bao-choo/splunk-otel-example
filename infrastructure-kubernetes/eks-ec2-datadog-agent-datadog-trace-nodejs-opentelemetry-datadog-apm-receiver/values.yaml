@@ -1,0 +1,9 @@
+# targetSystem -- Target OS for this deployment
+# (possible values: linux, windows)
+targetSystem: "linux"
+datadog:
+  # datadog.apiKey -- Your Datadog API key
+  apiKey: "<your api key>"
+  apiKeyExistingSecret: datadog-secret
+  appKeyExistingSecret: datadog-secret
+  site: <your datadog site>

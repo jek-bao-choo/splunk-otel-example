@@ -1,0 +1,182 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-a
+  labels:
+    tags.datadoghq.com/env: test
+    tags.datadoghq.com/service: microa
+    tags.datadoghq.com/version: v1.0.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: microservice-a
+  template:
+    metadata:
+      labels:
+        app: microservice-a
+        tags.datadoghq.com/env: test
+        tags.datadoghq.com/service: microa
+        tags.datadoghq.com/version: v1.0.0
+        admission.datadoghq.com/enabled: "true"
+      annotations:
+        admission.datadoghq.com/js-lib.version: v4.18.0
+    spec:
+      containers:
+      - name: microservice-a-container
+        image: jchoo/microservice-chain-a:v1.0.0
+        env:
+        - name: TARGET_SERVICE_URL
+          value: http://microservice-b-service.default.svc.cluster.local/b
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: DD_TRACE_AGENT_URL
+          value: http://$(DD_AGENT_HOST):8126
+        - name: DD_LOGS_INJECTION
+          value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-a-service
+spec:
+  selector:
+    app: microservice-a
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-b
+  labels:
+    tags.datadoghq.com/env: test
+    tags.datadoghq.com/service: microb
+    tags.datadoghq.com/version: v1.0.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: microservice-b
+  template:
+    metadata:
+      labels:
+        app: microservice-b
+        tags.datadoghq.com/env: test
+        tags.datadoghq.com/service: microb
+        tags.datadoghq.com/version: v1.0.0
+        admission.datadoghq.com/enabled: "true"
+      annotations:
+        admission.datadoghq.com/js-lib.version: v4.18.0
+    spec:
+      containers:
+      - name: microservice-b-container
+        image: jchoo/microservice-chain-b:v1.0.0
+        env:
+        - name: TARGET_SERVICE_URL
+          value: http://microservice-c-service.default.svc.cluster.local/c
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: DD_TRACE_AGENT_URL
+          value: http://$(DD_AGENT_HOST):8126
+        - name: DD_LOGS_INJECTION
+          value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-b-service
+spec:
+  selector:
+    app: microservice-b
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-c
+  labels:
+    tags.datadoghq.com/env: test
+    tags.datadoghq.com/service: microc
+    tags.datadoghq.com/version: v1.0.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: microservice-c
+  template:
+    metadata:
+      labels:
+        app: microservice-c
+        tags.datadoghq.com/env: test
+        tags.datadoghq.com/service: microc
+        tags.datadoghq.com/version: v1.0.0
+        admission.datadoghq.com/enabled: "true"
+      annotations:
+        admission.datadoghq.com/js-lib.version: v4.18.0
+    spec:
+      containers:
+      - name: microservice-c-container
+        image: jchoo/microservice-chain-c:v1.0.0
+        env:
+        - name: TARGET_SERVICE_URL
+          value: http://microservice-d-service.default.svc.cluster.local/d
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: DD_TRACE_AGENT_URL
+          value: http://$(DD_AGENT_HOST):8126
+        - name: DD_LOGS_INJECTION
+          value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-c-service
+spec:
+  selector:
+    app: microservice-c
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3003
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-d
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: microservice-d
+  template:
+    metadata:
+      labels:
+        app: microservice-d
+    spec:
+      containers:
+      - name: microservice-d-container
+        image: jchoo/microservice-chain-d:v1.0.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-d-service
+spec:
+  selector:
+    app: microservice-d
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3004
