@@ -1,10 +1,11 @@
 {
   "name": "c",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
   "main": "c.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node c.js"
   },
   "author": "",
   "license": "ISC",

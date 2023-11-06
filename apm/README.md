@@ -7,7 +7,7 @@ A (Node.js Express) --> B (Node.js Express) --> C (Node.js Express) --> D (Golan
 ## Next Iteration 2
 A (Node.js Express) --> B (Node.js Nest.js) --> Kafka --> C (Node.js Express) --> D (Golang net/http)
 
-# How to run each app
+# Run
 ## A
 ```
 cd a/
@@ -40,4 +40,36 @@ go run main.go
 curl http://localhost:3001/a
 ```
 
-# Containerize
+# Containerise
+## Docker Compose
+```
+docker-compose up
+```
+
+## Trigger
+```
+curl http://localhost:3001/a
+```
+
+## Push image to registry
+```
+docker-compose build
+```
+
+```
+docker-compose push
+```
+
+# Kubernetise
+## deployment .yaml file
+```
+kubectl apply -f deployment.yaml
+```
+
+```
+kubectl port-forward svc/microservice-a-service 8080:80
+```
+
+```
+curl localhost:8080/a
+```

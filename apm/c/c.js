@@ -17,10 +17,11 @@ app.post('/c', (req, res) => {
 async function sendData() {
     const data = { message: 'Hello from /c' };
     const targetURL = process.env.TARGET_SERVICE_URL || 'http://localhost:3004/d'
+    console.log("targetURL", targetURL);
     await axios.post(targetURL, data);
 }
 
 // Start the server
 app.listen(3003, () => {
-    console.log('Server is running on port 3003');
+    console.log('Server c is running on port 3003');
 });

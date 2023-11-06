@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app1:
+    build: ./a
+    image: jchoo/microservice-chain-a:v1.0.0
+    ports:
+      - "3001:3001"
+    environment:
+      TARGET_SERVICE_URL: http://app2:3002/b
+
+  app2:
+    build: ./b
+    image: jchoo/microservice-chain-b:v1.0.0
+    ports:
+      - "3002:3002"
+    environment:
+      TARGET_SERVICE_URL: http://app3:3003/c
+
+  app3:
+    build: ./c
+    image: jchoo/microservice-chain-c:v1.0.0
+    ports:
+      - "3003:3003"
+    environment:
+      TARGET_SERVICE_URL: http://app4:3004/d
+
+  app4:
+    build: ./d
+    image: jchoo/microservice-chain-d:v1.0.0
+    ports:
+      - "3004:3004"
