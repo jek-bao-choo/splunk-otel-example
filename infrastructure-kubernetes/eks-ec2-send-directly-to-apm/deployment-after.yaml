@@ -1,0 +1,215 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-a
+  template:
+    metadata:
+      labels:
+        app: microservice-a
+    spec:
+      initContainers:
+      - name: install-splunk-otel
+        image: ghcr.io/signalfx/splunk-otel-js/splunk-otel-js:v2.5.0
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          cp -r /autoinstrumentation /tmp/
+        volumeMounts:
+        - name: otel-modules
+          mountPath: /tmp/autoinstrumentation
+      containers:
+      - name: microservice-a-container
+        image: jchoo/microservice-chain-a:v1.0.0
+        command: ["node", "-r", "/usr/src/app/autoinstrumentation/instrument", "a.js"]
+        volumeMounts:
+        - name: otel-modules
+          mountPath: /usr/src/app/autoinstrumentation
+        env:
+        - name: TARGET_SERVICE_URL
+          value: http://microservice-b-service.default.svc.cluster.local/b
+        - name: OTEL_SERVICE_NAME
+          value: "microservice-a"
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: "deployment.environment=dev"
+        - name: SPLUNK_REALM
+          value: "<your_realm>"
+        - name: SPLUNK_ACCESS_TOKEN
+          value: "<your_access_token>"
+        - name: SPLUNK_METRICS_ENABLED
+          value: "true"
+        - name: OTEL_LOG_LEVEL
+          value: "DEBUG"
+      volumes:
+      - name: otel-modules
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-a-service
+spec:
+  selector:
+    app: microservice-a
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-b
+  template:
+    metadata:
+      labels:
+        app: microservice-b
+    spec:
+      initContainers:
+      - name: install-splunk-otel
+        image: ghcr.io/signalfx/splunk-otel-js/splunk-otel-js:v2.5.0
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          cp -r /autoinstrumentation /tmp/
+        volumeMounts:
+        - name: otel-modules
+          mountPath: /tmp/autoinstrumentation
+      containers:
+      - name: microservice-b-container
+        image: jchoo/microservice-chain-b:v1.0.0
+        command: ["node", "-r", "/usr/src/app/autoinstrumentation/instrument", "b.js"]
+        volumeMounts:
+        - name: otel-modules
+          mountPath: /usr/src/app/autoinstrumentation
+        env:
+        - name: TARGET_SERVICE_URL
+          value: http://microservice-c-service.default.svc.cluster.local/c
+        - name: OTEL_SERVICE_NAME
+          value: "microservice-b"
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: "deployment.environment=dev"
+        - name: SPLUNK_REALM
+          value: "<your_realm>"
+        - name: SPLUNK_ACCESS_TOKEN
+          value: "<your_access_token>"
+        - name: SPLUNK_METRICS_ENABLED
+          value: "true"
+        - name: OTEL_LOG_LEVEL
+          value: "DEBUG"
+      volumes:
+      - name: otel-modules
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-b-service
+spec:
+  selector:
+    app: microservice-b
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-c
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-c
+  template:
+    metadata:
+      labels:
+        app: microservice-c
+    spec:
+      initContainers:
+      - name: install-splunk-otel
+        image: ghcr.io/signalfx/splunk-otel-js/splunk-otel-js:v2.5.0
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          cp -r /autoinstrumentation /tmp/
+        volumeMounts:
+        - name: otel-modules
+          mountPath: /tmp/autoinstrumentation
+      containers:
+      - name: microservice-c-container
+        image: jchoo/microservice-chain-c:v1.0.0
+        command: ["node", "-r", "/usr/src/app/autoinstrumentation/instrument", "c.js"]
+        volumeMounts:
+        - name: otel-modules
+          mountPath: /usr/src/app/autoinstrumentation
+        env:
+        - name: TARGET_SERVICE_URL
+          value: http://microservice-d-service.default.svc.cluster.local/d
+        - name: OTEL_SERVICE_NAME
+          value: "microservice-c"
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: "deployment.environment=dev"
+        - name: SPLUNK_REALM
+          value: "<your_realm>"
+        - name: SPLUNK_ACCESS_TOKEN
+          value: "<your_access_token>"
+        - name: SPLUNK_METRICS_ENABLED
+          value: "true"
+        - name: OTEL_LOG_LEVEL
+          value: "DEBUG"
+      volumes:
+      - name: otel-modules
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-c-service
+spec:
+  selector:
+    app: microservice-c
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3003
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-d
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-d
+  template:
+    metadata:
+      labels:
+        app: microservice-d
+    spec:
+      containers:
+      - name: microservice-d-container
+        image: jchoo/microservice-chain-d:v1.0.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-d-service
+spec:
+  selector:
+    app: microservice-d
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3004

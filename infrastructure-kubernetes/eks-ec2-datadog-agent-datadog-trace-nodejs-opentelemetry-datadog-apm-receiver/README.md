@@ -44,3 +44,30 @@ kubectl logs deploy/microservice-d
 
 Instal Upstream OTel Collector 
 https://opentelemetry.io/docs/kubernetes/helm/collector/
+
+```
+helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+
+helm repo update
+
+helm pull --untar open-telemetry/opentelemetry-collector
+
+cd open-telemetry
+
+vim values.yaml
+
+helm install my-opentelemetry-collector open-telemetry/opentelemetry-collector --values values.yaml
+
+```
+
+```
+kubectl port-forward svc/microservice-a-service 8080:80
+```
+
+```
+curl localhost:8080/a
+```
+
+```
+kubectl logs deploy/microservice-d
+```
