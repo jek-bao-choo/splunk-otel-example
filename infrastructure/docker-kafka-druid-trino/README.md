@@ -84,6 +84,10 @@ trino;druid> `select * from druid l;`
 
 ![](proof.png)
 
+# Try using Trino through Jetbrain's DataGrip. A easier to understand and navigate interface.
+
+![](datagrip1.png)
+
 # Add splunk-otel-java to read the Java metrics from Kafka, Druid, and Trino.
 WIP...
 
