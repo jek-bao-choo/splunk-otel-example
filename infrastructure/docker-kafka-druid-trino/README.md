@@ -54,44 +54,29 @@ udemy.com/course/apache-druid-complete-guide/learn/lecture/38970672#overview
 
 # Create druid.properties for Presto's connector to Druid to use.
 
-Create a `druid.properties` file following the instruction here https://prestodb.io/docs/current/connector/druid.html
+Create a `druid.properties` file following the instruction here https://trino.io/docs/current/connector/druid.html
 
-![](druidcoordinator.png)
 ![](druidbroker.png)
 
-From the original
+Change out BROKER IP ADDRESS with computer network IP address
 ```
 connector.name=druid
-druid.coordinator-url=hostname:port
-druid.broker-url=hostname:port
-druid.schema-name=schema
-druid.compute-pushdown-enabled=true
-```
-To e.g. <change out XXX based on the network details IP address>
-```
-connector.name=druid
-druid.coordinator-url=http://192.XXX.XXX.XXX:8081
-druid.broker-url=http://192.XXX.XXX.XXX:8082
-druid.schema-name=druid
-druid.compute-pushdown-enabled=true
+connection-url=jdbc:avatica:remote:url=http://<BROKER IP ADDRESS>:8082/druid/v2/sql/avatica/
 ```
 
-# Create Presto
-https://prestodb.io/docs/current/installation/deploy-docker.html 
+# Create Trino
+https://trino.io/docs/current/installation/containers.html
 
-`docker pull ghcr.io/popsql/prestodb-sandbox` https://github.com/prestodb/presto/issues/21341 
-
-```
-docker run --rm -d -p 9099:8080 -v /Users/XXX/XXX/splunk-otel-example/infrastructure/docker-kafka-druid-presto/druid.properties:/opt/presto-server/etc/catalog/druid.properties --name presto ghcr.io/popsql/prestodb-sandbox
-```
-
+`docker run --rm -d -p 9000:8080 -v /Users/XXX/XXX/splunk-otel-example/infrastructure/docker-kafka-druid-trino/druid.properties:/etc/trino/catalog/druid.properties --name trino trinodb/trino`
 
 Go to http://localhost:9099
 
-Optionally can go to presto-cli `docker exec -it presto presto-cli` <-- couldn't run this line. Hence cannot validate if Presto could query Druid. 
+# Use Trino CLI to query
+`docker exec -it trino trino`
 
-# Add splunk-otel-java since Kafka, Druid, and Presto are on Java
-Visualise the metrics.
+trino> `exit`
+
+`docker exec -it trino trino --server 192.168.XXX.XXX:9000 --catalog druid --schema druid`
 
 # Reference
-udemy.com/course/apache-druid-complete-guide/learn/lecture/38970662#overview
+udemy.com/course/apache-druid-complete-guide/learn/lecture/38970666#overview
