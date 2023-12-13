@@ -78,5 +78,14 @@ trino> `exit`
 
 `docker exec -it trino trino --server 192.168.XXX.XXX:9000 --catalog druid --schema druid`
 
+trino;druid> `show tables;`
+
+trino;druid> `select * from druid l`
+
+![](proof.png)
+
+# Add splunk-otel-java to read the Java metrics from Kafka, Druid, and Trino.
+WIP...
+
 # Reference
 udemy.com/course/apache-druid-complete-guide/learn/lecture/38970666#overview
