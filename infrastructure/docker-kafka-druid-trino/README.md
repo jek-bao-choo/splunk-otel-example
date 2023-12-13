@@ -2,14 +2,14 @@
 ![](networkip.png)
 
 # Start Kafka
-`docker run --rm -d -p 9092:9092 -e ADV_HOST=192.168.XXX.106 \
---name local-kafka lensesio/fast-data-dev:latest`
+`docker run --rm -d -p 9092:9092 -e ADV_HOST=192.168.XXX.106 --name local-kafka lensesio/fast-data-dev:latest`
 
 # Start Kafka UI
-`docker run --rm -d -p 8000:8080 -e DYNAMIC_CONFIG_ENABLED=true \
---name kafka-ui provectuslabs/kafka-ui`
+`docker run --rm -d -p 8000:8080 -e DYNAMIC_CONFIG_ENABLED=true --name kafka-ui provectuslabs/kafka-ui`
 
 # Create Kafka cluster
+Go to http://localhost:8000
+
 ![](kafkaui.png)
 
 If error connecting, try `advertised.listeners=PLAINTEXT://192.168.XXX.106:9092` in the above step and check out https://stackoverflow.com/questions/67763076/connection-to-node-1-127-0-0-19092-could-not-be-established-broker-may-not 
@@ -52,7 +52,7 @@ udemy.com/course/apache-druid-complete-guide/learn/lecture/38970672#overview
 
 ---
 
-# Create druid.properties for Presto's connector to Druid to use.
+# Create druid.properties for Trino's connector to Druid to use.
 
 Create a `druid.properties` file following the instruction here https://trino.io/docs/current/connector/druid.html
 
@@ -69,7 +69,7 @@ https://trino.io/docs/current/installation/containers.html
 
 `docker run --rm -d -p 9000:8080 -v /Users/XXX/XXX/splunk-otel-example/infrastructure/docker-kafka-druid-trino/druid.properties:/etc/trino/catalog/druid.properties --name trino trinodb/trino`
 
-Go to http://localhost:9099
+Go to http://localhost:9000
 
 # Use Trino CLI to query
 `docker exec -it trino trino`
@@ -80,7 +80,7 @@ trino> `exit`
 
 trino;druid> `show tables;`
 
-trino;druid> `select * from druid l`
+trino;druid> `select * from druid l;`
 
 ![](proof.png)
 
