@@ -48,6 +48,7 @@ Proof
 - `kubectl patch deployment <my deployment name> -n default -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"otel/splunk-otel-collector"}}}} }'` This is Java example
     - `kubectl patch deployment <name of the deployment> -n <namespace of the deployment> -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"splunk-monitoring/splunk-otel-collector"}}}} }'`
     - `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
+    - `kubectl describe pod <application_pod_name> -n <namespace>` verify that there is initcontainer added
 
 Proof
 ![](proof2.png)
@@ -72,6 +73,11 @@ Proof
 ---
 
 ### Troubleshooting the Operator and Cert Manager
+
+#### 0. Verify init containers added and started as well as environment variables
+```
+kubectl describe pod <application_pod_name> -n <namespace>
+```
 
 #### 1. Check the logs for failures
 
