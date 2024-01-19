@@ -8,8 +8,14 @@
 ---
 # Deploy a few apps without instrumentation agents
 
+## Java
 - `kubectl apply -f java-deployment.yaml`
+- `kubectl port-forward deployment/spring-maven-k8s-eks-ec2-v2 3009:8080`
+- `curl http://localhost:3009/greeting` Invoke success
+- `curl http://localhost:3009` Invoke failure
 
+
+## Node.js
 
 ---
 
