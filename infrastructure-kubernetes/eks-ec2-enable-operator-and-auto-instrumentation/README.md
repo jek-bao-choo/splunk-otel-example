@@ -10,12 +10,14 @@
 
 ## Java
 - `kubectl apply -f java-deployment.yaml`
+- `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
 - `kubectl port-forward deployment/spring-maven-k8s-eks-ec2-v2 3009:8080`
 - `curl http://localhost:3009/greeting` Invoke success
 - `curl http://localhost:3009` Invoke failure
 
 
 ## Node.js
+... WIP ...
 
 ---
 
@@ -26,15 +28,36 @@
 - `helm repo update`
 - `kubectl get pods -l app=cert-manager --all-namespaces` Check if a cert-manager is already installed by looking for cert-manager pods.
 - Create values.yaml and if cert-manager is deployed, make sure to remove certmanager.enabled=true to the list of values to set.
-- `kubectl create ns otel`
-- `helm install -n otel splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector -f values.yaml`
-- `kubectl get pods -n otel`
+- `kubectl create ns splunk-monitoring`
+- `helm install -n splunk-monitoring splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector -f values.yaml`
+- `helm ls -n splunk-monitoring`
+- `kubectl get pods -n splunk-monitoring`
 - `kubectl get mutatingwebhookconfiguration.admissionregistration.k8s.io`
-- `kubectl get otelinst`
-    - `kubectl get otelinst {instrumentation_name} -o yaml`
+- `kubectl get otelinst -n splunk-monitoring -o yaml`
+    - `kubectl get otelinst {instrumentation_name} -n splunk-monitoring -o yaml`
+
+Proof
+![](proof1.png)
+
+---
+
+
 - Instrument Application by Setting an Annotation
+
+# Java app
 - `kubectl patch deployment <my deployment name> -n default -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"otel/splunk-otel-collector"}}}} }'` This is Java example
+    - `kubectl patch deployment <name of the deployment> -n <namespace of the deployment> -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"splunk-monitoring/splunk-otel-collector"}}}} }'`
+    - `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
+
+Proof
+![](proof2.png)
+![](proof3.png)
+![](proof4.png)
+
+# Node.js app
 - `kubectl patch deployment <my deployment name> -n default -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs":"otel/splunk-otel-collector"}}}} }'` This is NodeJS example.
+    - ... WIP ...
+    - ... WIP ...
 
 ---
 
@@ -55,15 +78,15 @@
 **Operator Logs:**
 
 ```bash
-kubectl logs -l app.kubernetes.io/name=operator
+kubectl logs -l app.kubernetes.io/name=operator -n splunk-monitoring
 ```
 
 **Cert-Manager Logs:**
 
 ```bash
-kubectl logs -l app=certmanager
-kubectl logs -l app=cainjector
-kubectl logs -l app=webhook
+kubectl logs -l app=certmanager -n splunk-monitoring
+kubectl logs -l app=cainjector -n splunk-monitoring
+kubectl logs -l app=webhook -n splunk-monitoring
 ```
 
 #### 2. Cert-Manager Issues
@@ -83,7 +106,7 @@ For additional guidance, refer to the official cert-manager documentation:
 Ensure that the certificate, which the cert-manager creates and the operator utilizes, is available.
 
 ```bash
-kubectl get certificates
+kubectl get certificates -n splunk-monitoring
 # NAME                                          READY   SECRET                                                           AGE
 # splunk-otel-collector-operator-serving-cert   True    splunk-otel-collector-operator-controller-manager-service-cert   5m
 ```

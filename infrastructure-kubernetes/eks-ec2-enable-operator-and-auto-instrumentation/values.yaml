@@ -9,9 +9,9 @@ environment: jek-sandbox
 gateway:
   enabled: false
 splunkObservability:
-  accessToken: <your access token>
+  accessToken: <your o11y access token>
   profilingEnabled: true
-  realm: <your realm>
+  realm: <your realm e.g. us1>
   infrastructureMonitoringEventsEnabled: true
 logsEngine: otel
 splunkPlatform:
@@ -30,4 +30,8 @@ agent:
         logs:
           encoding: json
 clusterReceiver:
-  eventsEnabled: true
+  k8sObjects:
+    - name: events
+      mode: watch
+      group: events.k8s.io
+      namespaces: [default]
