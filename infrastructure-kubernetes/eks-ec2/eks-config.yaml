@@ -4,9 +4,22 @@ kind: ClusterConfig
 metadata:
   name: jek-eks-ec2-cluster-<add a date>
   region: ap-southeast-1
+  version: "1.27"
 
 managedNodeGroups:
 - name: jek-eks-ec2-managednodegroup-workers
   instanceType: m5.large
   desiredCapacity: 2
  
+# managedNodeGroups:
+#   - name: jek-eks-ec2-ng-1-workers
+#     labels: { role: workers }
+#     instanceType: m5.large
+#     desiredCapacity: 2
+#     volumeSize: 50
+#   - name: jek-eks-ec2-ng-2-builders
+#     labels: { role: builders }
+#     instanceType: m5.large
+#     desiredCapacity: 1
+#     volumeSize: 55
+#     privateNetworking: true
