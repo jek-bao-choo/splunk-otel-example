@@ -1,7 +1,19 @@
+
 1. https://github.com/signalfx/splunk-otel-collector-chart/blob/main/docs/auto-instrumentation-install.md <-- This is the most important resource of all.
-2. https://github.com/open-telemetry/opentelemetry-operator#controlling-instrumentation-capabilities
-3. https://github.com/signalfx/splunk-otel-collector-chart/blob/main/examples/enable-operator-and-auto-instrumentation/otel-demo-nodejs.md
-4. https://github.com/signalfx/splunk-otel-collector-chart/blob/main/examples/enable-operator-and-auto-instrumentation/README.md
+2. https://docs.splunk.com/observability/en/gdi/opentelemetry/zero-config.html <- Useful
+3. https://github.com/open-telemetry/opentelemetry-operator#controlling-instrumentation-capabilities
+4. https://github.com/signalfx/splunk-otel-collector-chart/blob/main/examples/enable-operator-and-auto-instrumentation/otel-demo-nodejs.md
+5. https://github.com/signalfx/splunk-otel-collector-chart/blob/main/examples/enable-operator-and-auto-instrumentation/README.md
+
+---
+# Deploy a few apps without instrumentation agents
+
+- `kubectl apply -f java-deployment.yaml`
+
+
+---
+
+# Deploy OTel Collector Operator
 
 - Ensure that you have installed and configured the Helm 3.6 client.
 - `helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart`
