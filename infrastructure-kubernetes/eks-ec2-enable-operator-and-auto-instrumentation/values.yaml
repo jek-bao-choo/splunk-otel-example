@@ -1,0 +1,33 @@
+certmanager:
+  enabled: true
+operator:
+  enabled: true
+cloudProvider: aws
+clusterName: jek-eks-ec2-otel-operator
+distribution: eks
+environment: jek-sandbox
+gateway:
+  enabled: false
+splunkObservability:
+  accessToken: <your access token>
+  profilingEnabled: true
+  realm: <your realm>
+  infrastructureMonitoringEventsEnabled: true
+logsEngine: otel
+splunkPlatform:
+  endpoint: https://<the hec endpoint url>.com/services/collector
+  token: <your hec token>
+  index: <your index e.g. main>
+  insecureSkipVerify: true
+autodetect:
+  istio: true
+  prometheus: true
+agent:
+  enabled: true
+  config:
+    service:
+      telemetry:
+        logs:
+          encoding: json
+clusterReceiver:
+  eventsEnabled: true
