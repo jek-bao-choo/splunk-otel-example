@@ -6,6 +6,13 @@
 5. https://github.com/signalfx/splunk-otel-collector-chart/blob/main/examples/enable-operator-and-auto-instrumentation/README.md
 
 ---
+
+1. https://docs.splunk.com/observability/en/gdi/get-data-in/application/nodejs/configuration/advanced-nodejs-otel-configuration.html <-- useful for Nodejs auto instrumentation configuration
+2. https://docs.splunk.com/observability/en/gdi/get-data-in/application/nodejs/nodejs-otel-requirements.html <-- the library environment naming 
+3. https://github.com/open-telemetry/opentelemetry-js-contrib/tree/main/plugins/node <-- the latest Node.js OTel plugin libraries 
+4. https://docs.splunk.com/observability/en/gdi/opentelemetry/auto-instrumentation/auto-instrumentation-nodejs-k8s.html
+
+---
 # Deploy a few apps without instrumentation agents
 
 ## Java
@@ -17,7 +24,9 @@
 
 
 ## Node.js
-... WIP ...
+- `kubectl apply -f nodejs-deployment.yaml`
+- `kubectl port-forward svc/microservice-a-service 8080:80`
+- `curl localhost:8080/a`
 
 ---
 
@@ -53,15 +62,36 @@ Proof
 - `kubectl describe pod <my application pod name> -n <my namespace>` verify that there is initcontainer added
     - `kubectl describe pod/spring-maven-k8s-eks-ec2-v2-<the pod name>  -n default`
 
+# Node.js app
+- `kubectl patch deployment <my deployment name> -n <my namespace> -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs":"otel/splunk-otel-collector"}}}} }'` This is Java example
+  - `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
+  - `kubectl describe pod/spring-maven-k8s-eks-ec2-v2-<the pod name> -n default`
+  - `kubectl patch deployment spring-maven-k8s-eks-ec2-v2 -n default -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"splunk-monitoring/splunk-otel-collector"}}}} }'`
+  - `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
+- `kubectl describe pod <my application pod name> -n <my namespace>` verify that there is initcontainer added
+    - `kubectl describe pod/spring-maven-k8s-eks-ec2-v2-<the pod name>  -n default`
+
 Proof
 ![](proof2.png)
 ![](proof3.png)
 ![](proof4.png)
 
 # Node.js app
+- `kubectl describe pod <my application pod name> -n <my namespace>` verify that there is NO initcontainer added
 - `kubectl patch deployment <my deployment name> -n default -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs":"otel/splunk-otel-collector"}}}} }'` This is NodeJS example.
-    - ... WIP ...
-    - ... WIP ...
+    - `kubectl get deployment microservice-a -o yaml`
+    - `kubectl describe pod microservice-a-< the pod name >`
+    - `kubectl patch deployment microservice-a -n default -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs":"splunk-monitoring/splunk-otel-collector"}}}} }'`
+    - `kubectl get deployment microservice-a -o yaml`
+- `kubectl describe pod <my application pod name> -n <my namespace>` verify that there is initcontainer added
+
+![](proof5.png)
+![](proof6.png)
+![](proof7.png)
+
+# Add Node.js OTel plugin libraries
+- `kubectl set env deployment/<my-deployment> OTEL_INSTRUMENTATION_<NAME>_ENABLED=true`
+
 
 ---
 
