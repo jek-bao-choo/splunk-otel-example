@@ -27,8 +27,8 @@ eksctl create cluster -f ./bottlerocket.yaml
 
 ## Java
 - `kubectl apply -f java-deployment.yaml`
-- `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
-- `kubectl port-forward deployment/spring-maven-k8s-eks-ec2-v2 3009:8080`
+- `kubectl get deployment spring-maven-k8s-eks-ec2-bottlerocket -o yaml`
+- `kubectl port-forward deployment/spring-maven-k8s-eks-ec2-bottlerocket 3009:8080`
 - `curl http://localhost:3009/greeting` Invoke success
 - `curl http://localhost:3009` Invoke failure
 
@@ -68,12 +68,12 @@ eksctl create cluster -f ./bottlerocket.yaml
 
 # Java app
 - `kubectl patch deployment <my deployment name> -n <my namespace> -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"otel/splunk-otel-collector"}}}} }'` This is Java example
-  - `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
-  - `kubectl describe pod/spring-maven-k8s-eks-ec2-v2-<the pod name>  -n default`
-  - `kubectl patch deployment spring-maven-k8s-eks-ec2-v2 -n default -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"splunk-monitoring/splunk-otel-collector"}}}} }'`
-  - `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
+  - `kubectl get deployment spring-maven-k8s-eks-ec2-bottlerocket -o yaml`
+  - `kubectl describe pod/spring-maven-k8s-eks-ec2-bottlerocket-<the pod name>  -n default`
+  - `kubectl patch deployment spring-maven-k8s-eks-ec2-bottlerocket -n default -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"splunk-monitoring/splunk-otel-collector"}}}} }'`
+  - `kubectl get deployment spring-maven-k8s-eks-ec2-bottlerocket -o yaml`
 - `kubectl describe pod <application_pod_name> -n <namespace>` verify that there is initcontainer added
-    - `kubectl describe pod/spring-maven-k8s-eks-ec2-v2-<the pod name> -n default`
+    - `kubectl describe pod/spring-maven-k8s-eks-ec2-bottlerocket-<the pod name> -n default`
 
 ![](proof9.png)
 ![](proof10.png)
