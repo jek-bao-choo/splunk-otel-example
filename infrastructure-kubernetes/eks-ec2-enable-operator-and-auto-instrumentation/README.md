@@ -91,7 +91,7 @@ Proof
 
 # Add Node.js OTel plugin libraries
 - `kubectl set env deployment/<my-deployment> OTEL_INSTRUMENTATION_<NAME>_ENABLED=true`
-
+    - `kubectl set env deployment/microservice-a OTEL_INSTRUMENTATION_GRPC_ENABLED=true` <-- an example
 
 ---
 
