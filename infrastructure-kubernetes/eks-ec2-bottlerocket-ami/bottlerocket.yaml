@@ -1,0 +1,29 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: jek-eks-ec2-bottlerocket-ami-< add-a-date >
+  region: ap-southeast-1
+  version: '1.28'
+
+iam:
+  withOIDC: true
+
+nodeGroups:
+  - name: ng-bottlerocket
+    instanceType: m5.large
+    desiredCapacity: 3
+    amiFamily: Bottlerocket
+    ami: auto-ssm
+    iam:
+       attachPolicyARNs:
+          - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+          - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+          - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+          - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+    ssh:
+        allow: true
+        publicKeyName: < your-ec2-keypair-name >
+    bottlerocket:
+      settings:
+        motd: "Hello Jek from eksctl!"
