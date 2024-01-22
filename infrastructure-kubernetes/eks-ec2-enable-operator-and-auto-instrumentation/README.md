@@ -45,10 +45,13 @@ Proof
 - Instrument Application by Setting an Annotation
 
 # Java app
-- `kubectl patch deployment <my deployment name> -n default -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"otel/splunk-otel-collector"}}}} }'` This is Java example
-    - `kubectl patch deployment <name of the deployment> -n <namespace of the deployment> -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"splunk-monitoring/splunk-otel-collector"}}}} }'`
-    - `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
-    - `kubectl describe pod <application_pod_name> -n <namespace>` verify that there is initcontainer added
+- `kubectl patch deployment <my deployment name> -n <my namespace> -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"otel/splunk-otel-collector"}}}} }'` This is Java example
+  - `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
+  - `kubectl describe pod/spring-maven-k8s-eks-ec2-v2-<the pod name> -n default`
+  - `kubectl patch deployment spring-maven-k8s-eks-ec2-v2 -n default -p '{"spec": {"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java":"splunk-monitoring/splunk-otel-collector"}}}} }'`
+  - `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
+- `kubectl describe pod <my application pod name> -n <my namespace>` verify that there is initcontainer added
+    - `kubectl describe pod/spring-maven-k8s-eks-ec2-v2-<the pod name>  -n default`
 
 Proof
 ![](proof2.png)
