@@ -18,3 +18,46 @@ eksctl create cluster -f ./bottlerocket.yaml --dry-run
 eksctl create cluster -f ./bottlerocket.yaml
 
 ```
+
+# Proof
+![](proof1.png)
+
+---
+# Deploy a few apps without instrumentation agents
+
+## Java
+- `kubectl apply -f java-deployment.yaml`
+- `kubectl get deployment spring-maven-k8s-eks-ec2-v2 -o yaml`
+- `kubectl port-forward deployment/spring-maven-k8s-eks-ec2-v2 3009:8080`
+- `curl http://localhost:3009/greeting` Invoke success
+- `curl http://localhost:3009` Invoke failure
+
+
+## Node.js
+... WIP ...
+
+---
+
+# Deploy OTel Collector Operator
+
+- Ensure that you have installed and configured the Helm 3.6 client.
+- `helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart`
+- `helm repo update`
+- `kubectl get pods -l app=cert-manager --all-namespaces` Check if a cert-manager is already installed by looking for cert-manager pods.
+- Create values.yaml and if cert-manager is deployed, make sure to remove certmanager.enabled=true to the list of values to set.
+- `kubectl create ns splunk-monitoring`
+- `helm install -n splunk-monitoring splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector -f values.yaml`
+- `helm ls -n splunk-monitoring`
+- `kubectl get pods -n splunk-monitoring`
+- `kubectl get mutatingwebhookconfiguration.admissionregistration.k8s.io`
+- `kubectl get otelinst -n splunk-monitoring -o yaml`
+    - `kubectl get otelinst {instrumentation_name} -n splunk-monitoring -o yaml`
+
+# Proof
+![](proof2.png)
+![](proof3.png)
+![](proof4.png)
+![](proof5.png)
+![](proof6.png)
+![](proof7.png)
+![](proof8.png)
