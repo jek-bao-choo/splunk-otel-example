@@ -1,0 +1,3 @@
+- https://github.com/open-telemetry/opentelemetry-java-examples/tree/main/log-appender
+- https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/main/instrumentation/logback/logback-appender-1.0/library/README.md
+- https://github.com/open-telemetry/opentelemetry-java-examples/blob/main/log-appender/src/main/resources/logback.xml
