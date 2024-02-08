@@ -1,3 +1,6 @@
+# Architecture
+![](architecture.png)
+
 # Ref
 - https://github.com/signalfx/splunk-otel-collector-chart/blob/main/examples/route-data-through-gateway-deployed-separately/route-data-through-gateway-deployed-separately-values.yaml
 - https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/loadbalancingexporter/example/otel-agent-config.yaml
@@ -101,4 +104,6 @@ curl http://localhost:3009
 
 # View the logs to verify
 kubectl logs deployment/sample-app
+
+kubectl logs deployment/tail-sampling-gateway-splunk-otel-collector -n splunk-monitoring
 ```
