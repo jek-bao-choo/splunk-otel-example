@@ -32,7 +32,9 @@ kubectl get pods -n splunk-monitoring
 
 # Test if trace can be sent from sample app --> tail sampling gateway --> Splunk
 ```bash
-kubectl apply -f sample-app.yaml
+kubectl apply -f sample-app-sending-to-tail-sampling-gateway.yaml
+
+kubectl get deployment sample-app
 
 kubectl port-forward deployment/sample-app 3009:8080
 
@@ -49,6 +51,27 @@ kubectl logs deployment/sample-app
 ![](proof1.png)
 
 # Test if trace can be sent from sample app --> traceID load balancing gateway --> tail sampling gateway --> Splunk
-```
+```bash
+# Please uncomment in traceid-load-balancing-otel-collector-gateway-values.yaml the commented parts where gateway >> config stuff and do a helm upgrade
+helm upgrade traceid-load-balancing-gateway splunk-otel-collector-chart/splunk-otel-collector -n splunk-monitoring --values traceid-load-balancing-otel-collector-gateway-values.yaml
 
+kubectl get deployment -n splunk-monitoring
+
+kubectl logs deployment/traceid-load-balancing-gateway-splunk-otel-collector -n splunk-monitoring
+
+# the Splunk environment is changed to v2 in the deployment sample-app-sending-to-traceid-load-balancing-gateway.yaml file
+kubectl apply -f sample-app-sending-to-traceid-load-balancing-gateway.yaml
+
+kubectl port-forward deployment/sample-app 3009:8080
+
+# Invoke success
+curl http://localhost:3009/greeting
+
+# Invoke general
+curl http://localhost:3009
+
+# View the logs to verify
+kubectl logs deployment/sample-app
 ```
+## Working Proof
+![](proof2.png)

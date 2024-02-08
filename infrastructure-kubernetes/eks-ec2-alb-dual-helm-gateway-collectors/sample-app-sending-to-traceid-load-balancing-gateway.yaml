@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-app
+  labels:
+    app: sampleapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sampleapp
+  template:
+    metadata:
+      labels:
+        app: sampleapp
+    spec:
+      containers:
+      - name: jekspringwebapp
+        image: jekbao/jekspringwebapp:v2
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            memory: "1Gi" 
+            cpu: "0.5"
+        env:
+          - name: OTEL_RESOURCE_ATTRIBUTES
+            value: deployment.environment=jek-sandbox-v2
+          - name: OTEL_SERVICE_NAME
+            value: jek-sample-app-v2
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://traceid-load-balancing-gateway-splunk-otel-collector.splunk-monitoring.svc:4317
