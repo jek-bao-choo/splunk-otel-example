@@ -19,3 +19,20 @@ gateway:
     limits:
       cpu: 2
       memory: 4Gi
+  # config:
+  #   exporters:
+  #     loadbalancing:
+  #       protocol:
+  #         otlp:
+  #           timeout: 1s
+  #           tls:
+  #             insecure: true
+  #       resolver:
+  #         k8s:
+  #           service: tail-sampling-gateway-splunk-otel-collector.splunk-monitoring
+  #           ports:
+  #             - 4317
+  #   service:
+  #     pipelines:
+  #       traces:
+  #         exporters: [loadbalancing]
