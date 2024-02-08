@@ -29,3 +29,26 @@ kubectl get deployment -n splunk-monitoring
 
 kubectl get pods -n splunk-monitoring
 ```
+
+# Test if trace can be sent from sample app --> tail sampling gateway --> Splunk
+```bash
+kubectl apply -f sample-app.yaml
+
+kubectl port-forward deployment/sample-app 3009:8080
+
+# Invoke success
+curl http://localhost:3009/greeting
+
+# Invoke general
+curl http://localhost:3009
+
+# View the logs to verify
+kubectl logs deployment/sample-app
+```
+## Working Proof
+![](proof1.png)
+
+# Test if trace can be sent from sample app --> traceID load balancing gateway --> tail sampling gateway --> Splunk
+```
+
+```
