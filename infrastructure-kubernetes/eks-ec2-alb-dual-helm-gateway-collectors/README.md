@@ -1,3 +1,9 @@
+# Ref
+- https://github.com/signalfx/splunk-otel-collector-chart/blob/main/examples/route-data-through-gateway-deployed-separately/route-data-through-gateway-deployed-separately-values.yaml
+- https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/loadbalancingexporter/example/otel-agent-config.yaml
+- https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/loadbalancingexporter/README.md
+- https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/tailsamplingprocessor/README.md
+
 ```bash
 helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart
 
@@ -75,3 +81,24 @@ kubectl logs deployment/sample-app
 ```
 ## Working Proof
 ![](proof2.png)
+
+# Test if tail sampling gateway is sampling
+```bash
+# Please uncomment in tail-sampling-otel-collector-gateway-values.yaml the commented parts where gateway >> config stuff and do a helm upgrade
+helm upgrade tail-sampling-gateway splunk-otel-collector-chart/splunk-otel-collector -n splunk-monitoring --values tail-sampling-otel-collector-gateway-values.yaml
+
+kubectl get deployment -n splunk-monitoring
+
+kubectl logs deployment/tail-sampling-gateway-splunk-otel-collector -n splunk-monitoring
+
+kubectl port-forward deployment/sample-app 3009:8080
+
+# Invoke success
+curl http://localhost:3009/greeting
+
+# Invoke general
+curl http://localhost:3009
+
+# View the logs to verify
+kubectl logs deployment/sample-app
+```
