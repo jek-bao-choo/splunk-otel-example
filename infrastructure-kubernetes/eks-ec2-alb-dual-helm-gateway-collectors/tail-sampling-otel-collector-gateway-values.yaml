@@ -1,0 +1,21 @@
+cloudProvider: "aws"
+distribution: "eks"
+splunkObservability:
+  realm: ""
+  accessToken: ""
+  tracesEnabled: true
+  metricsEnabled: false
+  logsEnabled: false
+  infrastructureMonitoringEventsEnabled: false
+  profilingEnabled: false
+agent:
+  enabled: false
+clusterReceiver:
+  enabled: false
+gateway:
+  enabled: true
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 2
+      memory: 4Gi
