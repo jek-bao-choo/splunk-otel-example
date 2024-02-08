@@ -14,8 +14,33 @@ clusterReceiver:
   enabled: false
 gateway:
   enabled: true
-  replicaCount: 1
+  replicaCount: 3
   resources:
     limits:
       cpu: 2
       memory: 4Gi
+  # config:
+  #   processors:
+  #     tail_sampling:
+  #       policies:
+  #         [          
+  #           {
+  #             name: errors-policy,
+  #             type: status_code,
+  #             status_code: {status_codes: [ERROR]}
+  #           },
+  #           {
+  #             name: randomized-policy,
+  #             type: probabilistic,
+  #             probabilistic: {sampling_percentage: 50}
+  #           },
+  #         ]
+  #   service:
+  #     pipelines:
+  #       traces:
+  #         processors:
+  #         - memory_limiter
+  #         - tail_sampling
+  #         - k8sattributes
+  #         - batch
+  #         - resourcedetection/k8s_cluster_name
