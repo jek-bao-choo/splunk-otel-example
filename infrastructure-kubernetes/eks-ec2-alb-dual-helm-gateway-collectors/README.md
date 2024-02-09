@@ -57,6 +57,8 @@ kubectl get rolebindings \
 
 # Restart  the deployment to force it picks up the rolebindings
 kubectl rollout restart deployment traceid-load-balancing-gateway-splunk-otel-collector -n splunk-monitoring
+
+# Or try helm uninstall and helm install again.
 ```
 ![](rolebinding.png)
 
@@ -95,13 +97,6 @@ kubectl logs deployment/sample-app
 
 # Test if trace can be sent from sample app --> traceID load balancing gateway --> tail sampling gateway --> Splunk
 ```bash
-# Please uncomment in traceid-load-balancing-otel-collector-gateway-values.yaml the commented parts where gateway >> config stuff and do a helm upgrade
-helm upgrade traceid-load-balancing-gateway splunk-otel-collector-chart/splunk-otel-collector -n splunk-monitoring --values traceid-load-balancing-otel-collector-gateway-values.yaml
-
-kubectl get deployment -n splunk-monitoring
-
-kubectl logs deployment/traceid-load-balancing-gateway-splunk-otel-collector -n splunk-monitoring
-
 # the Splunk environment is changed to v2 in the deployment sample-app-sending-to-traceid-load-balancing-gateway.yaml file
 kubectl apply -f sample-app-sending-to-traceid-load-balancing-gateway.yaml
 
@@ -118,14 +113,10 @@ kubectl logs deployment/sample-app
 ```
 ## Working Proof
 ![](proof2.png)
+Proof that it is passing through both as both attributes are picked up.
 
 # Test if tail sampling gateway is sampling
 ```bash
-# Please uncomment in tail-sampling-otel-collector-gateway-values.yaml the commented parts where gateway >> config stuff and do a helm upgrade
-helm upgrade tail-sampling-gateway splunk-otel-collector-chart/splunk-otel-collector -n splunk-monitoring --values tail-sampling-otel-collector-gateway-values.yaml
-
-kubectl get deployment -n splunk-monitoring
-
 kubectl logs deployment/tail-sampling-gateway-splunk-otel-collector -n splunk-monitoring
 
 kubectl port-forward deployment/sample-app 3009:8080
@@ -141,6 +132,11 @@ kubectl logs deployment/sample-app
 
 kubectl logs deployment/tail-sampling-gateway-splunk-otel-collector -n splunk-monitoring
 ```
+![](curltriggered.png)
+![](curleg.png)
+![](proof3.png)
+
+---
 
 # Error
 Don't worry if you get error message like this
