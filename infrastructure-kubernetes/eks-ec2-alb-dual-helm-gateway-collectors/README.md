@@ -1,7 +1,7 @@
 # Architecture
 ![](architecture.png)
 
-# Ref
+# References
 - https://github.com/signalfx/splunk-otel-collector-chart/blob/main/examples/route-data-through-gateway-deployed-separately/route-data-through-gateway-deployed-separately-values.yaml
 - https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/tailsamplingprocessor/README.md
     - "This processor requires all spans for a given trace to be sent to the same collector instance for the correct sampling decision to be derived. When scaling the collector, you'll then need to ensure that all spans for the same trace are reaching the same collector. You can achieve this by having two layers of collectors in your infrastructure: one with the load balancing exporter, and one with the tail sampling processor." <-- this is the reason why we need traceID load balancing exporter.
@@ -19,7 +19,7 @@ helm repo update
 kubectl create ns splunk-monitoring
 ```
 
-# Install first set of gateway collector for traceID load balancing
+# Install first layer of gateway collector for traceID load balancing
 
 ```bash
 helm install traceid-load-balancing-gateway splunk-otel-collector-chart/splunk-otel-collector -n splunk-monitoring --values traceid-load-balancing-otel-collector-gateway-values.yaml
@@ -31,7 +31,7 @@ kubectl get deployment -n splunk-monitoring
 kubectl get pods -n splunk-monitoring
 ```
 
-# Install second set of gateway collector for tail sampling
+# Install second layer of gateway collector for tail sampling
 
 ```bash
 helm install tail-sampling-gateway splunk-otel-collector-chart/splunk-otel-collector -n splunk-monitoring --values tail-sampling-otel-collector-gateway-values.yaml
