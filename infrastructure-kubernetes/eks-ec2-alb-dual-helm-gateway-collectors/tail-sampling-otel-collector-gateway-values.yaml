@@ -19,28 +19,41 @@ gateway:
     limits:
       cpu: 2
       memory: 4Gi
-  # config:
-  #   processors:
-  #     tail_sampling:
-  #       policies:
-  #         [          
-  #           {
-  #             name: errors-policy,
-  #             type: status_code,
-  #             status_code: {status_codes: [ERROR]}
-  #           },
-  #           {
-  #             name: randomized-policy,
-  #             type: probabilistic,
-  #             probabilistic: {sampling_percentage: 50}
-  #           },
-  #         ]
-  #   service:
-  #     pipelines:
-  #       traces:
-  #         processors:
-  #         - memory_limiter
-  #         - tail_sampling
-  #         - k8sattributes
-  #         - batch
-  #         - resourcedetection/k8s_cluster_name
+  config:
+    processors:
+      attributes/helloworld:
+        actions:
+        - key: tailgw
+          value: hello-world-v2
+          action: upsert
+        - key: jek2
+          value: jek-tailgw-v2
+          action: insert
+      tail_sampling:
+        policies:
+          [          
+            {
+              name: errors-policy,
+              type: status_code,
+              status_code: {status_codes: [ERROR]}
+            },
+            {
+              name: randomized-policy,
+              type: probabilistic,
+              probabilistic: {sampling_percentage: 50}
+            },
+          ]
+    service:
+      pipelines:
+        traces:
+          receivers:
+          - otlp
+          processors:
+          - memory_limiter
+          - k8sattributes
+          - resourcedetection/k8s_cluster_name
+          - attributes/helloworld
+          - tail_sampling
+          - batch
+          exporters:
+          - sapm

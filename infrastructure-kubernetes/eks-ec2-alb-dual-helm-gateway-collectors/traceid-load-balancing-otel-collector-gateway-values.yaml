@@ -19,20 +19,34 @@ gateway:
     limits:
       cpu: 2
       memory: 4Gi
-  # config:
-  #   exporters:
-  #     loadbalancing:
-  #       protocol:
-  #         otlp:
-  #           timeout: 1s
-  #           tls:
-  #             insecure: true
-  #       resolver:
-  #         k8s:
-  #           service: tail-sampling-gateway-splunk-otel-collector.splunk-monitoring
-  #           ports:
-  #             - 4317
-  #   service:
-  #     pipelines:
-  #       traces:
-  #         exporters: [loadbalancing]
+  config:
+    processors:
+      attributes/helloworld:
+        actions:
+        - key: tracegw
+          value: hello-world-v4
+          action: upsert
+        - key: jek
+          value: jek-tracegw-v4
+          action: insert
+    exporters:
+      loadbalancing:
+        protocol:
+          otlp:
+            tls:
+              insecure: true
+        resolver:
+          k8s:
+            service: tail-sampling-gateway-splunk-otel-collector.splunk-monitoring
+    service:
+      pipelines:
+        traces:
+          receivers:
+          - otlp
+          - zipkin
+          processors:
+          - memory_limiter
+          - attributes/helloworld
+          - batch
+          exporters:
+          - loadbalancing

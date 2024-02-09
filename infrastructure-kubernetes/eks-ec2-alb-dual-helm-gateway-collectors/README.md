@@ -140,6 +140,15 @@ kubectl logs deployment/tail-sampling-gateway-splunk-otel-collector -n splunk-mo
 
 ---
 
+This time triggered about 12 calls. 8 got sampled i.e. sent to Splunk. So tail_sampling is working.
+
+![](p1.png)
+![](p2.png)
+![](p3.png)
+![](p4.png)
+
+---
+
 # Error
 Don't worry if you get error message like this
 ```
