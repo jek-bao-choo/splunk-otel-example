@@ -17,6 +17,14 @@ helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel
 helm repo update
 
 kubectl create ns splunk-monitoring
+
+# Create a role called otel-collector-role in namespace splunk-monitoring
+# But if you want them to be namespace indifferent, you create a clusterRole instead of a role.
+kubectl apply -f role.yaml
+
+kubectl get role -n splunk-monitoring
+
+kubectl get role otel-collector-role -n splunk-monitoring -o yaml
 ```
 
 # Install first layer of gateway collector for traceID load balancing
@@ -29,7 +37,29 @@ helm ls -n splunk-monitoring
 kubectl get deployment -n splunk-monitoring
 
 kubectl get pods -n splunk-monitoring
+
+# Check that the traceid-load-balancing-gateway-splunk-otel-collector is created
+kubectl get sa -n splunk-monitoring
 ```
+![](sa.png)
+
+```bash
+# After the role is bind the role to the service account
+kubectl apply -f role-binding.yaml
+
+kubectl get rolebinding -n splunk-monitoring
+
+kubectl get rolebinding otel-collector-rolebinding -n splunk-monitoring -o yaml
+
+kubectl get rolebindings \
+-n splunk-monitoring  \
+-o custom-columns='KIND:kind,NAMESPACE:metadata.namespace,NAME:metadata.name,SERVICE_ACCOUNTS:subjects[?(@.kind=="ServiceAccount")].name'
+
+# Restart  the deployment to force it picks up the rolebindings
+kubectl rollout restart deployment traceid-load-balancing-gateway-splunk-otel-collector -n splunk-monitoring
+```
+![](rolebinding.png)
+
 
 # Install second layer of gateway collector for tail sampling
 
@@ -110,4 +140,22 @@ curl http://localhost:3009
 kubectl logs deployment/sample-app
 
 kubectl logs deployment/tail-sampling-gateway-splunk-otel-collector -n splunk-monitoring
+```
+
+# Error
+Don't worry if you get error message like this
+```
+W0209 08:59:30.307222       1 reflector.go:539] k8s.io/client-go@v0.29.0/tools/cache/reflector.go:229: failed to list *v1.Endpoints: endpoints "tail-sampling-gateway-splunk-otel-collector" is forbidden: User "system:serviceaccount:splunk-monitoring:traceid-load-balancing-gateway-splunk-otel-collector" cannot list resource "endpoints" in API group "" in the namespace "splunk-monitoring"
+E0209 08:59:30.307262       1 reflector.go:147] k8s.io/client-go@v0.29.0/tools/cache/reflector.go:229: Failed to watch *v1.Endpoints: failed to list *v1.Endpoints: endpoints "tail-sampling-gateway-splunk-otel-collector" is forbidden: User "system:serviceaccount:splunk-monitoring:traceid-load-balancing-gateway-splunk-otel-collector" cannot list resource "endpoints" in API group "" in the namespace "splunk-monitoring"
+W0209 08:59:31.896678       1 reflector.go:539] k8s.io/client-go@v0.29.0/tools/cache/reflector.go:229: failed to list *v1.Endpoints: endpoints "tail-sampling-gateway-splunk-otel-collector" is forbidden: User "system:serviceaccount:splunk-monitoring:traceid-load-balancing-gateway-splunk-otel-collector" cannot list resource "endpoints" in API group "" in the namespace "splunk-monitoring"
+E0209 08:59:31.896714       1 reflector.go:147] k8s.io/client-go@v0.29.0/tools/cache/reflector.go:229: Failed to watch *v1.Endpoints: failed to list *v1.Endpoints: endpoints "tail-sampling-gateway-splunk-otel-collector" is forbidden: User "system:serviceaccount:splunk-monitoring:traceid-load-balancing-gateway-splunk-otel-collector" cannot list resource "endpoints" in API group "" in the namespace "splunk-monitoring"
+W0209 08:59:33.849069       1 reflector.go:539] k8s.io/client-go@v0.29.0/tools/cache/reflector.go:229: failed to list *v1.Endpoints: endpoints "tail-sampling-gateway-splunk-otel-collector" is forbidden: User "system:serviceaccount:splunk-monitoring:traceid-load-balancing-gateway-splunk-otel-collector" cannot list resource "endpoints" in API group "" in the namespace "splunk-monitoring"
+E0209 08:59:33.849099       1 reflector.go:147] k8s.io/client-go@v0.29.0/tools/cache/reflector.go:229: Failed to watch *v1.Endpoints: failed to list *v1.Endpoints: endpoints "tail-sampling-gateway-splunk-otel-collector" is forbidden: User "system:serviceaccount:splunk-monitoring:traceid-load-balancing-gateway-splunk-otel-collector" cannot list resource "endpoints" in API group "" in the namespace "splunk-monitoring"
+```
+![](error.png)
+This error just mean that you ServiceAccount and your Role are not bind properly.
+```
+kubectl get rolebindings \
+-n splunk-monitoring  \
+-o custom-columns='KIND:kind,NAMESPACE:metadata.namespace,NAME:metadata.name,SERVICE_ACCOUNTS:subjects[?(@.kind=="ServiceAccount")].name'
 ```
