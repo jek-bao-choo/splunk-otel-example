@@ -1,0 +1,30 @@
+{
+    "resource_spans": [
+      {
+        "resource": {
+          "attributes": [
+            {"key": "service.name", "value": {"stringValue": "test-service"}}
+          ]
+        },
+        "instrumentationLibrarySpans": [
+          {
+            "spans": [
+              {
+                "traceId": "0123456789abcdef0123456789abcdef",
+                "spanId": "0123456789abcdef",
+                "name": "test-span",
+                "startTimeUnixNano": "1609459200000000000",
+                "endTimeUnixNano": "1609459201000000000",
+                "attributes": [
+                  {"key": "http.method", "value": {"stringValue": "GET"}},
+                  {"key": "http.url", "value": {"stringValue": "http://example.com"}}
+                ],
+                "status": {}
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
