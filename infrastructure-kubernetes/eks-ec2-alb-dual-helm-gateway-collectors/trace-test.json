@@ -6,7 +6,7 @@
                     {
                         "key": "service.name",
                         "value": {
-                            "stringValue": "jek-test-v4"
+                            "stringValue": "trace-test-v5"
                         }
                     }
                 ]
@@ -27,11 +27,31 @@
                     },
                     "spans": [
                         {
-                            "traceId": "71699b6fe85982c7c8995ea3d9c95df2",
-                            "spanId": "3c191d03fa8be065",
-                            "name": "I'm a server span",
+                            "traceId": "71699b6fe85982c7c8995ea3d9c95df3",
+                            "spanId": "3c191d03fa8be066",
+                            "name": "I'm a healthy client span",
                             "startTimeUnixNano": "1708552729000000000",
                             "endTimeUnixNano": "1708556329000000000",
+                            "kind": 1,
+                            "attributes": [
+                                {
+                                    "key": "my.span.attr",
+                                    "value": {
+                                        "stringValue": "some value"
+                                    }
+                                }
+                            ],
+                            "status": {
+                                "code": 1
+                            }
+                        },
+                        {
+                            "traceId": "71699b6fe85982c7c8995ea3d9c95df3",
+                            "spanId": "3c191d03fa8be067",
+                            "parentSpanId": "3c191d03fa8be066",
+                            "name": "I'm a error server span",
+                            "startTimeUnixNano": "1708552730000000000",
+                            "endTimeUnixNano": "1708556330000000000",
                             "kind": 2,
                             "attributes": [
                                 {
@@ -40,7 +60,10 @@
                                         "stringValue": "some value"
                                     }
                                 }
-                            ]
+                            ],
+                            "status": {
+                                "code": 2
+                            }
                         }
                     ]
                 }
