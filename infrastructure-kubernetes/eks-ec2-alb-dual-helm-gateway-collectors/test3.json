@@ -6,7 +6,7 @@
                     {
                         "key": "service.name",
                         "value": {
-                            "stringValue": "jek-test-v3"
+                            "stringValue": "jek-test-v4"
                         }
                     }
                 ]
@@ -30,6 +30,8 @@
                             "traceId": "71699b6fe85982c7c8995ea3d9c95df2",
                             "spanId": "3c191d03fa8be065",
                             "name": "I'm a server span",
+                            "startTimeUnixNano": "1708552729000000000",
+                            "endTimeUnixNano": "1708556329000000000",
                             "kind": 2,
                             "attributes": [
                                 {
