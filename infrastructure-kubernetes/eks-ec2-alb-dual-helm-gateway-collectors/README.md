@@ -110,6 +110,9 @@ kubectl port-forward deployment/sample-app 3009:8080
 # Invoke success
 curl http://localhost:3009/greeting
 
+# Invoke error 500
+curl http://localhost:3009/jek-server-error
+
 # Invoke general
 curl http://localhost:3009
 
