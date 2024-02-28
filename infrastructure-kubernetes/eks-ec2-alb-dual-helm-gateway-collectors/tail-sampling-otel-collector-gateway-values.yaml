@@ -31,16 +31,40 @@ gateway:
           action: insert
       tail_sampling:
         policies:
-          [          
+          [ 
+            # {
+            #   name: errors-policy,
+            #   type: status_code,
+            #   status_code: {status_codes: [ERROR]}
+            # },
+            # {
+            #   name: randomized-policy,
+            #   type: probabilistic,
+            #   probabilistic: {sampling_percentage: 50}
+            # },         
             {
-              name: errors-policy,
-              type: status_code,
-              status_code: {status_codes: [ERROR]}
+              name: probabilistic-policy-for-error,
+              type: and,
+              and: {
+                and_sub_policy: 
+                [
+                  {
+                    name: error-policy,
+                    type: status_code,
+                    status_code: {status_codes: [ERROR]}
+                  },
+                  {
+                    name: probabilistic-policy,
+                    type: probabilistic,
+                    probabilistic: {sampling_percentage: 50}
+                  },
+                ]
+              }
             },
             {
-              name: randomized-policy,
+              name: probabilistic-policy-for-non-error,
               type: probabilistic,
-              probabilistic: {sampling_percentage: 50}
+              probabilistic: {sampling_percentage: 20}
             },
           ]
     service:
