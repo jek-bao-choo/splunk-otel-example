@@ -91,10 +91,10 @@ See the Dockerfile in this folder
 
 13. Build the Dockerfile
 ```bash
-docker build -t jchoo/jekspringwebappmavennoagent:v2 .
+docker build -t jchoo/jekspringwebappmavennoagent:v3 .
 ```
  
 16. Push the image to Dockerhub
 ```bash
-docker push jchoo/jekspringwebappmavennoagent:v2
+docker push jchoo/jekspringwebappmavennoagent:v3
 ```

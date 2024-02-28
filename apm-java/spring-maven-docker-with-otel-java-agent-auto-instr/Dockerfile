@@ -1,4 +1,4 @@
-FROM maven:3.6.3-jdk-11-slim
+FROM maven:3.8.6-amazoncorretto-17
 WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline
