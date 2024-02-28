@@ -28,8 +28,40 @@ kubectl get role -n splunk-monitoring
 
 kubectl get role otel-collector-role -n splunk-monitoring -o yaml
 ```
+# Install first layer (the base layer) of gateway collector for tail sampling
 
-# Install first layer of gateway collector for traceID load balancing
+```bash
+helm install tail-sampling-gateway splunk-otel-collector-chart/splunk-otel-collector -n splunk-monitoring --values tail-sampling-otel-collector-gateway-values.yaml
+
+helm ls -n splunk-monitoring
+
+kubectl get deployment -n splunk-monitoring
+
+kubectl get pods -n splunk-monitoring
+```
+
+# Test if trace can be sent from sample app --> tail sampling gateway --> Splunk
+```bash
+kubectl apply -f sample-app-sending-to-tail-sampling-gateway.yaml
+
+kubectl get deployment sample-app
+
+kubectl port-forward deployment/sample-app 3009:8080
+
+# Invoke success
+curl http://localhost:3009/greeting
+
+# Invoke general
+curl http://localhost:3009
+
+# View the logs to verify
+kubectl logs deployment/sample-app
+```
+## Working Proof
+![](proof1.png)
+
+
+# Install second layer (after the base layer) of gateway collector for traceID load balancing
 
 ```bash
 helm install traceid-load-balancing-gateway splunk-otel-collector-chart/splunk-otel-collector -n splunk-monitoring --values traceid-load-balancing-otel-collector-gateway-values.yaml
@@ -63,39 +95,6 @@ kubectl rollout restart deployment traceid-load-balancing-gateway-splunk-otel-co
 # Or try helm uninstall and helm install again.
 ```
 ![](rolebinding.png)
-
-
-# Install second layer of gateway collector for tail sampling
-
-```bash
-helm install tail-sampling-gateway splunk-otel-collector-chart/splunk-otel-collector -n splunk-monitoring --values tail-sampling-otel-collector-gateway-values.yaml
-
-helm ls -n splunk-monitoring
-
-kubectl get deployment -n splunk-monitoring
-
-kubectl get pods -n splunk-monitoring
-```
-
-# Test if trace can be sent from sample app --> tail sampling gateway --> Splunk
-```bash
-kubectl apply -f sample-app-sending-to-tail-sampling-gateway.yaml
-
-kubectl get deployment sample-app
-
-kubectl port-forward deployment/sample-app 3009:8080
-
-# Invoke success
-curl http://localhost:3009/greeting
-
-# Invoke general
-curl http://localhost:3009
-
-# View the logs to verify
-kubectl logs deployment/sample-app
-```
-## Working Proof
-![](proof1.png)
 
 # Test if trace can be sent from sample app --> traceID load balancing gateway --> tail sampling gateway --> Splunk
 ```bash
@@ -166,3 +165,18 @@ kubectl get rolebindings \
 -n splunk-monitoring  \
 -o custom-columns='KIND:kind,NAMESPACE:metadata.namespace,NAME:metadata.name,SERVICE_ACCOUNTS:subjects[?(@.kind=="ServiceAccount")].name'
 ```
+
+---
+
+# Send trace test 
+
+Useful references:
+- https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/api.md
+
+
+
+`TraceId` A valid trace identifier is a 16-byte array with at least one non-zero byte.
+
+`SpanId` A valid span identifier is an 8-byte array with at least one non-zero byte.
+
+---
