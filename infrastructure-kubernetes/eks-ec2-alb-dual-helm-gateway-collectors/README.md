@@ -218,6 +218,10 @@ kubectl exec -it tmp -- curl -OL https://raw.githubusercontent.com/openzipkin/zi
 kubectl exec -it tmp -- curl -vi -X POST http://traceid-load-balancing-gateway-splunk-otel-collector.splunk-monitoring:9411/api/v2/spans -H'Content-Type: application/json' -d @yelp.json
 ```
 
-
-
 ---
+
+# Optional: Install Resource Monitoring OTel Collector Daemonset to monitor Memory and CPU of the Gateway Cluster's Nodes
+```bash
+helm install gw-monitoring splunk-otel-collector-chart/splunk-otel-collector -n splunk-monitoring --values gw-monitoring-otel-collector-values.yaml
+
+```

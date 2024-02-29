@@ -1,0 +1,25 @@
+clusterName: "gw-resource-monitoring"
+cloudProvider: "aws"
+distribution: "eks"
+splunkObservability:
+  realm: ""
+  accessToken: ""
+  tracesEnabled: false
+  metricsEnabled: true
+  logsEnabled: false
+  infrastructureMonitoringEventsEnabled: false
+  profilingEnabled: false
+agent:
+  enabled: true
+  config:
+    service:
+      pipelines:
+        metrics:
+          receivers:
+          - hostmetrics
+          - kubeletstats
+          - receiver_creator
+clusterReceiver:
+  enabled: true
+gateway:
+  enabled: false
