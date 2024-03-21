@@ -252,3 +252,7 @@ For cloud-based repository cleanup, contact the repository administrator for det
 
 When the pod reaches a `Running` state, data collection can be verified.
 
+---
+
+# Perhaps relevant resource
+- https://stackoverflow.com/questions/50343089/how-to-use-helm-charts-without-internet-access
