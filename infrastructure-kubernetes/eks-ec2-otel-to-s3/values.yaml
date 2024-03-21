@@ -14,6 +14,11 @@ clusterReceiver:
   enabled: false
 gateway:
   enabled: true
+  extraEnvs:
+  - name: AWS_ACCESS_KEY_ID
+    value: "< YOUR AWS ACCESS KEY KEY >"
+  - name: AWS_SECRET_ACCESS_KEY
+    value: "< YOUR AWS SECRET ACCESS KEY >"
   replicaCount: 1
   resources:
     limits:
@@ -24,8 +29,15 @@ gateway:
       attributes/helloworld:
         actions:
         - key: helloworld
-          value: hellojek
+          value: hellos3
           action: insert
+    exporters:
+      awss3:
+        s3uploader:
+            region: "ap-southeast-1"
+            s3_bucket: "< YOUR BUCKET NAME >"
+            s3_prefix: "trace"
+            s3_partition: "minute"
     service:
       pipelines:
         traces:
@@ -38,4 +50,5 @@ gateway:
           - attributes/helloworld
           - batch
           exporters:
+          - awss3
           - sapm
