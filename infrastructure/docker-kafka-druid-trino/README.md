@@ -6,7 +6,7 @@
 Choose between Step 1A or Step 1B then move on to Step 2
 
 ## Start Kafka
-`docker run --rm -d -p 9092:9092 -e ADV_HOST=192.168.XXX.106 --name local-kafka lensesio/fast-data-dev:latest`
+`docker run --rm -d -p 9092:9092 -e ADV_HOST=192.168.XXX.XXX --name local-kafka lensesio/fast-data-dev:latest`
 
 ## Start Kafka UI
 `docker run --rm -d -p 8000:8080 -e DYNAMIC_CONFIG_ENABLED=true --name kafka-ui provectuslabs/kafka-ui`
@@ -92,6 +92,8 @@ connector.name=druid
 connection-url=jdbc:avatica:remote:url=http://<BROKER IP ADDRESS>:8082/druid/v2/sql/avatica/
 ```
 
+# Step 4
+
 ## Create Trino
 https://trino.io/docs/current/installation/containers.html
 
@@ -116,7 +118,7 @@ trino;druid> `select * from druid l;`
 
 ![](datagrip1.png)
 
-# Step 4 
+# Step 5 
 
 ## Add splunk-otel-java to read the Java metrics from Kafka, Druid, and Trino.
 WIP...
