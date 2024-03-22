@@ -30,11 +30,26 @@ Druid requires date field in this format:
 
 ![](producemsg.png)
 
-# Step 1B
-Choose between Step 1B or Step 1A then move on to Step 2
+# Step 1B (isn't working)
+Choose between Step 1B or Step 1A then move on to Step 2. For now Step 1B isn't working
 
 ## ...
-...
+```bash
+# https://docs.lenses.io/
+
+docker pull lensesio/box
+
+# Get a free development license here https://lenses.io/apache-kafka-docker/
+
+docker run -e ADV_HOST=192.168.XXX.XXX \
+       -e EULA="https://licenses.lenses.io/d/?id=< ENTER YOUR FREE DEVELOPMENT LICENSE KEY HERE >" \
+       --rm -p 3030:3030 -p 9092:9092 lensesio/box:latest
+
+# Access the UI from http://localhost:3030
+
+# Default username and password is admin / admin
+```
+WIP. I will come back to this next time.
 
 # Step 2
 
