@@ -1,23 +1,27 @@
-# Get network IP address
+# Step 0
+## Get network IP address
 ![](networkip.png)
 
-# Start Kafka
+# Step 1A
+Choose between Step 1A or Step 1B then move on to Step 2
+
+## Start Kafka
 `docker run --rm -d -p 9092:9092 -e ADV_HOST=192.168.XXX.106 --name local-kafka lensesio/fast-data-dev:latest`
 
-# Start Kafka UI
+## Start Kafka UI
 `docker run --rm -d -p 8000:8080 -e DYNAMIC_CONFIG_ENABLED=true --name kafka-ui provectuslabs/kafka-ui`
 
-# Create Kafka cluster
+## Create Kafka cluster
 Go to http://localhost:8000
 
 ![](kafkaui.png)
 
 If error connecting, try `advertised.listeners=PLAINTEXT://192.168.XXX.106:9092` in the above step and check out https://stackoverflow.com/questions/67763076/connection-to-node-1-127-0-0-19092-could-not-be-established-broker-may-not 
 
-# Create Kafka topic
+## Create Kafka topic
 ![](topic.png)
 
-# Generate sample json for Kafka Topic to Druid
+## Generate sample json for Kafka Topic to Druid
 https://json-generator.com/
 Druid requires date field in this format:
 
@@ -26,7 +30,15 @@ Druid requires date field in this format:
 
 ![](producemsg.png)
 
-# Start Apache Druid
+# Step 1B
+Choose between Step 1B or Step 1A then move on to Step 2
+
+## ...
+...
+
+# Step 2
+
+## Start Apache Druid
 Follow the instruction to add docker-compose.yml and environment files in the folder 
 - https://druid.apache.org/docs/latest/tutorials/docker/ 
 - https://github.com/apache/druid/tree/master/distribution/docker
@@ -39,7 +51,7 @@ Optionally can access the container with `docker exec -ti <id> sh`
     - There is also helm chart installation for k8s users. https://github.com/apache/druid/tree/master/helm/druid
 Navigate to the web console at http://localhost:8888
 
-# Load data from Kafka to Druid
+## Load data from Kafka to Druid
 ![](1.png)
 ![](stream.png)
 `SELECT 
@@ -47,12 +59,13 @@ Navigate to the web console at http://localhost:8888
   FROM "druid"`
 ![](test.png)
 
-# Reference
+## Reference
 udemy.com/course/apache-druid-complete-guide/learn/lecture/38970672#overview
 
 ---
+# Step 3
 
-# Create druid.properties for Trino's connector to Druid to use.
+## Create druid.properties for Trino's connector to Druid to use.
 
 Create a `druid.properties` file following the instruction here https://trino.io/docs/current/connector/druid.html
 
@@ -64,14 +77,14 @@ connector.name=druid
 connection-url=jdbc:avatica:remote:url=http://<BROKER IP ADDRESS>:8082/druid/v2/sql/avatica/
 ```
 
-# Create Trino
+## Create Trino
 https://trino.io/docs/current/installation/containers.html
 
 `docker run --rm -d -p 9000:8080 -v /Users/XXX/XXX/splunk-otel-example/infrastructure/docker-kafka-druid-trino/druid.properties:/etc/trino/catalog/druid.properties --name trino trinodb/trino`
 
 Go to http://localhost:9000
 
-# Use Trino CLI to query
+## Use Trino CLI to query
 `docker exec -it trino trino`
 
 trino> `exit`
@@ -84,12 +97,16 @@ trino;druid> `select * from druid l;`
 
 ![](proof.png)
 
-# Try using Trino through Jetbrain's DataGrip. A easier to understand and navigate interface.
+## Try using Trino through Jetbrain's DataGrip. A easier to understand and navigate interface.
 
 ![](datagrip1.png)
 
-# Add splunk-otel-java to read the Java metrics from Kafka, Druid, and Trino.
+# Step 4 
+
+## Add splunk-otel-java to read the Java metrics from Kafka, Druid, and Trino.
 WIP...
+
+---
 
 # Reference
 udemy.com/course/apache-druid-complete-guide/learn/lecture/38970666#overview
