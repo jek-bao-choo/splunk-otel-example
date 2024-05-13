@@ -37,8 +37,8 @@ logsCollection:
     containerRuntime: "containerd"
     excludeAgentLogs: false
 ```
-- `helm install jektestv2 -f v1-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
-- `kubectl logs ds/jektestv2-splunk-otel-collector-agent -f`
+- `helm install jektestv1 -f v1-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
+- `kubectl logs ds/jektestv1-splunk-otel-collector-agent -f`
 - Search for the log events using `index=otel_events` in Splunk Enterprise or Splunk Cloud
 
 # Create nginx-http app and load-http app
@@ -60,7 +60,9 @@ Sometimes there will be a need to collect logs that are not emitted from pods vi
 The OTel Collector Helm chart provides an easy way to configure custom file paths using the extraFilelogs option.
 - Add Volume to loadtest-v1.yaml, making it loadtest-v2.yaml
 - `kubectl apply -f loadtest-v2.yaml`
-- Volume's EmptyDir mounts a special location on the node reserved for ephemeral storage. You can find this location on the node by navigating to `/var/lib/kubelet/pods` on the node as root. In this folder you will see each Pod’s uid. 
+- `kubectl logs deploy/nginx-http`
+
+IMPORTANT pt 1 of 2 --> Volume's EmptyDir mounts a special location on the node reserved for ephemeral storage. You can find this location on the node by navigating to `/var/lib/kubelet/pods` on the node as root. In this folder you will see each Pod’s uid. 
 ![](uid.png)
 
 - Remember that uid and find it in the node folder of `/var/lib/kubelet/pods`
@@ -69,7 +71,43 @@ The OTel Collector Helm chart provides an easy way to configure custom file path
 
 In order to monitor this directory with the OTel collector, we will need to use the extraVolumes and extraVolumeMounts settings in the Helm chart to wire up this path into our agent daemonset. 
 
-- Add `extraVolumes` and `extraVolumeMounts` to v1-values.yaml, making it v2.values.yaml
+- Add `extraVolumes` and `extraVolumeMounts` to v1-values.yaml, making it v2-values.yaml
+```yml
+agent:
+  # Extra volumes to be mounted to the agent daemonset.
+  # The volumes will be available for both OTel agent and fluentd containers.
+  extraVolumes:
+  - name: emptydir
+    hostPath:
+      path: /var/lib/kubelet/pods/
+  extraVolumeMounts: 
+  - name: emptydir
+    mountPath: /tmp/emptydir
+    readOnly: true
+```
+
+IMPORTANT pt 2 of 2 --> This will mount the known emptyDir path from the node to our OTel agent so we can find it under /tmp/emptydir inside our pod filesystem, allowing us to create new filelog receiver inputs using the extraFileLogs section in our helm chart.
+
+- Add `extraFileLogs` to v2-values.yaml
+```yml
+logsCollection:
+  extraFileLogs:
+    filelog/emptydir-access-log:
+      include: 
+      - /tmp/emptydir/*/volumes/kubernetes.io~empty-dir/emptydir-access-log/access.log
+      start_at: beginning
+      storage: file_storage
+      include_file_path: true
+      include_file_name: false
+      resource:
+        com.splunk.index: otel_events
+        com.splunk.source: /var/log/emptydir/emptydir-access-log
+        host.name: 'EXPR(env("K8S_NODE_NAME"))'
+        com.splunk.sourcetype: kube:nginx-access-log
+```
+- `helm uninstall jektestv1`
+- `helm install jektestv2 -f v2-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
+- scale up load test `kubectl scale deploy/load-http --replicas 1`
 
 
 

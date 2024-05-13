@@ -14,6 +14,19 @@ spec:
       labels:
         app: nginx-http
     spec:
+      initContainers:  
+        - name: createlogs  
+          image: busybox  
+          command:
+            - sh
+            - -c
+            - |
+              echo "Dummy log helloworld entry 1" > /usr/local/games/log1.log
+              echo "Dummy log entry 2" > /usr/local/games/log2.log
+              echo "Dummy log helloworld entry 3" > /usr/local/games/log3.log
+          volumeMounts:  
+            - name: jek-log-helloworld  
+              mountPath: /usr/local/games
       containers:
         - name: nginx-http
           image: nginx
@@ -24,12 +37,12 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-            - mountPath: /var/log/nginx
-              name: jek-var-log-nginx
+              - mountPath: /usr/local/games
+                name: jek-log-helloworld
       volumes:
-        - name: jek-var-log-nginx
+        - name: jek-log-helloworld
           emptyDir:
-            sizeLimit: 1000Mi
+            sizeLimit: 500Mi
 
 ---
 
