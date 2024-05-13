@@ -1,0 +1,13 @@
+clusterName: "< your cluster name e.g. v1-jek-test-cluster >"
+logsEngine: otel
+splunkPlatform:
+    endpoint: "https://< your splunk enterprise instance id >.ec2.splunkit.io:8088/services/collector"
+    token: "00000000-0000-0000-0000-000000000000"
+    index: "otel_events"
+    metricsIndex: "otel_metrics"
+    insecureSkipVerify: true
+    metricsEnabled: true
+logsCollection:
+    containers: 
+        containerRuntime: "containerd"
+        excludeAgentLogs: false
