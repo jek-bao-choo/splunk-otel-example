@@ -60,10 +60,12 @@ The OTel Collector Helm chart provides an easy way to configure custom file path
 - `kubectl apply -f loadtest-v2.yaml`
 - `kubectl logs deploy/nginx-http`
 
-IMPORTANT pt 1 of 2 --> Volume's EmptyDir mounts a special location on the node reserved for ephemeral storage. You can find this location on the node by navigating to `/var/lib/kubelet/pods` on the node as root. In this folder you will see each Pod’s uid. 
+
+* * * IMPORTANT pt 1 of 2 --> Volume's EmptyDir mounts a special location on the node reserved for ephemeral storage. You can find this location on the node by navigating to `/var/lib/kubelet/pods` on the node as root. In this folder you will see each Pod’s uid. 
 ![](uid.png)
 
-- Remember that uid and find it in the node folder of `/var/lib/kubelet/pods`
+
+Remember that uid and find it in the node folder of `/var/lib/kubelet/pods`
 
 < insert proof here >
 
@@ -84,7 +86,7 @@ agent:
     readOnly: true
 ```
 
-IMPORTANT pt 2 of 2 --> This will mount the known emptyDir path from the node to our OTel agent so we can find it under /tmp/emptydir inside our pod filesystem, allowing us to create new filelog receiver inputs using the extraFileLogs section in our helm chart.
+* * * IMPORTANT pt 2 of 2 --> This will mount the known emptyDir path from the node to our OTel agent so we can find it under /tmp/emptydir inside our pod filesystem, allowing us to create new filelog receiver inputs using the extraFileLogs section in our helm chart.
 
 - Add `extraFileLogs` to v2-values.yaml
 ```yml
