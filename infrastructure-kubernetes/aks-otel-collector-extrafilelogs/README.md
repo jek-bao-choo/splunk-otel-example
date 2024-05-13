@@ -1,5 +1,5 @@
-# Create a Splunk Enterprise instance
-- Create 1 events index called `otel_events` and 1 metrics index called `otel_metrics`
+# Create a Splunk Cloud or Splunk Enterprise instance
+- Create 1 events index called `otel_events`
 ![](index.png)
 - Create a HEC token and save it.
 
@@ -29,9 +29,7 @@ splunkPlatform:
   endpoint: "https://< your instance id >.splunk.show:8088/services/collector"
   token: "< your hec token >"
   index: "otel_events"
-  metricsIndex: "otel_metrics"
   insecureSkipVerify: true
-  metricsEnabled: true
 logsCollection:
   containers: 
     containerRuntime: "containerd"
