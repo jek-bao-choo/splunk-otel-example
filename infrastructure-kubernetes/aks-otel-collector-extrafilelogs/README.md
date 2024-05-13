@@ -92,22 +92,23 @@ IMPORTANT pt 2 of 2 --> This will mount the known emptyDir path from the node to
 ```yml
 logsCollection:
   extraFileLogs:
-    filelog/emptydir-access-log:
+    filelog/jek-log-helloworld:
       include: 
-      - /tmp/emptydir/*/volumes/kubernetes.io~empty-dir/emptydir-access-log/access.log
+      - /tmp/emptydir/*/volumes/kubernetes.io~empty-dir/jek-log-helloworld/log1.log
       start_at: beginning
       storage: file_storage
       include_file_path: true
       include_file_name: false
       resource:
         com.splunk.index: otel_events
-        com.splunk.source: /var/log/emptydir/emptydir-access-log
+        com.splunk.source: /var/log/emptydir/jek-log-helloworld
         host.name: 'EXPR(env("K8S_NODE_NAME"))'
-        com.splunk.sourcetype: kube:nginx-access-log
+        com.splunk.sourcetype: kube:jek-log-helloworld
 ```
 - `helm uninstall jektestv1`
 - `helm install jektestv2 -f v2-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 - scale up load test `kubectl scale deploy/load-http --replicas 1`
+![](proof3.png)
 
 
 

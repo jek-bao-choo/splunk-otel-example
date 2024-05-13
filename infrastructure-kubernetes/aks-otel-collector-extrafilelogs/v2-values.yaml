@@ -1,0 +1,37 @@
+clusterName: "jek-v1-cluster"
+logsEngine: otel
+cloudProvider: "azure"
+distribution: "aks"
+splunkPlatform:
+  endpoint: "https://< your instance id >.splunk.show:8088/services/collector"
+  token: "< your hec token >"
+  index: "otel_events"
+  metricsIndex: "otel_metrics"
+  insecureSkipVerify: true
+  metricsEnabled: true
+logsCollection:
+  containers: 
+    containerRuntime: "containerd"
+    excludeAgentLogs: false
+  extraFileLogs:
+    filelog/jek-log-helloworld:
+      include: 
+      - /tmp/emptydir/*/volumes/kubernetes.io~empty-dir/jek-log-helloworld/log1.log
+      start_at: beginning
+      storage: file_storage
+      include_file_path: true
+      include_file_name: false
+      resource:
+        com.splunk.index: otel_events
+        com.splunk.source: /var/log/emptydir/jek-log-helloworld
+        host.name: 'EXPR(env("K8S_NODE_NAME"))'
+        com.splunk.sourcetype: kube:jek-log-helloworld
+agent:
+  extraVolumes:
+  - name: emptydir
+    hostPath:
+      path: /var/lib/kubelet/pods/
+  extraVolumeMounts: 
+  - name: emptydir
+    mountPath: /tmp/emptydir
+    readOnly: true
