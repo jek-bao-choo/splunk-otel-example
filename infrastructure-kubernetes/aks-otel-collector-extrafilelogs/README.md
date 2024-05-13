@@ -34,4 +34,8 @@ logsCollection:
         containerRuntime: "containerd"
         excludeAgentLogs: false
 ```
-- `helm install -f v1-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
+- `helm install v1jektest -f v1-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
+- `kubectl logs ds/v1jektest-splunk-otel-collector-agent -f`
+- Search for the log events using `index=otel_events` in Splunk Enterprise or Splunk Cloud
+
+# Create Nginx Load HTTP app
