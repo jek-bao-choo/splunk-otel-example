@@ -12,10 +12,26 @@
     - Followed by `az group create --location southeastasia --name "${AZURE_RESOURCE_GROUP}" --tags Criticality=Low Env=Test Owner=email@email.com`
 
 # Create and connect to AKS Cluster
+- Check that `ls -a ~/.ssh/` has file named `id_rsa.pub` and `id_rsa`.
+![](rsa.png)
+    - if not create it using `ssh-keygen -t rsa -b 2048`
 - `export AKS_CLUSTER_NAME="JekAKSCluster"`
-- Create AKS cluster https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-create `az aks create --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}" --node-count 2`
+- Create AKS cluster https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-create `az aks create --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}" --node-count 3 --ssh-key-value ~/.ssh/id_rsa.pub --enable-node-public-ip`
+    - Note: Assigning public IPs to AKS nodes can expose them to the internet, which might pose security risks. It's recommended to use a jump box or VPN for secure access in a production environment.
 - `az aks list`
 - `az aks get-credentials --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}"` 
+- Verify that the cluster is running `kubectl get nodes -o wide`
+    - Ensure your NSG allows SSH (port 22) traffic. If you need to adjust NSG rules:
+
+        - Go to the Azure portal.
+        - Search for "NSG" or "Network Security Group".
+        - Select the network security group associated with your AKS nodes.
+        - Add an inbound security rule to allow SSH traffic.
+        - Alternatively use CLI. Example of Creating an Inbound Security Rule via CLI: `az network nsg rule create --resource-group <MC_myResourceGroup_myAKSCluster_myLocation> --nsg-name <your-the-aks-agentpool-nsg> --name AllowSSH --protocol tcp --priority 1000 --destination-port-ranges 22 --access allow`
+        
+- SSH into the nodes `ssh -i ~/.ssh/id_rsa azureuser@< the external public id of the node >`
+![](proof4.png)
+![](proof5.png)
 
 # Install OTel Collector Daemonset
 - `helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart`
@@ -109,6 +125,13 @@ logsCollection:
 - `helm install jektestv2 -f v2-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 - scale up load test `kubectl scale deploy/load-http --replicas 1`
 ![](proof3.png)
+
+# Clean Up
+- `kubectl delete deployment.apps/nginx-http`
+- `kubectl delete service/nginx-http-service`
+- `kubectl delete deployment.apps/load-http`
+- Delete the AKS cluster `az aks delete --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}"`
+- Delete the created Azure Resource Group https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-delete `az group delete --name "${AZURE_RESOURCE_GROUP}"`
 
 
 
