@@ -1,10 +1,10 @@
-clusterName: "< your cluster name >"
+clusterName: "jek-v1-cluster"
 logsEngine: otel
 cloudProvider: "azure"
 distribution: "aks"
 splunkPlatform:
   endpoint: "https://< your instance id >.splunk.show:8088/services/collector"
-  token: "< your hec token >"
+  token: "<your hec token>"
   index: "otel_events"
   insecureSkipVerify: true
 logsCollection:
