@@ -80,7 +80,8 @@ logsCollection:
 - IMPORTANT pt 1 of 2 --> Volume's EmptyDir mounts a special location on the node reserved for ephemeral storage. You can find this location on the node by navigating to `/var/lib/kubelet/pods` on the node as root. In this folder you will see each Pod’s uid. 
 ![](uid.png)
 
-- `kubectl get pod nginx-http-< the complete name > -o yaml`
+- `kubectl describe pod nginx-http-< the complete name > | grep 'UID'`
+- Or `kubectl get pod nginx-http-< the complete name > -o yaml`
 - Remember that uid and ssh into the specific node and find it in the node folder of `/var/lib/kubelet/pods`
 
 ![](proof6.png)
@@ -112,7 +113,7 @@ logsCollection:
   extraFileLogs:
     filelog/jek-log-helloworld:
       include: 
-      - /tmp/emptydir/*/volumes/kubernetes.io~empty-dir/jek-log-helloworld/log1.log
+      - /tmp/emptydir/*/volumes/kubernetes.io~empty-dir/jek-log-helloworld/log*.log
       start_at: beginning
       storage: file_storage
       include_file_path: true
@@ -129,7 +130,7 @@ logsCollection:
 ![](proof3.png)
 ![](proof7.png)
 
-# Further enhancement
+## Optional: Further enhancement
 - This provides us with a way for Kubernetes Platform admins to monitor ephemeral volumes (emptyDir) without the need for mounting the hostPath to the developer containers. It also allows the developers to avoid the need to mount persistent volumes which can add complexity or cost money for their deploy. 
 - While we have our logs coming in now, there is one thing to notice. We are missing some key metadata in these logs. We have the k8s.cluster.name and the k8s.node.name but you’ll notice, there is no k8s.namespace.name or  k8s.pod.name. There is no pod metadata at all, in fact. This is because when we pick up the log from the ephemeral path, we lose some of the info we would normally have gotten from the stdout/stderr path location. One thing we do have though, is the k8s.pod.uid. So let’s try and use this in conjunction with the k8sattributes processor we have in OTel!
 - First we will update our custom filelog receiver to use operators to extract metadata from the log.file.path
@@ -143,9 +144,10 @@ logsCollection:
 - Now let’s attempt to further customize our pipeline to use the k8s.pod.uid to enrich the event further with the k8sattributes processor. To accomplish this we will need to override the default logs/host pipeline to route our emptyDir sourced logs through the existing k8sattributes processor. 
 - And once we update our helm chart, you should now see extra metadata in the events. The only thing you won't see is container level info as we do not get the container name or id in the record to allow k8sattributes to enrich the container info, but this should provide enough key metadata for users to identify where the log came from.
 
-# Getting logs from Persistent Volume (PV) and Persistent Volume Claims (PVC)
-- ...
-
+# Getting logs from Azure Disk's Persistent Volume (PV) and Persistent Volume Claims (PVC)
+- `kubectl apply -f storageclass.yaml`
+- `kubectl apply -f pvc.yaml`
+- `kubectl apply -f loadtest-v3.yaml`
 
 # Clean Up
 - `kubectl delete deployment.apps/nginx-http`

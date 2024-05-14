@@ -1,0 +1,94 @@
+# Deployment of nginx
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-http
+spec:
+  selector:
+    matchLabels:
+      app: nginx-http
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-http
+    spec:
+      initContainers:  
+        - name: createlogs  
+          image: busybox  
+          command:
+            - sh
+            - -c
+            - |
+              echo "Dummy jek pvc helloworld entry 4" > /usr/local/games/log4.log
+              echo "Dummy jek pvc entry 5" > /usr/local/games/log5.log
+              echo "Dummy jek pvc helloworld entry 6" > /usr/local/games/log6.log
+          volumeMounts:  
+            - name: jek-log-volume  
+              mountPath: /usr/local/games
+      containers:
+        - name: nginx-http
+          image: nginx
+          resources:
+            limits:
+              memory: 256Mi
+              cpu: 200m
+          ports:
+            - containerPort: 80
+          volumeMounts:
+              - mountPath: /usr/local/games
+                name: jek-log-volume
+      volumes:
+        - name: jek-log-volume
+          persistentVolumeClaim:
+            claimName: jek-pvc
+
+---
+
+# Expose nginx deployment as a service, to connect to it and generate load
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-http-service
+  labels: 
+    app: nginx-http
+spec:
+  selector:
+    app: nginx-http
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 80
+
+---
+
+# deployment use to generate traffic on our application
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: load-http
+  name: load-http
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: load-http
+  template:
+    metadata:
+      labels:
+        app: load-http
+    spec:
+      containers:
+      - image: ubuntu:22.04
+        command: ["/bin/sh"]
+        args: ["-c","/usr/bin/apt update ; /usr/bin/apt install siege -y ; siege -d 1 -c 60 -t 3600s -H 'Host: nginx-http.default.svc.cluster.local' http://nginx-http-service.default.svc.cluster.local:8082"]
+        imagePullPolicy: Always
+        name: load-http
+        resources:
+          limits:
+            memory: 128Mi
+            cpu: 500m
