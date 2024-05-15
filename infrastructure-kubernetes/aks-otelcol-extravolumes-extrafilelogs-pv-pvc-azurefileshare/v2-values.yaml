@@ -1,4 +1,4 @@
-clusterName: "< your cluster name >"
+clusterName: "jek-v2-cluster"
 logsEngine: otel
 cloudProvider: "azure"
 distribution: "aks"

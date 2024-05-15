@@ -267,35 +267,46 @@ agent:
   # Extra volumes to be mounted to the agent daemonset.
   # The volumes will be available for both OTel agent and fluentd containers.
   extraVolumes:
-  - name: emptydir
+  - name: jekvolumev3
     hostPath:
       path: /var/lib/kubelet/pods/
   extraVolumeMounts: 
-  - name: emptydir
-    mountPath: /tmp/emptydir
+  - name: jekvolumev3
+    mountPath: /tmp/jekazurecsiv3
     readOnly: true
 ```
 - In the `extraFileLogs` of v3-values.yaml
 ```yml
 logsCollection:
   extraFileLogs:
-    filelog/jek-log-volume:
+    filelog/jek-log-volume-v3:
       include: 
-      - /tmp/emptydir/*/volumes/kubernetes.io~csi/azure-file-pv/mount/log*.log
+      - /tmp/jekazurecsiv3/*/volumes/kubernetes.io~csi/azure-file-pv/mount/log*.log
       start_at: beginning
       storage: file_storage
       include_file_path: true
       include_file_name: false
       resource:
         com.splunk.index: otel_events
-        com.splunk.source: /var/log/emptydir/jek-log-volume
+        com.splunk.source: /var/log/emptydir/jek-log-volume-v3
         host.name: 'EXPR(env("K8S_NODE_NAME"))'
-        com.splunk.sourcetype: kube:jek-log-volume
+        com.splunk.sourcetype: kube:jek-log-volume-v3
 ```
 - `helm uninstall jektestv2`
 - `helm install jektestv3 -f v3-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 - scale up load test `kubectl scale deploy/load-http --replicas 1`
+- Observe which node is nginx running on `kubectl get pods -o wide` and go to the daemonset pod.
+![](pod.png)
+- `kubectl exec -i -t jektestv3-splunk-otel-collector-agent-< full name of the daemonset pod > -c otel-collector -- sh -c "clear; (bash || ash || sh)"`
+![](proof10.png)
+![](proof11.png)
+- The log files in the app pod on k8s node `...002` where in k8s node name `...02` (when SSH into the node) can see the following folder `/var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~csi/<pvc-uid>/mount` is mounted to the OTel Collector Daemonset's pod's container `otel-collector`'s folder `/tmp/jekazurecsiv3/<pod uid>/volumes/kubernetes.io~csi/azure-file-pv/mount/` as defined in the above `extraFileLogs` setting where the asterisk refers to all the `<pod uid>`.
+    - The `extraVolumes` will use the hostpath i.e. the node path and mount the folder path as indicated. The path would be map to OTel Collector daemonset pod folder e.g. `/tmp/something...` through the use of `extraVolumeMounts`. After which, the OTel Collector will read the log files from the `extraVolumeMounts` path on the OTel Collector Daemonset pod using `extraFileLogs`. Consequently, OTel Collector will send it to Splunk Cloud or Splunk Enterprise using the selected log engine i.e. OTel in this example.
 
+![](proof12.png)
+
+## Validate using `persistentVolumeClaim` instead of `hostPath` in `extraVolumes`
+-  
 
 # Clean Up
 - `kubectl delete deployment.apps/nginx-http`

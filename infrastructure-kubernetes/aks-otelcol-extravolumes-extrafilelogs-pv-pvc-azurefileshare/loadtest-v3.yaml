@@ -21,9 +21,9 @@ spec:
             - sh
             - -c
             - |
-              echo "Dummy jek pvc helloworld entry 7" > /usr/local/games/log7.log
-              echo "Dummy jek pvc entry 8" > /usr/local/games/log8.log
-              echo "Dummy jek pvc helloworld entry 9" > /usr/local/games/log9.log
+              echo "Dummy jek pvc helloworld entry 7" > /usr/local/games/log10.log
+              echo "Dummy jek pvc entry 8" > /usr/local/games/log17.log
+              echo "Dummy jek pvc helloworld entry 9" > /usr/local/games/log52.log
           volumeMounts:  
             - name: jek-log-volume  
               mountPath: /usr/local/games
