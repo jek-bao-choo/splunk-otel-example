@@ -314,6 +314,35 @@ logsCollection:
 
 ![](proof13.png)
 
+```yml
+agent:
+  extraVolumes:
+  - name: jekvolumev4
+    persistentVolumeClaim:
+      claimName: azure-file-pvc
+  extraVolumeMounts: 
+  - name: jekvolumev4
+    mountPath: /tmp/strictlyazurefilepvcv4
+    readOnly: true
+```
+
+```yml
+logsCollection:
+  extraFileLogs:
+    filelog/jek-log-volume-helloworld-v4:
+      include: 
+      - /tmp/strictlyazurefilepvcv4/log*.log
+      start_at: beginning
+      storage: file_storage
+      include_file_path: true
+      include_file_name: false
+      resource:
+        com.splunk.index: otel_events
+        com.splunk.source: persistentVolumeClaim-azure-file-pvc/jek-vol-helloworld-v4
+        host.name: 'EXPR(env("K8S_NODE_NAME"))'
+        com.splunk.sourcetype: kube:jek-helloworld-v4
+```
+
 - `helm install jektestv4 -f v4-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 - Observe which node is nginx running on `kubectl get pods -o wide` and go to the daemonset pod.
 - `kubectl exec -i -t jektestv4-splunk-otel-collector-agent-< full name of the daemonset pod > -c otel-collector -- sh -c "clear; (bash || ash || sh)"`
