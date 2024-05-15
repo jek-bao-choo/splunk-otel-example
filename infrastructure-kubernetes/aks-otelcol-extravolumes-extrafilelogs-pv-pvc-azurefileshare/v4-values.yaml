@@ -1,0 +1,35 @@
+clusterName: "jek-v4-cluster"
+logsEngine: otel
+cloudProvider: "azure"
+distribution: "aks"
+splunkPlatform:
+  endpoint: "https://< your instance id >.splunk.show:8088/services/collector"
+  token: "< your hec token >"
+  index: "otel_events"
+  insecureSkipVerify: true
+logsCollection:
+  containers: 
+    containerRuntime: "containerd"
+    excludeAgentLogs: false
+  extraFileLogs:
+    filelog/jek-log-volume-helloworld-v4:
+      include: 
+      - /tmp/strictlyazurefilepvcv4/log*.log
+      start_at: beginning
+      storage: file_storage
+      include_file_path: true
+      include_file_name: false
+      resource:
+        com.splunk.index: otel_events
+        com.splunk.source: persistentVolumeClaim-azure-file-pvc/jek-vol-helloworld-v4
+        host.name: 'EXPR(env("K8S_NODE_NAME"))'
+        com.splunk.sourcetype: kube:jek-helloworld-v4
+agent:
+  extraVolumes:
+  - name: jekvolumev4
+    persistentVolumeClaim:
+      claimName: azure-file-pvc
+  extraVolumeMounts: 
+  - name: jekvolumev4
+    mountPath: /tmp/strictlyazurefilepvcv4
+    readOnly: true

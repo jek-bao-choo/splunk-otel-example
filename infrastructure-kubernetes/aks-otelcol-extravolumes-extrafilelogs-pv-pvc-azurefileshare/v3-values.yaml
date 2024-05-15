@@ -1,0 +1,35 @@
+clusterName: "jek-v3-cluster"
+logsEngine: otel
+cloudProvider: "azure"
+distribution: "aks"
+splunkPlatform:
+  endpoint: "https://< your instance id >.splunk.show:8088/services/collector"
+  token: "< your hec token >"
+  index: "otel_events"
+  insecureSkipVerify: true
+logsCollection:
+  containers: 
+    containerRuntime: "containerd"
+    excludeAgentLogs: false
+  extraFileLogs:
+    filelog/jek-log-volume-v3:
+      include: 
+      - /tmp/jekazurecsiv3/*/volumes/kubernetes.io~csi/azure-file-pv/mount/log*.log
+      start_at: beginning
+      storage: file_storage
+      include_file_path: true
+      include_file_name: false
+      resource:
+        com.splunk.index: otel_events
+        com.splunk.source: /var/log/emptydir/jek-log-volume-v3
+        host.name: 'EXPR(env("K8S_NODE_NAME"))'
+        com.splunk.sourcetype: kube:jek-log-volume-v3
+agent:
+  extraVolumes:
+  - name: jekvolumev3
+    hostPath:
+      path: /var/lib/kubelet/pods/
+  extraVolumeMounts: 
+  - name: jekvolumev3
+    mountPath: /tmp/jekazurecsiv3
+    readOnly: true

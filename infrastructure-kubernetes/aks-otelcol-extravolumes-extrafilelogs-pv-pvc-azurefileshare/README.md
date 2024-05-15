@@ -1,6 +1,8 @@
 # Create a Splunk Cloud or Splunk Enterprise instance
 - Create 1 events index called `otel_events`
+
 ![](index.png)
+
 - Create a HEC token and save it.
 
 # Setup AKS
@@ -13,8 +15,11 @@
 
 # Create and connect to AKS Cluster
 - Check that `ls -a ~/.ssh/` has file named `id_rsa.pub` and `id_rsa`.
+
 ![](rsa.png)
+
     - if not create it using `ssh-keygen -t rsa -b 2048`
+
 - `export AKS_CLUSTER_NAME="JekAKSCluster"`
 - Create AKS cluster https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-create `az aks create --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}" --node-count 3 --ssh-key-value ~/.ssh/id_rsa.pub --enable-node-public-ip`
     - Note: Assigning public IPs to AKS nodes can expose them to the internet, which might pose security risks. It's recommended to use a jump box or VPN for secure access in a production environment.
@@ -30,6 +35,7 @@
         - Alternatively use CLI. Example of Creating an Inbound Security Rule via CLI: `az network nsg rule create --resource-group <MC_myResourceGroup_myAKSCluster_myLocation> --nsg-name <your-the-aks-agentpool-nsg> --name AllowSSH --protocol tcp --priority 1000 --destination-port-ranges 22 --access allow`
         
 - SSH into the nodes `ssh -i ~/.ssh/id_rsa azureuser@< the external public id of the node >`
+
 ![](proof4.png)
 ![](proof5.png)
 
@@ -65,6 +71,7 @@ logsCollection:
 - `kubectl logs deploy/load-http`
 - Scale down load test `kubectl scale deploy/load-http --replicas 0`
 - Search for nginx-http logs using `index=otel_events sourcetype="kube:container:nginx-http" | reverse` in Splunk.
+
 ![](proof1.png)
 ![](proof2.png)
 
@@ -78,6 +85,7 @@ logsCollection:
 - `kubectl get pods -o wide`
 
 - IMPORTANT pt 1 of 2 --> Volume's EmptyDir mounts a special location on the node reserved for ephemeral storage. You can find this location on the node by navigating to `/var/lib/kubelet/pods` on the node as root. In this folder you will see each Pod’s uid. 
+
 ![](uid.png)
 
 - `kubectl get pod nginx-http-< the complete name > -o yaml | grep uid`
@@ -126,22 +134,10 @@ logsCollection:
 - `helm uninstall jektestv1`
 - `helm install jektestv2 -f v2-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 - scale up load test `kubectl scale deploy/load-http --replicas 1`
+
 ![](proof3.png)
+
 ![](proof7.png)
-
-## Optional: Further enhancement
-- This provides us with a way for Kubernetes Platform admins to monitor ephemeral volumes (emptyDir) without the need for mounting the hostPath to the developer containers. It also allows the developers to avoid the need to mount persistent volumes which can add complexity or cost money for their deploy. 
-- While we have our logs coming in now, there is one thing to notice. We are missing some key metadata in these logs. We have the k8s.cluster.name and the k8s.node.name but you’ll notice, there is no k8s.namespace.name or  k8s.pod.name. There is no pod metadata at all, in fact. This is because when we pick up the log from the ephemeral path, we lose some of the info we would normally have gotten from the stdout/stderr path location. One thing we do have though, is the k8s.pod.uid. So let’s try and use this in conjunction with the k8sattributes processor we have in OTel!
-- First we will update our custom filelog receiver to use operators to extract metadata from the log.file.path
-
-< insert screenshot >
-
-- Here we have used the regex_parser to extract the fields called uid and volume_name. We then use the move operator to set them as resources called k8s.pod.uid and k8s.volume.name. 
-
-< insert screenshot >
-
-- Now let’s attempt to further customize our pipeline to use the k8s.pod.uid to enrich the event further with the k8sattributes processor. To accomplish this we will need to override the default logs/host pipeline to route our emptyDir sourced logs through the existing k8sattributes processor. 
-- And once we update our helm chart, you should now see extra metadata in the events. The only thing you won't see is container level info as we do not get the container name or id in the record to allow k8sattributes to enrich the container info, but this should provide enough key metadata for users to identify where the log came from.
 
 # Sending logs to `Azure Storage Account's File Shares` through Persistent Volume (PV) and Persistent Volume Claims (PVC) and a copy to Splunk
 - Create an Azure Storage Account:
@@ -150,7 +146,9 @@ logsCollection:
     - Choose the account kind as "StorageV2" and the replication option based on your requirements.
     - Click on "Review + create" and then "Create" to create the storage account.
 - Create a File Share with a unique name in the newly created Azure Storage Account
+
 ![](fileshare.png)
+
 - Obtain the Storage Account Key:
     - Once the storage account is created, go to the "Access Keys" section in the storage account settings.
     - Copy one of the access keys (key1 or key2) as you will need it later.
@@ -296,17 +294,56 @@ logsCollection:
 - `helm install jektestv3 -f v3-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 - scale up load test `kubectl scale deploy/load-http --replicas 1`
 - Observe which node is nginx running on `kubectl get pods -o wide` and go to the daemonset pod.
+
 ![](pod.png)
+
 - `kubectl exec -i -t jektestv3-splunk-otel-collector-agent-< full name of the daemonset pod > -c otel-collector -- sh -c "clear; (bash || ash || sh)"`
+
 ![](proof10.png)
 ![](proof11.png)
+
 - The log files in the app pod on k8s node `...002` where in k8s node name `...02` (when SSH into the node) can see the following folder `/var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~csi/<pvc-uid>/mount` is mounted to the OTel Collector Daemonset's pod's container `otel-collector`'s folder `/tmp/jekazurecsiv3/<pod uid>/volumes/kubernetes.io~csi/azure-file-pv/mount/` as defined in the above `extraFileLogs` setting where the asterisk refers to all the `<pod uid>`.
     - The `extraVolumes` will use the hostpath i.e. the node path and mount the folder path as indicated. The path would be map to OTel Collector daemonset pod folder e.g. `/tmp/something...` through the use of `extraVolumeMounts`. After which, the OTel Collector will read the log files from the `extraVolumeMounts` path on the OTel Collector Daemonset pod using `extraFileLogs`. Consequently, OTel Collector will send it to Splunk Cloud or Splunk Enterprise using the selected log engine i.e. OTel in this example.
 
 ![](proof12.png)
 
 ## Validate using `persistentVolumeClaim` instead of `hostPath` in `extraVolumes`
--  
+- `helm uninstall jektestv3`
+- `kubectl apply -f loadtest-v4.yaml`
+- Check that the `Azure Storage Account >> File Share` has the new log files that is created by loadtest-v4.yaml.
+
+![](proof13.png)
+
+- `helm install jektestv4 -f v4-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
+- Observe which node is nginx running on `kubectl get pods -o wide` and go to the daemonset pod.
+- `kubectl exec -i -t jektestv4-splunk-otel-collector-agent-< full name of the daemonset pod > -c otel-collector -- sh -c "clear; (bash || ash || sh)"`
+
+![](proof14.png)
+
+- The logs are in Splunk too.
+
+![](proof15.png)
+![](proof16.png)
+
+- Try to upload a file e.g. `log987654.log` to the your `Azure Storage Account's >> File Share` account and see it getting send to Splunk Cloud or Splunk Enterprise. This shows that using Persistent Volume Claim works well.
+
+![](proof17.png)
+![](proof18.png)
+![](proof19.png)
+
+## Optional: Further enhancement (... work in progress...)
+- This provides us with a way for Kubernetes Platform admins to monitor volumes without the need for mounting the hostPath to the app containers directly (i.e. without using `extraVolumes` and `extraVolumeMounts` but using only `extraFileLogs` to read directly from app containers path). 
+- While we have our logs coming in now, there is one thing to notice. We are missing some key metadata in these logs. We have the `k8s.cluster.name` and the `k8s.node.name` but you’ll notice, there is no `k8s.namespace.name` or  `k8s.pod.name`. There is no pod metadata at all, in fact. This is because when we pick up the log from the ephemeral path, we lose some of the info we would normally have gotten from the stdout/stderr path location. One thing we do have though, is the `k8s.pod.uid`. So let’s try and use this in conjunction with the `k8sattributes` processor we have in OTel Collector!
+- First we will update our custom filelog receiver to use operators to extract metadata from the log.file.path
+
+< insert screenshot >
+
+- Here we have used the regex_parser to extract the fields called `uid` and `volume_name`. We then use the move operator to set them as resources called `k8s.pod.uid` and `k8s.volume.name`. 
+
+< insert screenshot >
+
+- Now let’s attempt to further customize our pipeline to use the k8s.pod.uid to enrich the event further with the k8sattributes processor. To accomplish this we will need to override the default logs/host pipeline to route our emptyDir sourced logs through the existing k8sattributes processor. 
+- And once we update our helm chart, you should now see extra metadata in the events. The only thing you won't see is container level info as we do not get the container name or id in the record to allow k8sattributes to enrich the container info, but this should provide enough key metadata for users to identify where the log came from.
 
 # Clean Up
 - `kubectl delete deployment.apps/nginx-http`
