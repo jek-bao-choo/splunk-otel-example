@@ -307,7 +307,7 @@ logsCollection:
 
 ![](proof12.png)
 
-## Validate using `persistentVolumeClaim` instead of `hostPath` in `extraVolumes`
+## Use `persistentVolumeClaim` instead of `hostPath` in `extraVolumes`
 - `helm uninstall jektestv3`
 - `kubectl apply -f loadtest-v4.yaml`
 - Check that the `Azure Storage Account >> File Share` has the new log files that is created by loadtest-v4.yaml.
