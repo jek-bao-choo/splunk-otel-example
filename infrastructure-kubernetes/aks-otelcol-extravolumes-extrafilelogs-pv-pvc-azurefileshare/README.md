@@ -6,6 +6,7 @@
 - Create a HEC token and save it.
 
 # Setup AKS
+
 - Install Azure CLI on macOS  https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-macos `brew update && brew install azure-cli`
 - Login to your azure account `az login`
     - Set the cluster subscription `az account set --subscription XXXXX-XXXX-XXXX-XXXX`
@@ -14,6 +15,7 @@
     - Followed by `az group create --location southeastasia --name "${AZURE_RESOURCE_GROUP}" --tags Criticality=Low Env=Test Owner=email@email.com`
 
 # Create and connect to AKS Cluster
+
 - Check that `ls -a ~/.ssh/` has file named `id_rsa.pub` and `id_rsa`.
 
 ![](rsa.png)
@@ -40,6 +42,7 @@
 ![](proof5.png)
 
 # Install OTel Collector Daemonset
+
 - `helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart`
 - Create a v1-values.yaml
 ```yml
@@ -76,6 +79,7 @@ logsCollection:
 ![](proof2.png)
 
 # Collect Logs from Kubernetes Host Machines/Volumes using EmptyDir with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
+
 - Sometimes there will be a need to collect logs that are not emitted from pods via stdout/stderr, directly from the Kubernetes nodes. Common examples of this are collecting Kubernetes Audit logs off of customer managed Kubernetes nodes running the K8s API server, collecting common “/var/log” linux files for security teams, or grabbing logs that come from pods that dont write to stdouot/stderr and have mounted a hostPath, or emptyDir volume. 
 
     - The OTel Collector Helm chart provides an easy way to configure custom file paths using the extraFilelogs option.
@@ -140,6 +144,9 @@ logsCollection:
 ![](proof7.png)
 
 # Sending logs to `Azure Storage Account's File Shares` through Persistent Volume (PV) and Persistent Volume Claims (PVC) and a copy to Splunk
+
+![](architecture3.png)
+
 - Create an Azure Storage Account:
     - In the Azure portal, navigate to "Storage Accounts" and click on "Create".
     - Provide a unique name for your storage account, select the appropriate subscription, resource group, and location.
