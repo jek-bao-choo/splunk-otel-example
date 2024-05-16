@@ -78,6 +78,28 @@ logsCollection:
 ![](proof1.png)
 ![](proof2.png)
 
+# Part 0 of ...: FAQ
+
+- Q: Is OpenTelemetry's `filelog` receiver and OpenTelemetry Collector Chart's `logsCollection`.
+- A: Yes. 
+    - The Filelog Receiver tails and parses logs from files. Although it’s not a Kubernetes-specific receiver, it is still the de facto solution for collecting any logs from Kubernetes. The Filelog Receiver is composed of Operators that are chained together to process a log. Each Operator performs a simple responsibility, such as parsing a timestamp or JSON. Configuring a Filelog Receiver is not trivial. If you’re using the OpenTelemetry Collector Helm chart you can use the logsCollection preset to get started.
+    -  `logsCollection` preset requires the Filelog receiver be included in the Collector image, such as the Contrib distribution of the Collector. To enable this feature, set the presets.logsCollection.enabled property to true. When enabled, the chart will add a filelogreceiver to the logs pipeline. This receiver is configured to read the files where Kubernetes container runtime writes all containers’ console output (/var/log/pods/*/*/*.log).
+    - Link 1: https://opentelemetry.io/docs/kubernetes/collector/components/#filelog-receiver 
+    - Link 2: https://opentelemetry.io/docs/kubernetes/helm/collector/#logs-collection-preset
+
+![](proof22.png)
+![](proof23.png)
+
+- Q: What is `logsCollection.extraFileLogs`?
+- A: It's essentially `filelog` receiver with extra filelogs receiver we defined. Because there are default filelog receiver.
+
+![](proof24.png)
+
+- Q: Does `logsCollection` setup filelog receiver in Gateway mode or ClusterReceiver mode?
+- A: No. It setups in only Agent mode. Jek validated this answer on 16 May 2024.
+
+
+
 # Part 1 of ...: Collect Logs from Kubernetes Host Machines/Volumes using EmptyDir with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
 
 - Sometimes there will be a need to collect logs that are not emitted from pods via stdout/stderr, directly from the Kubernetes nodes. Common examples of this are collecting Kubernetes Audit logs off of customer managed Kubernetes nodes running the K8s API server, collecting common “/var/log” linux files for security teams, or grabbing logs that come from pods that dont write to stdouot/stderr and have mounted a hostPath, or emptyDir volume. 
@@ -386,11 +408,9 @@ logsCollection:
 
 - You will notice three copies of the log13579.log are being sent. It is duplicated. It is reading from Azure Storage Account's File Share. But it is duplicated because each Daemonset runs the `extraVolumes` and `extraVolumeMounts` and then `extraFileLogs`. This is a problem. Next let's fix it.
 
-# *Not working yet.. work in progress...* Part 4 of ...: Fix duplicated copies reading of logs from PVC by changing from `agent` (Daemonset) to `clusterReceiver`.
+# *work in progress...* Part 4 of ...: Fix duplicated copies reading of logs from PVC by changing from `agent` (Daemonset) to `gateway` (Deployment with 1 replica only).
 
-Not working yet... WIP...
-Q: Can logsCollection.extraFileLogs read from clusterReceiver.extraVolumeMounts?
-A: Doesn't seemed so. Still waiting for validation. So work in progress...
+WIP...
 
 - `helm uninstall jektestv4`
 - Create a unique log file content e.g. `log246810.log` and upload the file to `Azure Storage Account's File Share`.
@@ -416,9 +436,8 @@ A: Doesn't seemed so. Still waiting for validation. So work in progress...
 
 ![](proof21.png)
 
-Not working yet... WIP...
-Q: Can logsCollection.extraFileLogs read from clusterReceiver.extraVolumeMounts?
-A: Doesn't seemed so. Still waiting for validation. Hence... work in progress...
+WIP...
+
 
 # Part 5 of ...: Optional: Further enhancement (... work in progress...)
 - This provides us with a way for Kubernetes Platform admins to monitor volumes without the need for mounting the hostPath to the app containers directly (i.e. without using `extraVolumes` and `extraVolumeMounts` but using only `extraFileLogs` to read directly from app containers path). 
