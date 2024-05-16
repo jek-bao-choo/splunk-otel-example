@@ -1,0 +1,52 @@
+clusterName: "jek-v5-cluster"
+logsEngine: otel
+cloudProvider: "azure"
+distribution: "aks"
+splunkPlatform:
+  endpoint: "https://< your instance id >.splunk.show:8088/services/collector"
+  token: "< your hec token >"
+  index: "otel_events"
+  insecureSkipVerify: true
+agent:
+  enabled: false
+clusterReceiver:
+  enabled: false
+gateway:
+  enabled: true
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 1
+      # Memory limit value is used as a source for default memory_limiter configuration
+      memory: 2Gi
+  extraVolumes:
+  - name: jekvolumev5
+    persistentVolumeClaim:
+      claimName: azure-file-pvc
+  extraVolumeMounts: 
+  - name: jekvolumev5
+    mountPath: /tmp/mypvcv5
+    readOnly: true
+  config:
+    receivers:
+      filelog/jek-pvc-helloworld-v5:
+        include:
+        - /tmp/mypvcv5/log*.log
+        start_at: beginning
+        include_file_name: false
+        include_file_path: true
+        resource:
+          com.splunk.index: otel_events
+          com.splunk.source: persistentVolumeClaim-azure-file-pvc/jek-pvc-v5
+          com.splunk.sourcetype: kube:jek-pvc-v5
+          host.name: EXPR(env("K8S_NODE_NAME"))
+    service:
+      pipelines:
+        logs/host:
+          exporters:
+          - splunk_hec/platform_logs
+          processors:
+          - memory_limiter
+          - batch
+          receivers:
+          - filelog/jek-pvc-helloworld-v5
