@@ -78,7 +78,7 @@ logsCollection:
 ![](proof1.png)
 ![](proof2.png)
 
-# Collect Logs from Kubernetes Host Machines/Volumes using EmptyDir with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
+# Part 1 of ...: Collect Logs from Kubernetes Host Machines/Volumes using EmptyDir with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
 
 - Sometimes there will be a need to collect logs that are not emitted from pods via stdout/stderr, directly from the Kubernetes nodes. Common examples of this are collecting Kubernetes Audit logs off of customer managed Kubernetes nodes running the K8s API server, collecting common “/var/log” linux files for security teams, or grabbing logs that come from pods that dont write to stdouot/stderr and have mounted a hostPath, or emptyDir volume. 
 
@@ -143,7 +143,7 @@ logsCollection:
 
 ![](proof7.png)
 
-# Sending logs to `Azure Storage Account's File Shares` through Persistent Volume (PV) and Persistent Volume Claims (PVC) and a copy to Splunk
+# Part 2 of ...: Sending logs to `Azure Storage Account's File Shares` through Persistent Volume (PV) and Persistent Volume Claims (PVC) and a copy to Splunk
 
 ![](architecture3.png)
 
@@ -314,7 +314,7 @@ logsCollection:
 
 ![](proof12.png)
 
-## Use `persistentVolumeClaim` instead of `hostPath` in `extraVolumes`
+# Part 3 of ...: Use `persistentVolumeClaim` instead of `hostPath` in `extraVolumes`
 
 ![](architecture4.png)
 
@@ -370,7 +370,57 @@ logsCollection:
 ![](proof18.png)
 ![](proof19.png)
 
-## Optional: Further enhancement (... work in progress...)
+## Further proving that `extraVolumes` is reading from `PVC` i.e. directly from `Azure Storage Account's File Share`
+
+- Delete the app deployments, associated pods and services `kubectl delete -f loadtest-v4.yaml`
+- Create a unique log file content e.g. `log13579.log` and upload the file to `Azure Storage Account's File Share`.  Take note of the time in the screenshot that the file did not exist in Azure Storage Account's File Share yet. It's not in Splunk either.
+
+![](file13579.png)
+![](filenoexist.png)
+![](notinsplunk.png)
+
+- Upload  `log13579.log` to Azure Storage Account's File Share.
+
+![](uploaded.png)
+![](proof20.png)
+
+- You will notice three copies of the log13579.log are being sent. It is duplicated. It is reading from Azure Storage Account's File Share. But it is duplicated because each Daemonset runs the `extraVolumes` and `extraVolumeMounts` and then `extraFileLogs`. This is a problem. Next let's fix it.
+
+# *Not working yet.. work in progress...* Part 4 of ...: Fix duplicated copies reading of logs from PVC by changing from `agent` (Daemonset) to `clusterReceiver`.
+
+Not working yet... WIP...
+Q: Can logsCollection.extraFileLogs read from clusterReceiver.extraVolumeMounts?
+A: Doesn't seemed so. Still waiting for validation. So work in progress...
+
+- `helm uninstall jektestv4`
+- Create a unique log file content e.g. `log246810.log` and upload the file to `Azure Storage Account's File Share`.
+- Make the changes from `agent` to `clusterReceiver` in `v5.values.yaml`.
+
+```yml
+
+```
+
+```yml
+
+```
+
+```yml
+
+```
+
+
+- `helm install jektestv5 -f v5-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
+- Observe which node is cluster receiver pod running on `kubectl get pods -o wide` and go to the cluster receiver pod.
+- `kubectl exec -i -t jektestv5-splunk-otel-collector-k8s-cluster-receiver-< full name of the daemonset pod > -c otel-collector -- sh -c "clear; (bash || ash || sh)"`
+- The unique log file is mounted from Azure Storage Account's File Share to OTel Collector ClusterReceiver Pod.
+
+![](proof21.png)
+
+Not working yet... WIP...
+Q: Can logsCollection.extraFileLogs read from clusterReceiver.extraVolumeMounts?
+A: Doesn't seemed so. Still waiting for validation. Hence... work in progress...
+
+# Part 5 of ...: Optional: Further enhancement (... work in progress...)
 - This provides us with a way for Kubernetes Platform admins to monitor volumes without the need for mounting the hostPath to the app containers directly (i.e. without using `extraVolumes` and `extraVolumeMounts` but using only `extraFileLogs` to read directly from app containers path). 
 - While we have our logs coming in now, there is one thing to notice. We are missing some key metadata in these logs. We have the `k8s.cluster.name` and the `k8s.node.name` but you’ll notice, there is no `k8s.namespace.name` or  `k8s.pod.name`. There is no pod metadata at all, in fact. This is because when we pick up the log from the ephemeral path, we lose some of the info we would normally have gotten from the stdout/stderr path location. One thing we do have though, is the `k8s.pod.uid`. So let’s try and use this in conjunction with the `k8sattributes` processor we have in OTel Collector!
 - First we will update our custom filelog receiver to use operators to extract metadata from the log.file.path

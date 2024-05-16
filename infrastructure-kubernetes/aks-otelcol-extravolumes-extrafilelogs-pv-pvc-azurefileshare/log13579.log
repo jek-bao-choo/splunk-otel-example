@@ -1,0 +1,2 @@
+Prove that it is reading directly from Azure Storage Account's File Share and sending to Splunk Cloud or Splunk Enterprise.
+Odd number 13579 should appear in Splunk Cloud or Splunk Enterprise after dropping it in.
