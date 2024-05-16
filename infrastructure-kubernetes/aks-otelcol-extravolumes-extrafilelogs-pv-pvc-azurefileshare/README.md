@@ -414,7 +414,7 @@ WIP...
 
 - `helm uninstall jektestv4`
 - Create a unique log file content e.g. `log246810.log` and upload the file to `Azure Storage Account's File Share`.
-- Make the changes from `agent` to `clusterReceiver` in `v5.values.yaml`.
+- Make the changes from `agent` to `gateway` (with 1 replica deployment) in `v5.values.yaml`.
 
 ```yml
 
