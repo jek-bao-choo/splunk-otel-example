@@ -104,11 +104,66 @@ logsCollection:
 - Q: Does `logsCollection` setup filelog receiver in Gateway mode or ClusterReceiver mode?
 - A: No. It setups in only Agent mode. Jek validated this answer on 16 May 2024.
 
-# Part 1 of 5: ...
+# Part 1 of 6: ...
 
--
+- `helm uninstall jektestv1`
+- Go to all the nodes to create a folder called `jekv1` in `/var/log` folder.
+- `kubectl get nodes -o wide`
+- `ssh -i ~/.ssh/id_rsa azureuser@< the external public id of the node >`
+- `sudo -s`
+- `mkdir /var/log/jekv1`
+- `kubectl apply -f loadtest-v1.yaml`
+- `kubectl get pods -o wide`
+- `kubectl get nodes -o wide`
+- `ssh -i ~/.ssh/id_rsa azureuser@< the external public id of the node >`
+- `ls -a /var/log/jekv1`
+- Navigate to the hostPath directory: `cd /var/log/jekv1`
+- View all the files that the nginx-http created using `ls -a` 
 
-# Part 2 of 5: Collect Logs from Kubernetes Host (k8s node) Machines/Volumes using EmptyDir with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
+![](proof29.png)
+
+- `helm install jektestv1 -f v1-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
+- See the logs getting sent to Splunk
+
+![](proof30.png)
+
+- This technique mounts a hostPath. It is not as good as the later IMO compared to using EmptyDir which mounts to the host machine. Here is an explanation:
+
+- k8s `hostPath` (covered  in part 1 of 6 of this guide)
+    - Use Cases:
+        - Persistent Data: Suitable for scenarios where data needs to persist across Pod restarts or needs to be shared between multiple Pods.
+        - Specific Host Files: Useful for accessing specific files or directories on the host system, such as logs or configuration files.
+    - Advantages:
+        - Persistence: Data remains on the host filesystem even if the Pod is deleted.
+        - Shared Data: Multiple Pods can access the same data on the host.
+    - Disadvantages:
+        - Security Risks: Potentially exposes the host filesystem to Pods, which can pose security risks.
+        - Node Affinity: Ties the Pod to a specific Node, reducing flexibility in scheduling and potentially impacting high availability.
+        - Complexity: Requires careful management of the host’s file system and permissions.
+- k8s `emptyDir` (covered in part 2 of 6 of this guide)
+    - Use Cases:
+        - Temporary Storage: Suitable for temporary data that doesn’t need to persist after the Pod’s lifecycle.
+        - Scratch Space: Ideal for jobs that require scratch space, such as caching, intermediary data processing, or temporary files.
+        - Ephemeral Data: Good for ephemeral data that can be recreated or regenerated easily.
+    - Advantages:
+        - Ephemeral: Data is automatically cleaned up when the Pod is deleted.
+        - Isolation: Provides better isolation since each Pod has its own emptyDir volume.
+        - Simplicity: Easy to set up without requiring access to the underlying host file system.
+    - Disadvantages:
+        - Data Persistence: Data is lost when the Pod is deleted, evicted, or moved to another Node.
+        - Node Constraints: Data is stored on the Node’s local storage, which may be limited or subject to performance constraints.
+- In short, in a production environment, `emptyDir` is generally preferred over `hostPath` for the following reasons:
+    - Security: emptyDir provides better isolation and avoids exposing the host filesystem to the Pods, reducing security risks.
+    - Flexibility: Pods using emptyDir can be rescheduled to different Nodes without worrying about data persistence on the host.
+    - Simplicity: emptyDir volumes are easier to manage and do not require specific host filesystem configurations.
+- However, if you need persistent storage or need to share data between multiple Pods or across Pod restarts, consider using more robust and production-grade solutions such as:
+    - `PersistentVolume` `(PV)` and `PersistentVolumeClaim` `(PVC)` (covered in part 3 to 5 of this guide)
+        - Provides a way to manage storage independently of the Pod lifecycle. Supports various backends like NFS, AWS EBS, GCE PD, and more.
+    - `StatefulSets`
+        - Ensures stable, unique network identities and persistent storage for Pods.
+
+
+# Part 2 of 6: Collect Logs from Kubernetes Host (k8s node) Machines/Volumes using `EmptyDir` with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
 
 - Sometimes there will be a need to collect logs that are not emitted from pods via stdout/stderr, directly from the Kubernetes nodes. Common examples of this are collecting Kubernetes Audit logs off of customer managed Kubernetes nodes running the K8s API server, collecting common “/var/log” linux files for security teams, or grabbing logs that come from pods that dont write to stdouot/stderr and have mounted a hostPath, or emptyDir volume. 
 
@@ -176,7 +231,7 @@ logsCollection:
 
 ![](proof7.png)
 
-# Part 2 of 5: Sending logs to `Azure Storage Account's File Shares` through Persistent Volume (PV) and Persistent Volume Claims (PVC) and a copy to Splunk
+# Part 3 of 6: Sending logs to `Azure Storage Account's File Shares` through Persistent Volume (PV) and Persistent Volume Claims (PVC) and a copy to Splunk
 
 ![](architecture3.png)
 
@@ -357,7 +412,7 @@ logsCollection:
 
 ![](proof12.png)
 
-# Part 3 of 5: Use `persistentVolumeClaim` instead of `hostPath` in `extraVolumes`
+# Part 4 of 6: Use `persistentVolumeClaim` instead of `hostPath` in `extraVolumes`
 
 ![](architecture4.png)
 
@@ -429,7 +484,7 @@ logsCollection:
 
 - You will notice three copies of the log13579.log are being sent. It is duplicated. It is reading from Azure Storage Account's File Share. But it is duplicated because each Daemonset runs the `extraVolumes` and `extraVolumeMounts` and then `extraFileLogs`. This is a problem. Next let's fix it.
 
-# Part 4 of 5: Fix duplicated copies reading of logs from PVC by changing from `agent` (Daemonset) to `gateway` (Deployment with 1 replica only).
+# Part 5 of 6: Fix duplicated copies reading of logs from PVC by changing from `agent` (Daemonset) to `gateway` (Deployment with 1 replica only).
 
 - `helm uninstall jektestv4`
 - Create a unique log file content e.g. `log999888777.log` and upload the file to `Azure Storage Account's File Share`.
@@ -493,7 +548,7 @@ gateway:
 - No more duplicated because we are using Gateway with one deployment / 1 replica. If we have multiple replica then we will have duplicates. Personally. I prefer dealing directly using the `agent.extraVolumes` instead of `gateway.extraVolumes`. It's because `logsCollection` preset works OOTB with `agent` (daemonset mode) while `gateway` (deployment mode) needs to manage the pipelines and etc. Comparing `v4-values.yaml` to v5-values.yaml where in v5 I removed the file_storage because there are a lot to follow up when using that.
 
 
-# Part 5 of 5: Optional: Further enhancement (... work in progress...)
+# Part 6 of 6: Optional... Further enhancement (... work in progress...)
 
 - This provides us with a way for Kubernetes Platform admins to monitor volumes without the need for mounting the hostPath to the app containers directly (i.e. without using `extraVolumes` and `extraVolumeMounts` but using only `extraFileLogs` to read directly from app containers path). 
 - While we have our logs coming in now, there is one thing to notice. We are missing some key metadata in these logs. We have the `k8s.cluster.name` and the `k8s.node.name` but you’ll notice, there is no `k8s.namespace.name` or  `k8s.pod.name`. There is no pod metadata at all, in fact. This is because when we pick up the log from the ephemeral path, we lose some of the info we would normally have gotten from the stdout/stderr path location. One thing we do have though, is the `k8s.pod.uid`. So let’s try and use this in conjunction with the `k8sattributes` processor we have in OTel Collector!
