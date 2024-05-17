@@ -132,6 +132,7 @@ logsCollection:
 - In order to monitor this directory with the OTel collector, we will need to use the extraVolumes and extraVolumeMounts settings in the Helm chart to wire up this path into our agent daemonset. 
 
 - Add `extraVolumes` and `extraVolumeMounts` to v1-values.yaml, making it v2-values.yaml
+
 ```yml
 agent:
   # Extra volumes to be mounted to the agent daemonset.
@@ -149,6 +150,7 @@ agent:
 - IMPORTANT pt 2 of 2 --> This will mount the known emptyDir path from the node to our OTel agent so we can find it under /tmp/emptydir inside our pod filesystem, allowing us to create new filelog receiver inputs using the extraFileLogs section in our helm chart.
 
 - Add `extraFileLogs` to v2-values.yaml
+
 ```yml
 logsCollection:
   extraFileLogs:
@@ -165,6 +167,7 @@ logsCollection:
         host.name: 'EXPR(env("K8S_NODE_NAME"))'
         com.splunk.sourcetype: kube:jek-log-helloworld
 ```
+
 - `helm uninstall jektestv1`
 - `helm install jektestv2 -f v2-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 - scale up load test `kubectl scale deploy/load-http --replicas 1`
@@ -195,6 +198,7 @@ logsCollection:
     - Replace `<storage-account-name>` with your storage account name and `<storage-account-key>` with the access key you copied earlier.
 - Create a Persistent Volume (PV) using Azure Files:
     - Create a YAML file named azure-file-pv.yaml with the following content
+
 ```yml
 apiVersion: v1
 kind: PersistentVolume
@@ -211,11 +215,13 @@ spec:
     shareName: myuniqueazurefilesharename
     readOnly: false
 ```
+
     - Adjust the `capacity.storage` value based on your requirements and provide a unique name for the `myuniqueazurefilesharename`.
 - Apply the PV configuration by running the following command:
     - `kubectl apply -f azure-file-pv.yaml`
 - Create a Persistent Volume Claim (PVC):
     - Create a YAML file named azure-file-pvc.yaml with the following content:
+    
 ```yml
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -229,11 +235,13 @@ spec:
     requests:
       storage: 5Gi
 ```
+
     - Ensure that the spec.resources.requests.storage value matches the capacity defined in the PV.
     - Apply the PVC configuration by running the following command:
     - `kubectl apply -f azure-file-pvc.yaml`
 - Use the PVC in your application:
     - In your application's deployment or pod specification, you can reference the PVC to use the Azure Files storage. Here's an example:
+
 ```yml
 apiVersion: apps/v1
 kind: Deployment
@@ -279,6 +287,7 @@ spec:
           persistentVolumeClaim:
             claimName: azure-file-pvc
 ```
+
     - Adjust the `mountPath` based on where you want to mount the Azure Files storage in your container.
     - `kubectl apply -f loadtest-v3.yaml`
 - Check it out:
@@ -297,6 +306,7 @@ spec:
 
 - Now send a copy of the `/var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~csi/<pvc-uid>/mount` logs to Splunk Cloud or Splunk Enterprise using `extraVolumes` and `extraVolumeMounts` 
 - Amend v2-values.yaml, making it v3-values.yaml
+
 ```yml
 agent:
   # Extra volumes to be mounted to the agent daemonset.
@@ -310,7 +320,9 @@ agent:
     mountPath: /tmp/jekazurecsiv3
     readOnly: true
 ```
+
 - In the `extraFileLogs` of v3-values.yaml
+
 ```yml
 logsCollection:
   extraFileLogs:
@@ -327,6 +339,7 @@ logsCollection:
         host.name: 'EXPR(env("K8S_NODE_NAME"))'
         com.splunk.sourcetype: kube:jek-log-volume-v3
 ```
+
 - `helm uninstall jektestv2`
 - `helm install jektestv3 -f v3-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 - scale up load test `kubectl scale deploy/load-http --replicas 1`
@@ -496,6 +509,7 @@ gateway:
 - And once we update our helm chart, you should now see extra metadata in the events. The only thing you won't see is container level info as we do not get the container name or id in the record to allow k8sattributes to enrich the container info, but this should provide enough key metadata for users to identify where the log came from.
 
 # Clean Up
+
 - `kubectl delete deployment.apps/nginx-http`
 - `kubectl delete service/nginx-http-service`
 - `kubectl delete deployment.apps/load-http`
