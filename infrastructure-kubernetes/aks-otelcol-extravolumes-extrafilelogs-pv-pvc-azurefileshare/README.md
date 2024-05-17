@@ -104,7 +104,9 @@ logsCollection:
 - Q: Does `logsCollection` setup filelog receiver in Gateway mode or ClusterReceiver mode?
 - A: No. It setups in only Agent mode. Jek validated this answer on 16 May 2024.
 
-# Part 1 of 6: ...
+# Part 1 of 6: Collect logs from app pod where logs mounted to hostPath of node machine. Using `logsCollection.extraFileLogs` without `extraVolumes` and without `extraVolumeMounts`. 
+
+![](architecture1.png)
 
 - `helm uninstall jektestv1`
 - Go to all the nodes to create a folder called `jekv1` in `/var/log` folder.
@@ -164,6 +166,8 @@ logsCollection:
 
 
 # Part 2 of 6: Collect Logs from Kubernetes Host (k8s node) Machines/Volumes using `EmptyDir` with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
+
+![](architecture2.png)
 
 - Sometimes there will be a need to collect logs that are not emitted from pods via stdout/stderr, directly from the Kubernetes nodes. Common examples of this are collecting Kubernetes Audit logs off of customer managed Kubernetes nodes running the K8s API server, collecting common “/var/log” linux files for security teams, or grabbing logs that come from pods that dont write to stdouot/stderr and have mounted a hostPath, or emptyDir volume. 
 
