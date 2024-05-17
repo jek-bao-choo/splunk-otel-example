@@ -678,6 +678,7 @@ AFTER adding `k8sattributes` to the processor where the addition by `k8sattribut
 - `kubectl delete service/nginx-http-service`
 - `kubectl delete deployment.apps/load-http`
     - or `kubectl delete -f loadtest-v< the version >.yaml`
+- `helm uninstall jektestv< the version >`
 - Delete the AKS cluster `az aks delete --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}"`
 - Delete the created Azure Resource Group https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-delete `az group delete --name "${AZURE_RESOURCE_GROUP}"`
 - Delete the Splunk Cloud or Splunk Enterprise instance
