@@ -1,4 +1,5 @@
 # Create a Splunk Cloud or Splunk Enterprise instance
+
 - Create 1 events index called `otel_events`
 
 ![](index.png)
@@ -78,7 +79,7 @@ logsCollection:
 ![](proof1.png)
 ![](proof2.png)
 
-# Part 0 of ...: FAQ
+# Part 0 of 5: FAQ
 
 - Q: Is OpenTelemetry's `filelog` receiver and OpenTelemetry Collector Chart's `logsCollection`.
 - A: Yes. 
