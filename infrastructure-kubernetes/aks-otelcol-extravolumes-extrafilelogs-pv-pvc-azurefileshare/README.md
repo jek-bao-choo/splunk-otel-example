@@ -42,10 +42,13 @@
 ![](proof4.png)
 ![](proof5.png)
 
-# Install OTel Collector Daemonset
+
+# Part 0 of 5: Initial setup
+
+## Install OTel Collector Daemonset
 
 - `helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart`
-- Create a v1-values.yaml
+- Create a v0-values.yaml
 ```yml
 clusterName: "< your cluster name >"
 logsEngine: otel
@@ -61,13 +64,13 @@ logsCollection:
     containerRuntime: "containerd"
     excludeAgentLogs: false
 ```
-- `helm install jektestv1 -f v1-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
-- `kubectl logs ds/jektestv1-splunk-otel-collector-agent -f`
+- `helm install jektestv0 -f v0-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
+- `kubectl logs ds/jektestv0-splunk-otel-collector-agent -f`
 - Search for the log events using `index=otel_events` in Splunk Enterprise or Splunk Cloud
 
-# Create nginx-http app and load-http app
+## Create nginx-http app and load-http app
 - View the metrics server that is been setup in kube-system `kubectl get pod -A | grep -i metrics`
-- `kubectl apply -f loadtest-v1.yaml`
+- `kubectl apply -f loadtest-v0.yaml`
 - `kubectl describe pod nginx-http`
 - `kubectl logs deploy/nginx-http -f`
     - Optionally, scale up load test `kubectl scale deploy/load-http --replicas 10`
@@ -79,7 +82,7 @@ logsCollection:
 ![](proof1.png)
 ![](proof2.png)
 
-# Part 0 of 5: FAQ
+## Moving on to next part before that... read the FAQ
 
 - Q: Is OpenTelemetry's `filelog` receiver and OpenTelemetry Collector Chart's `logsCollection`.
 - A: Yes. 
@@ -99,9 +102,11 @@ logsCollection:
 - Q: Does `logsCollection` setup filelog receiver in Gateway mode or ClusterReceiver mode?
 - A: No. It setups in only Agent mode. Jek validated this answer on 16 May 2024.
 
+# Part 1 of 5: ...
 
+-
 
-# Part 1 of 5: Collect Logs from Kubernetes Host Machines/Volumes using EmptyDir with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
+# Part 2 of 5: Collect Logs from Kubernetes Host Machines/Volumes using EmptyDir with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
 
 - Sometimes there will be a need to collect logs that are not emitted from pods via stdout/stderr, directly from the Kubernetes nodes. Common examples of this are collecting Kubernetes Audit logs off of customer managed Kubernetes nodes running the K8s API server, collecting common “/var/log” linux files for security teams, or grabbing logs that come from pods that dont write to stdouot/stderr and have mounted a hostPath, or emptyDir volume. 
 
