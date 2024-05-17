@@ -10,7 +10,7 @@ splunkPlatform:
 logsCollection:
   containers: 
     containerRuntime: "containerd"
-    excludeAgentLogs: false
+    excludeAgentLogs: true
   extraFileLogs:
     filelog/jek-log-volume-helloworld-v4:
       include: 

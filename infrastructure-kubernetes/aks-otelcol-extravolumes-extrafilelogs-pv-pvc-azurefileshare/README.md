@@ -548,26 +548,132 @@ gateway:
 - No more duplicated because we are using Gateway with one deployment / 1 replica. If we have multiple replica then we will have duplicates. Personally. I prefer dealing directly using the `agent.extraVolumes` instead of `gateway.extraVolumes`. It's because `logsCollection` preset works OOTB with `agent` (daemonset mode) while `gateway` (deployment mode) needs to manage the pipelines and etc. Comparing `v4-values.yaml` to v5-values.yaml where in v5 I removed the file_storage because there are a lot to follow up when using that.
 
 
-# Part 6 of 6: Optional... Further enhancement (... work in progress...)
+# Part 6 of 6: Optional... Further enhancement
 
 - This provides us with a way for Kubernetes Platform admins to monitor volumes without the need for mounting the hostPath to the app containers directly (i.e. without using `extraVolumes` and `extraVolumeMounts` but using only `extraFileLogs` to read directly from app containers path). 
 - While we have our logs coming in now, there is one thing to notice. We are missing some key metadata in these logs. We have the `k8s.cluster.name` and the `k8s.node.name` but you’ll notice, there is no `k8s.namespace.name` or  `k8s.pod.name`. There is no pod metadata at all, in fact. This is because when we pick up the log from the ephemeral path, we lose some of the info we would normally have gotten from the stdout/stderr path location. One thing we do have though, is the `k8s.pod.uid`. So let’s try and use this in conjunction with the `k8sattributes` processor we have in OTel Collector!
-- First we will update our custom filelog receiver to use operators to extract metadata from the log.file.path
+- First we will update our custom filelog receiver to use operators to extract metadata from the `log.file.path`
 
-< insert screenshot >
+![](logfilepath.png)
 
-- Here we have used the regex_parser to extract the fields called `uid` and `volume_name`. We then use the move operator to set them as resources called `k8s.pod.uid` and `k8s.volume.name`. 
+- `helm uninstall jektestv5`
+- `kubectl delete -f loadtest-v4.yaml`
+- Add other log info and add new lines to `loadtest-v< the new version >.yaml`
+- `kubectl apply -f loadtest-v< the new version >.yaml`
+- Use `v3-values.yaml` to create v6-values.yaml because `v5-values.yaml` is using not using `logsCollection`. I want to simply it by using the presets. Also the path of `v3-values.yaml` has more to extraction as demostration.
 
-< insert screenshot >
+```yml
+logsCollection:
+  extraFileLogs:
+    filelog/jek-log-volume-v6:
+      include: 
+      - /tmp/jekazurecsiv6/*/volumes/kubernetes.io~csi/azure-file-pv/mount/log*.log
+      start_at: beginning
+      storage: file_storage
+      include_file_path: true
+      include_file_name: false
+      resource:
+        com.splunk.index: otel_events
+        com.splunk.source: /var/log/emptydir/jek-log-volume-v6
+        host.name: 'EXPR(env("K8S_NODE_NAME"))'
+        com.splunk.sourcetype: kube:jek-log-volume-v6
+      operators:
+      - parse_from: attributes["log.file.path"]
+        regex: ^\/tmp\/jekazurecsiv6\/(?P<jek_pod_uid>[^\/]+)\/volumes\/kubernetes\.io\~csi\/(?P<jek_volume_name>[^\/]+)\/.+$
+        type: regex_parser
+```
 
-- Now let’s attempt to further customize our pipeline to use the k8s.pod.uid to enrich the event further with the k8sattributes processor. To accomplish this we will need to override the default logs/host pipeline to route our emptyDir sourced logs through the existing k8sattributes processor. 
+- `helm install jektestv6 -f v6-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
+
+![](proof31.png)
+
+- Here we have used the regex_parser to extract the fields called `jek_pod_uid` and `jek_volume_name`. We then use the move operator to set them as resources called `k8s.pod.uid` and `k8s.volume.name`. 
+
+```yml
+logsCollection:
+  extraFileLogs:
+    filelog/jek-log-volume-v6:
+      include: 
+      - /tmp/jekazurecsiv6/*/volumes/kubernetes.io~csi/azure-file-pv/mount/log*.log
+      start_at: beginning
+      storage: file_storage
+      include_file_path: true
+      include_file_name: false
+      resource:
+        com.splunk.index: otel_events
+        com.splunk.source: /var/log/emptydir/jek-log-volume-v6
+        host.name: 'EXPR(env("K8S_NODE_NAME"))'
+        com.splunk.sourcetype: kube:jek-log-volume-v6
+      operators:
+      - parse_from: attributes["log.file.path"]
+        regex: ^\/tmp\/jekazurecsiv6\/(?P<jek_pod_uid>[^\/]+)\/volumes\/kubernetes\.io\~csi\/(?P<jek_volume_name>[^\/]+)\/.+$
+        type: regex_parser
+      - from: attributes.jek_pod_uid
+        to: resource["k8s.pod.uid"]
+        type: move
+      - from: attributes.jek_volume_name
+        to: resource["k8s.volume.name"]
+        type: copy
+```
+
+- `helm uninstall jektestv6`
+- `kubectl delete -f loadtest-v4.yaml`
+- Add other log info and add new lines to `loadtest-v< the new version >.yaml`
+- `kubectl apply -f loadtest-v< the new version >.yaml`
+- `helm install jektestv6 -f v6-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
+
+![](proof32.png)
+
+- Now let’s attempt to further customize our pipeline to use the `k8s.pod.uid` to enrich the event further with the `k8sattributes` processor. To accomplish this we will need to override the default logs/host pipeline to route our emptyDir sourced logs through the existing `k8sattributes` processor. 
+- Add the `k8sattributes` to the processor.
+
+```yml
+agent:
+  extraVolumes:
+  - name: jekvolumev6
+    hostPath:
+      path: /var/lib/kubelet/pods/
+  extraVolumeMounts: 
+  - name: jekvolumev6
+    mountPath: /tmp/jekazurecsiv6
+    readOnly: true
+  config:
+    service:
+      pipelines:
+        logs/host:
+          exporters:
+          - splunk_hec/platform_logs
+          processors:
+          - memory_limiter
+          - k8sattributes
+          - batch
+          - resource
+          receivers:
+          - filelog/jek-log-volume-v6
+```
+
+- `helm uninstall jektestv6`
+- `kubectl delete -f loadtest-v4.yaml`
+- Add other log info and add new lines to `loadtest-v< the new version >.yaml`
+- `kubectl apply -f loadtest-v< the new version >.yaml`
+- `helm install jektestv6 -f v6-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 - And once we update our helm chart, you should now see extra metadata in the events. The only thing you won't see is container level info as we do not get the container name or id in the record to allow k8sattributes to enrich the container info, but this should provide enough key metadata for users to identify where the log came from.
+
+BEFORE adding `k8sattributes` to the processor.
+
+![](beforek8sattributes.png)
+
+AFTER adding `k8sattributes` to the processor where the addition by `k8sattributes` is `k8s.namespace.name`, `k8s.pod.labels.app`, and `k8s.pod.name`.
+
+![](afterk8sattributes.png)
+
 
 # Clean Up
 
 - `kubectl delete deployment.apps/nginx-http`
 - `kubectl delete service/nginx-http-service`
 - `kubectl delete deployment.apps/load-http`
+    - or `kubectl delete -f loadtest-v< the version >.yaml`
 - Delete the AKS cluster `az aks delete --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}"`
 - Delete the created Azure Resource Group https://learn.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az-group-delete `az group delete --name "${AZURE_RESOURCE_GROUP}"`
 - Delete the Splunk Cloud or Splunk Enterprise instance
