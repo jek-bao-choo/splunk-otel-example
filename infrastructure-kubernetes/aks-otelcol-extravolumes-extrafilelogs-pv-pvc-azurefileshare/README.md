@@ -18,10 +18,9 @@
 # Create and connect to AKS Cluster
 
 - Check that `ls -a ~/.ssh/` has file named `id_rsa.pub` and `id_rsa`.
+    - if not create it using `ssh-keygen -t rsa -b 2048`
 
 ![](rsa.png)
-
-    - if not create it using `ssh-keygen -t rsa -b 2048`
 
 - `export AKS_CLUSTER_NAME="JekAKSCluster"`
 - Create AKS cluster https://learn.microsoft.com/en-us/cli/azure/aks?view=azure-cli-latest#az-aks-create `az aks create --resource-group "${AZURE_RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}" --node-count 3 --ssh-key-value ~/.ssh/id_rsa.pub --enable-node-public-ip`
@@ -45,10 +44,11 @@
 
 # Part 0 of 5: Initial setup
 
-## Install OTel Collector Daemonset
+## Install OTel Collector Daemonset in AKS
 
 - `helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart`
 - Create a v0-values.yaml
+
 ```yml
 clusterName: "< your cluster name >"
 logsEngine: otel
@@ -64,11 +64,13 @@ logsCollection:
     containerRuntime: "containerd"
     excludeAgentLogs: false
 ```
+
 - `helm install jektestv0 -f v0-values.yaml splunk-otel-collector-chart/splunk-otel-collector`
 - `kubectl logs ds/jektestv0-splunk-otel-collector-agent -f`
 - Search for the log events using `index=otel_events` in Splunk Enterprise or Splunk Cloud
 
 ## Create nginx-http app and load-http app
+
 - View the metrics server that is been setup in kube-system `kubectl get pod -A | grep -i metrics`
 - `kubectl apply -f loadtest-v0.yaml`
 - `kubectl describe pod nginx-http`
@@ -106,7 +108,7 @@ logsCollection:
 
 -
 
-# Part 2 of 5: Collect Logs from Kubernetes Host Machines/Volumes using EmptyDir with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
+# Part 2 of 5: Collect Logs from Kubernetes Host (k8s node) Machines/Volumes using EmptyDir with `ExtraVolumes`, `ExtraVolumeMounts`, and `ExtraFileLogs`.
 
 - Sometimes there will be a need to collect logs that are not emitted from pods via stdout/stderr, directly from the Kubernetes nodes. Common examples of this are collecting Kubernetes Audit logs off of customer managed Kubernetes nodes running the K8s API server, collecting common “/var/log” linux files for security teams, or grabbing logs that come from pods that dont write to stdouot/stderr and have mounted a hostPath, or emptyDir volume. 
 
