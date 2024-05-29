@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hellojekv1-tomcat-jmx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hellojekv1-jmx
+  template:
+    metadata:
+      labels:
+        app: hellojekv1-jmx
+    spec:
+      containers:
+      - name: hellojekv1
+        image: jchoo/hellojekv1-tomcat:v2
+        ports:
+        - containerPort: 8080
+        - containerPort: 9090
+        - containerPort: 9091
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: CATALINA_OPTS
+          value: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9090 -Dcom.sun.management.jmxremote.rmi.port=9091 -Djava.rmi.server.hostname=$(POD_IP) -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hellojekv1-tomcat-jmx-service
+spec:
+  selector:
+    app: hellojekv1-jmx
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+  - name: jmx
+    protocol: TCP
+    port: 9090
+    targetPort: 9090
+  - name: rmi
+    protocol: TCP
+    port: 9091
+    targetPort: 9091
+  type: LoadBalancer
