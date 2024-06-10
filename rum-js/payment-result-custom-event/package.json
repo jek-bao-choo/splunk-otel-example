@@ -1,0 +1,26 @@
+{
+  "name": "payment-result-perf-custom-event",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://jek-bao-choo@github.com/jek-bao-choo/splunk-otel-example.git"
+  },
+  "dependencies": {
+    "@splunk/otel-web": "^0.18.0",
+    "@splunk/otel-web-session-recorder": "^0.18.0"
+  },
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "html-webpack-plugin": "^5.6.0",
+    "mini-css-extract-plugin": "^2.9.0",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "private": true
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Result Custom Event Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Payment Page</h1>
+    <form id="payment-form">
+        <label for="card-number">Card Number:</label>
+        <input type="text" id="card-number" name="card-number" required>
+
+        <label for="expiry-date">Expiry Date:</label>
+        <input type="text" id="expiry-date" name="expiry-date" placeholder="MM/YY" required>
+
+        <label for="cvv">CVV:</label>
+        <input type="text" id="cvv" name="cvv" required>
+
+        <hr>
+        <h3>Simulate delay</h3>
+
+        <label for="timeout">Timeout (seconds):</label>
+        <input type="number" id="timeout" name="timeout" value="10" required>
+
+        <button type="submit" id="pay-button">Pay Now</button>
+    </form>
+    <div id="result" class="hidden">
+        <h2>Payment Successful</h2>
+        <p>Your payment has been processed successfully.</p>
+    </div>
+</div>
+<script src="index.js"></script>
+</body>
+</html>
