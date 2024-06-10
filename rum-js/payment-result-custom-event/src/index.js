@@ -5,16 +5,16 @@ import {trace} from '@opentelemetry/api';
 // Init Splunk RUM
 SplunkOtelWeb.init({
     realm: "us1",
-    rumAccessToken: "< rum access token >",
+    rumAccessToken: "< your rum token >",
     applicationName: "jek-payment-result-custom-event",
-    deploymentEnvironment: "demo",
+    deploymentEnvironment: "jek-demo-v1",
     // debug: true
 });
 
 // This must be called after initializing splunk rum
 SplunkSessionRecorder.init({
     beaconEndpoint: 'https://rum-ingest.us1.signalfx.com/v1/rumreplay',
-    rumAccessToken: "< rum access token >"
+    rumAccessToken: "< your rum token >"
 });
 
 import './styles.css';
@@ -27,6 +27,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const resultMessage = document.getElementById('result-message');
 
     form.addEventListener('submit', function (e) {
+
+        // On submit start execution timer of payment result custom event
+        const tracer = trace.getTracer('paymentResultTracer');
+        const paymentResultSpan = tracer.startSpan('paymentResultSpan', {
+            attributes: {
+                'workflow.name': `Payment Result Perf (ExecutionTime)`
+            }
+        });
+
         e.preventDefault();
 
         const timeoutValue = parseInt(document.getElementById('timeout').value, 10) * 1000; // Convert to milliseconds
@@ -50,8 +59,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 resultTitle.textContent = 'Payment Failed';
                 resultMessage.textContent = 'There was an issue processing your payment. Please try again.';
             } else {
-                resultTitle.textContent = 'Payment Successful';
+                resultTitle.textContent = 'Congrats. Payment Successful';
                 resultMessage.textContent = 'Your payment has been processed successfully.';
+
+                // Payment result custom event on payment result successful page fully rendered
+                paymentResultSpan.end()
             }
         }, timeoutValue); // Use the user-defined delay
     });
