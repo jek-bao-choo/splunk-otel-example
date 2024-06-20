@@ -5,7 +5,7 @@ import {trace} from '@opentelemetry/api';
 // Init Splunk RUM
 SplunkOtelWeb.init({
     realm: "us1",
-    rumAccessToken: "< your rum token >",
+    rumAccessToken: "< your RUM access token >",
     applicationName: "jek-payment-result-custom-event",
     deploymentEnvironment: "jek-demo-v1",
     // debug: true
@@ -14,7 +14,7 @@ SplunkOtelWeb.init({
 // This must be called after initializing splunk rum
 SplunkSessionRecorder.init({
     beaconEndpoint: 'https://rum-ingest.us1.signalfx.com/v1/rumreplay',
-    rumAccessToken: "< your rum token >"
+    rumAccessToken: "< your RUM access token >"
 });
 
 import './styles.css';
@@ -32,15 +32,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const tracer = trace.getTracer('paymentResultTracer');
         const paymentResultSpan = tracer.startSpan('paymentResultSpan', {
             attributes: {
-                'workflow.name': `Payment Result Perf (ExecutionTime)`
+                'workflow.name': 'Payment Result',
+                'productName': 'MobileRecharge'
             }
         });
 
         e.preventDefault();
 
         const timeoutValue = parseInt(document.getElementById('timeout').value, 10) * 1000; // Convert to milliseconds
-        // const simulateFailure = document.getElementById('simulate-failure').checked;
-        const simulateFailure = null;
+        const simulateFailure = document.getElementById('simulate-failure').checked;
+        // const simulateFailure = null;
 
         // Change cursor to loading and disable the button
         document.body.style.cursor = 'wait';
@@ -58,12 +59,15 @@ document.addEventListener('DOMContentLoaded', function () {
             if (simulateFailure) {
                 resultTitle.textContent = 'Payment Failed';
                 resultMessage.textContent = 'There was an issue processing your payment. Please try again.';
+                paymentResultSpan.setAttribute("error", true);
+                paymentResultSpan.setAttribute("failureReason", "Telco denied");
+                paymentResultSpan.end();
             } else {
                 resultTitle.textContent = 'Congrats. Payment Successful';
                 resultMessage.textContent = 'Your payment has been processed successfully.';
 
                 // Payment result custom event on payment result successful page fully rendered
-                paymentResultSpan.end()
+                paymentResultSpan.end();
             }
         }, timeoutValue); // Use the user-defined delay
     });
