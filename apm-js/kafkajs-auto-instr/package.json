@@ -4,6 +4,11 @@
   "description": "",
   "author": "",
   "license": "ISC",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "consumer": "node consumer.js",
+    "producer": "node producer.js"
+  },
   "dependencies": {
     "@splunk/otel": "^0.15.0",
     "chance": "^1.1.11",
