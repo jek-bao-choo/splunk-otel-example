@@ -1,8 +1,14 @@
+require('dotenv').config({ path: '.env.consumer' })
+
+// Log some environment variables
+console.log('OTEL_SERVICE_NAME:', process.env.OTEL_SERVICE_NAME);
+console.log('OTEL_RESOURCE_ATTRIBUTES:', process.env.OTEL_RESOURCE_ATTRIBUTES);
+
 const { Kafka } = require('kafkajs')
 
 const kafka = new Kafka({
     clientId: 'jek-consumer-app',
-    brokers: ['localhost:9092']
+    brokers: ['localhost:29092']
 })
 
 const consumer = kafka.consumer({ groupId: 'test-group-jek-14nov2021' })

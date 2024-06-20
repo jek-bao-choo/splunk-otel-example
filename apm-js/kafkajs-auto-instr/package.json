@@ -6,8 +6,9 @@
   "license": "ISC",
   "dependencies": {
     "@splunk/otel": "^0.15.0",
-    "chance": "^1.1.8",
-    "kafkajs": "^1.15.0",
+    "chance": "^1.1.11",
+    "dotenv": "^16.4.5",
+    "kafkajs": "^2.2.4",
     "opentelemetry-instrumentation-kafkajs": "^0.26.0"
   }
 }

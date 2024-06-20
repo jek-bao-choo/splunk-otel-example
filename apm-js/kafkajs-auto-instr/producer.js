@@ -1,3 +1,9 @@
+require('dotenv').config({ path: '.env.producer' })
+
+// Log some environment variables
+console.log('OTEL_SERVICE_NAME:', process.env.OTEL_SERVICE_NAME);
+console.log('OTEL_RESOURCE_ATTRIBUTES:', process.env.OTEL_RESOURCE_ATTRIBUTES);
+
 const { Kafka } = require('kafkajs')
 const Chance = require('chance')
 
@@ -5,7 +11,7 @@ const chance = new Chance()
 
 const kafka = new Kafka({
     clientId: 'jek-producer-app',
-    brokers: ['localhost:9092']
+    brokers: ['localhost:29092']
 })
 
 const producer = kafka.producer()
