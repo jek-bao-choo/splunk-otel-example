@@ -2,6 +2,7 @@ package main
 
 import (
 	"context" // Add for OTel Go
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -33,18 +34,20 @@ func main() {
 	sdk, err := distro.Run()
 	if err != nil {
 		panic(err)
+		log.Fatal(err)
 	}
 	// Ensure all spans are flushed before the application exits.
 	defer func() {
 		if err := sdk.Shutdown(context.Background()); err != nil {
 			panic(err)
+			log.Printf("Error shutting down tracer provider: %v", err)
 		}
 	}()
 	// End of OTel Go telemetry portion necessary
 
 	router := gin.Default()
 
-	router.Use(otelgin.Middleware("jek-server")) // Added for OTel Go Gin
+	router.Use(otelgin.Middleware("jek-otelgin-server")) // Add this for OTel Go Gin
 
 	router.GET("/albums", getAlbums)
 	router.GET("/albums/:id", getAlbumByID)
