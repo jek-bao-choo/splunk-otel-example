@@ -28,7 +28,7 @@ import {trace} from '@opentelemetry/api';
 SplunkOtelWeb.init({
     beaconEndpoint: "https://rum-ingest.us1.signalfx.com/v1/rumotlp?auth=< your RUM access token >",
     // allowInsecureBeacon: false,
-    applicationName: "jek-payment-result-custom-event-v9",
+    applicationName: "jek-payment-result-custom-event-v11",
     deploymentEnvironment: "jek-demo-v1",
     // debug: true,
     exporter: {
@@ -43,10 +43,12 @@ SplunkOtelWeb.init({
 
 // This must be called after initializing splunk rum
 SplunkSessionRecorder.init({
-    beaconEndpoint: 'https://rum-ingest.us1.signalfx.com/v1/rumreplay',
-    rumAccessToken: "< your RUM access token >"
+    beaconEndpoint: 'https://rum-ingest.us1.signalfx.com/v1/rumreplay?auth=< your RUM access token >',
+    // beaconEndpoint: 'https://rum-ingest.us1.signalfx.com/v1/rumreplay',
+    // rumAccessToken: "< your RUM access token >"
 });
-// @splunk/otel-web-session-recorder might not work with otlp yet. Still checking; date 27 June 2024.
+// can put the rumAccessToken into the beaconEndpoint too. Like the above example.
+// @splunk/otel-web-session-recorder has been using otlp since the beginning
 
 import './styles.css';
 
