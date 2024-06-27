@@ -2,20 +2,51 @@ import SplunkOtelWeb from '@splunk/otel-web';
 import SplunkSessionRecorder from '@splunk/otel-web-session-recorder'
 import {trace} from '@opentelemetry/api';
 
-// Init Splunk RUM
+// Option 1 - Init Splunk RUM Zipkin (not OTLP) - this is the default as of 27 June 2024
+// SplunkOtelWeb.init({
+//     realm: "us1",
+//     rumAccessToken: "< your RUM access token >",
+//     applicationName: "jek-payment-result-custom-event",
+//     deploymentEnvironment: "jek-demo-v1",
+//     // debug: true
+// });
+
+// Option 2 - Init Splunk RUM  OTLP (not Zipkin) - this is NOT the default as of 27 June 2024
+// SplunkOtelWeb.init({
+//     beaconEndpoint: "https://rum-ingest.us1.signalfx.com/v1/rumotlp",
+//     // allowInsecureBeacon: false,
+//     rumAccessToken: "< your RUM access token >",
+//     applicationName: "jek-payment-result-custom-event-v5",
+//     deploymentEnvironment: "jek-demo-v1",
+//     // debug: true,
+//     exporter: {
+//         otlp: true
+//     }
+// });
+
+// Option 3 - Init Splunk RUM  OTLP (not Zipkin) - this is NOT the default as of 27 June 2024
 SplunkOtelWeb.init({
-    realm: "us1",
-    rumAccessToken: "< your RUM access token >",
-    applicationName: "jek-payment-result-custom-event",
+    beaconEndpoint: "https://rum-ingest.us1.signalfx.com/v1/rumotlp?auth=< your RUM access token >",
+    // allowInsecureBeacon: false,
+    applicationName: "jek-payment-result-custom-event-v9",
     deploymentEnvironment: "jek-demo-v1",
-    // debug: true
+    // debug: true,
+    exporter: {
+        otlp: true
+    }
 });
+
+// NOTE:
+// The exporter : { otlp: true } } is requeired otherwise it will send as text/plain instead of application/json.
+// This would cause 415 error.
+// See error.png screenshot for more info.
 
 // This must be called after initializing splunk rum
 SplunkSessionRecorder.init({
     beaconEndpoint: 'https://rum-ingest.us1.signalfx.com/v1/rumreplay',
     rumAccessToken: "< your RUM access token >"
 });
+// @splunk/otel-web-session-recorder might not work with otlp yet. Still checking; date 27 June 2024.
 
 import './styles.css';
 
