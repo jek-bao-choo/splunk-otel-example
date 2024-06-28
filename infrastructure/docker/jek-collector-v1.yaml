@@ -95,7 +95,7 @@ service:
   extensions: [health_check, http_forwarder, zpages]
   pipelines:
     traces:
-      receivers: [jaeger, otlp, zipkin]
+      receivers: [otlp, zipkin]
       processors:
       - memory_limiter
       - batch
