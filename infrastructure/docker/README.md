@@ -1,0 +1,3 @@
+```yml
+docker-compose up
+```
