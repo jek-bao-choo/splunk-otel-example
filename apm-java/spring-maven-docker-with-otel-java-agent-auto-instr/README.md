@@ -134,7 +134,7 @@ See the Dockerfile in this folder
 
 13. Build the Dockerfile
 ```bash
-docker build -t jekbao/jekspringwebapp:v1 .
+docker build -t jekbao/jekspringwebapp:v4 .
 ```
 
 14. Run the Docker image as container
@@ -147,7 +147,7 @@ docker run -it --rm \
 -e OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com \
 -e SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY> \
 -p 5002:8080 \
-jekbao/jekspringwebapp:v1
+jekbao/jekspringwebapp:v4
 ```
 
 15. Test run the web app with endpoint `/greeting`
@@ -161,5 +161,5 @@ curl localhost:5002/greeting
  
 16. Push the image to Dockerhub
 ```bash
-docker push jekbao/jekspringwebapp:v1
+docker push jekbao/jekspringwebapp:v4
 ```
