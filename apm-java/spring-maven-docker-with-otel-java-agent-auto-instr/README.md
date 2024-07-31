@@ -1,4 +1,4 @@
-# Outcome: There is no splunk-otel-javaagent.jar added to the Dockerfile.
+# Outcome: There is  splunk-otel-javaagent.jar added to the Dockerfile.
 
 Preparation
 
