@@ -134,10 +134,15 @@ See the Dockerfile in this folder
 
 13. Build the Dockerfile
 ```bash
-docker build -t jekbao/jekspringwebapp:v1 .
+docker build -t jchoo/jekspringwebapp:v4 .
 ```
 
-14. Run the Docker image as container
+14. Push the image to Dockerhub
+```bash
+docker push jchoo/jekspringwebapp:v4
+```
+
+15. Run the Docker image as container to send directly without going through OTel Collector
 Remember to port forward to 5001 from 8080 because 
 The sample app is running on port 8080.
 ```bash
@@ -147,19 +152,17 @@ docker run -it --rm \
 -e OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.<YOUR REALM>.signalfx.com \
 -e SPLUNK_ACCESS_TOKEN=<REDACTED FOR SECURITY> \
 -p 5002:8080 \
-jekbao/jekspringwebapp:v1
+jchoo/jekspringwebapp:v4
 ```
 
-15. Test run the web app with endpoint `/greeting`
+16. Test run the web app with endpoint `/greeting`
 ```bash
 # Check that the previous step execution is successful and curl the endpoint.
 
 curl localhost:5002/greeting
 
+curl http://localhost:5002/jek-server-error
+
 # Go to Splunk O11y portal to see that the service is showing up in APM.
 ```
- 
-16. Push the image to Dockerhub
-```bash
-docker push jekbao/jekspringwebapp:v1
-```
+

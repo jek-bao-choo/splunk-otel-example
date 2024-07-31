@@ -26,9 +26,9 @@ import {trace} from '@opentelemetry/api';
 
 // Option 3 - Init Splunk RUM  OTLP (not Zipkin) - this is NOT the default as of 27 June 2024
 SplunkOtelWeb.init({
-    beaconEndpoint: "https://rum-ingest.us1.signalfx.com/v1/rumotlp?auth=< your RUM access token >",
-    // allowInsecureBeacon: false,
-    applicationName: "jek-payment-result-custom-event-v11",
+    beaconEndpoint: "http://localhost:4318",
+    allowInsecureBeacon: true,
+    applicationName: "jek-payment-result-custom-event-v13",
     deploymentEnvironment: "jek-demo-v1",
     // debug: true,
     exporter: {
@@ -42,11 +42,11 @@ SplunkOtelWeb.init({
 // See error.png screenshot for more info.
 
 // This must be called after initializing splunk rum
-SplunkSessionRecorder.init({
-    beaconEndpoint: 'https://rum-ingest.us1.signalfx.com/v1/rumreplay?auth=< your RUM access token >',
-    // beaconEndpoint: 'https://rum-ingest.us1.signalfx.com/v1/rumreplay',
-    // rumAccessToken: "< your RUM access token >"
-});
+// SplunkSessionRecorder.init({
+//     beaconEndpoint: 'https://rum-ingest.us1.signalfx.com/v1/rumreplay?auth=< your RUM access token >',
+//     // beaconEndpoint: 'https://rum-ingest.us1.signalfx.com/v1/rumreplay',
+//     // rumAccessToken: "< your RUM access token >"
+// });
 // can put the rumAccessToken into the beaconEndpoint too. Like the above example.
 // @splunk/otel-web-session-recorder has been using otlp since the beginning
 
