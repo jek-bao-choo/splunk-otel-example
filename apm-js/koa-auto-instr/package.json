@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@splunk/otel": "^2.10.0",
-    "koa": "^2.15.3"
+    "@splunk/otel": "^2.8.0",
+    "koa": "^2.5.3"
   }
 }
