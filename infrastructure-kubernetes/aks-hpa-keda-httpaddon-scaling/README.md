@@ -1,3 +1,5 @@
+Optional reading for HPA https://www.digitalocean.com/community/developer-center/scaling-applications-in-kubernetes-using-the-horizontalpodautoscaler
+
 # Setup AKS
 - Install Azure CLI on macOS  https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-macos `brew update && brew install azure-cli`
 - Login to your azure account `az login`
