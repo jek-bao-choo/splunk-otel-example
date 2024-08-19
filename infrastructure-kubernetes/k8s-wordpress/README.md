@@ -1,0 +1,1 @@
+Must read https://www.digitalocean.com/community/developer-center/deploying-a-wordpress-website-on-a-kubernetes-cluster-using-helm

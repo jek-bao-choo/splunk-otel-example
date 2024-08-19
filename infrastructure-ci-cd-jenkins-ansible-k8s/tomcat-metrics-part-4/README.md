@@ -1,3 +1,5 @@
+Optional read https://www.digitalocean.com/community/tutorials/how-to-install-apache-tomcat-10-on-ubuntu-20-04
+
 # Setup a Linux EC2 Instance
 - Note that it is not Ubuntu EC2 instance. It is Amazon Linux EC2.
 - Launch a new Amazon Linux EC2 Instance
