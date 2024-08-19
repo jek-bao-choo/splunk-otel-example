@@ -35,3 +35,11 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #45a049;
 }
+
+.error {
+    color: #D8000C;
+    background-color: #FFD2D2;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}

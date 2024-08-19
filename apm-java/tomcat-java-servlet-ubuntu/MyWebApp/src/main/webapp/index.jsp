@@ -11,7 +11,13 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
+<% if (request.getAttribute("error") != null) { %>
+<div class="error">
+    <%= request.getAttribute("error") %>
+</div>
+<% } else { %>
 <h1>Hello, ${name}!</h1>
+<% } %>
 <form action="hello" method="get">
     <label for="name">Enter your name:</label>
     <input type="text" id="name" name="name">
