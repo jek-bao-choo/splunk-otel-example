@@ -145,17 +145,62 @@ In short, it is a pair config. If setenv.sh is using 127.0.0.1, then OTel Collec
 
 # Install OpenTelemetry Java Agent
 
-Modify the Tomcat startup script (usually /etc/systemd/system/tomcat.service) to include the agent:
-`Environment="CATALINA_OPTS=-javaagent:/path/to/opentelemetry-javaagent.jar"`
+`curl -L https://github.com/signalfx/splunk-otel-java/releases/latest/download/splunk-otel-javaagent.jar -o splunk-otel-javaagent.jar`
 
-Add the environment variable to the Tomcat startup script at setenv.sh:
+Place this JAR file in a location accessible to Tomcat, such as /opt/opentelemetry/.
+
+`sudo mkdir -p /opt/opentelemetry`
+
+`sudo mv opentelemetry-javaagent.jar /opt/opentelemetry/`
+
+Verify that the file has been moved:
+
+`ls -l /opt/opentelemetry/`
+
+Set appropriate permissions. Typically, you want Tomcat to be able to read this file:
+
+`sudo chown tomcat:tomcat /opt/opentelemetry/splunk-otel-javaagent.jar`
+
+`sudo chmod 644 /opt/opentelemetry/splunk-otel-javaagent.jar`
+
+Modify Tomcat's startup script:
+Edit the setenv.sh file (create it if it doesn't exist) in Tomcat's bin directory:
+
+`sudo vim /opt/tomcat/bin/setenv.sh`
+
+Add the Java agent to CATALINA_OPTS with the following line to setenv.sh:
+`export CATALINA_OPTS="$CATALINA_OPTS -javaagent:/opt/opentelemetry/splunk-otel-javaagent.jar"`
+
+Configure OpenTelemetry:
+You can configure the agent using system properties or environment variables. Add these to setenv.sh as well. For example:
+
+
 ```bash
-export OTEL_SERVICE_NAME='jek-tomcat-java'
-export OTEL_RESOURCE_ATTRIBUTES='deployment.environment=jek-sandbox,service.version=1.2.3'
-export OTEL_EXPORTER_OTLP_ENDPOINT='http://localhost:4317'
+export OTEL_SERVICE_NAME='jek-tomcat-javaservlet'
+export OTEL_RESOURCE_ATTRIBUTES='deployment.environment=jek-sandbox,service.version=1.1.1'
+export OTEL_EXPORTER_OTLP_ENDPOINT='http://localhost:4318'
 ```
 
+![](config.png)
+
+Make the script executable:
+
+`sudo chmod +x /opt/tomcat/bin/setenv.sh`
+
+
 Reload the systemd configuration and restart Tomcat:
-`sudo systemctl daemon-reload`
-`sudo systemctl start tomcat`
+
+`sudo systemctl restart tomcat`
+
 `sudo systemctl status tomcat`
+
+`sudo tail -f /opt/tomcat/logs/catalina.out`
+
+Refresh the tomcat page to generate some traffic.
+
+![](proof5.png)
+![](proof6.png)
+![](proof7.png)
+![](proof8.png)
+![](proof9.png)
+![](proof10.png)
