@@ -46,8 +46,10 @@ Edit the Tomcat startup script (create a setenv.sh)
 
 Add the following lines:
 ```bash
-export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9090 -Dcom.sun.management.jmxremote.rmi.port=9091 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Djava.rmi.server.hostname=<your_server_ip e.g. public ip or localhost or 127.0.0.1>"
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9090 -Dcom.sun.management.jmxremote.rmi.port=9091 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Djava.rmi.server.hostname=<your_server_ip e.g. public ip or 127.0.0.1>"
 ```
+
+![](setenvconf.png)
 
 To verify the JMX connection:
 
@@ -130,14 +132,28 @@ sudo sh /tmp/splunk-otel-collector.sh --realm us1 -- < ACCESS TOKEN HERE > --mod
 `sudo vim /etc/otel/collector/agent_config.yaml`
 
 Add to the receiver. https://docs.splunk.com/observability/en/gdi/monitors-hosts/apache-tomcat.html 
-![](otelconfig1.png)
+![](otelconfig2.png)
 
+In short, it is a pair config. If setenv.sh is using 127.0.0.1, then OTel Collector config should use 127.0.0.1. However, if it is JMX remote access then need to use the public ip and both setenv.sh and OTel Collector config should use the public ip.
+
+![](setenvlocalhost.png)
+![](otellocal1.png)
+![](otellocal2.png)
+
+![](proof4.png)
 ---
 
 # Install OpenTelemetry Java Agent
 
 Modify the Tomcat startup script (usually /etc/systemd/system/tomcat.service) to include the agent:
 `Environment="CATALINA_OPTS=-javaagent:/path/to/opentelemetry-javaagent.jar"`
+
+Add the environment variable to the Tomcat startup script at setenv.sh:
+```bash
+export OTEL_SERVICE_NAME='jek-tomcat-java'
+export OTEL_RESOURCE_ATTRIBUTES='deployment.environment=jek-sandbox,service.version=1.2.3'
+export OTEL_EXPORTER_OTLP_ENDPOINT='http://localhost:4317'
+```
 
 Reload the systemd configuration and restart Tomcat:
 `sudo systemctl daemon-reload`
