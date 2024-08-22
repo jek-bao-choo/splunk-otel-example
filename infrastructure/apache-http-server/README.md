@@ -97,9 +97,9 @@ Alternatively, you can check the configuration files:
 If you see status.conf and status.load in the output, it means mod_status is enabled.
 
 You can also check the Apache configuration file directly:
-
-`grep -i "mod_status" /etc/apache2/apache2.conf`
-If you see an uncommented line loading mod_status, it's enabled.
+`cat /etc/apache2/mods-enabled/status.conf | grep server-status -a5` 
+https://httpd.apache.org/docs/2.4/mod/mod_status.html The old article says look for httpd.conf but in newer version it's in /etc/apache2/mods-enabled/status.conf as status.conf.
+https://ubuntu.com/server/docs/how-to-install-apache2#files 
 
 To verify if mod_status is working, you can try accessing the server-status page:
 
