@@ -1,0 +1,2 @@
+splunk.discovery.receivers.mysql.config.username: "sammy"
+splunk.discovery.receivers.mysql.config.password: "password"
