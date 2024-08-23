@@ -107,7 +107,7 @@ From the initial setup we know the following that username is sammy and the pass
 
 The password is `password`.
 
-Alternatively, you can use the MySQL client from the command line as root user: `mysql -u root -p`. The password is `password`.
+Alternatively, we also know there is a root `mysql -u root -p`. The password is `password`.
 
 We also know that earlier we created a database called tmp using `CREATE DATABASE tmp;`
 
@@ -126,7 +126,7 @@ The port 33060 is typically used for the MySQL X Protocol, which is a newer prot
 
 Both are legitimate MySQL ports, but they serve different purposes. If you're dealing with a typical MySQL setup or application, use port `3306`.
 
-Next edit the agent_config.yaml file and add the following:
+Next with the above info, edit the agent_config.yaml file, and add the following:
 
 ```yaml
 receivers:
@@ -143,7 +143,7 @@ receivers:
       limit: 250
 ```
 
-Next, include the receiver in the metrics pipeline of the service section of your configuration file:
+Next, include the receiver in the metrics pipeline of the service section of your configuration file (don't include the [...] it is for illustration purposes only):
 
 ```yaml
 service:
@@ -159,8 +159,10 @@ Restart the collector:
 
 `sudo systemctl status splunk-otel-collector`
 
-https://docs.splunk.com/observability/en/gdi/opentelemetry/components/mysql-receiver.html 
+Go to Splunk Observability Cloud and view the metrics:
 
+![](proof1.png)
 
 # Ref
+- https://docs.splunk.com/observability/en/gdi/opentelemetry/components/mysql-receiver.html 
 - https://github.com/signalfx/splunk-otel-collector/tree/main/examples
