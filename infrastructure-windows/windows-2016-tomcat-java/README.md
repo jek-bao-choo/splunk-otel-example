@@ -140,9 +140,40 @@ Deploy your Java application:
 
 Place the MyWebApp.war file in the `C:\Tomcat\tomcat10\webapps` directory
 
+```Powershell
 
+# Set TLS 1.2
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-Restart Tomcat and check Tomcat status:
+# Define the URL and destination path
+$url = "https://github.com/jek-bao-choo/splunk-otel-example/raw/main/infrastructure-windows/windows-2016-tomcat-java/MyWebApp.war"
+$destination = "C:\Tomcat\tomcat10\webapps\MyWebApp.war"
+
+# Create the destination directory if it doesn't exist
+New-Item -ItemType Directory -Force -Path (Split-Path -Path $destination)
+
+# Download the file
+try {
+    Invoke-WebRequest -Uri $url -OutFile $destination
+    Write-Output "File downloaded successfully to $destination"
+} catch {
+    Write-Error "Failed to download file: $_"
+}
+
+# Verify the file exists
+if (Test-Path $destination) {
+    Write-Output "Verified: MyWebApp.war exists in C:\Tomcat\tomcat10\webapps"
+} else {
+    Write-Error "Verification failed: MyWebApp.war not found in C:\Tomcat\tomcat10\webapps"
+}
+
+```
+
+Verify the WAR is working correctly:
+
+Open a web browser and go to http://localhost:8080/MyWebApp
+
+Optionally restart Tomcat and check Tomcat status if it didn't work:
 
 ```powershell
 
@@ -151,13 +182,6 @@ Restart-Service -Name "Tomcat10"
 Get-Service -Name "Tomcat10"
 
 ```
-
-
-
-Verify the WAR is working correctly:
-
-Open a web browser and go to http://localhost:8080
-
 
 ---
 
