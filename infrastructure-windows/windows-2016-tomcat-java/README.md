@@ -126,8 +126,8 @@ Get-Service -Name "Tomcat10"
 
 If Tomcat is not a service:
 
-To stop: Run `C:\Tomcat\bin\shutdown.bat`
-To start: Run `C:\Tomcat\bin\startup.bat`
+To stop: Run `C:\Tomcat\tomcat10\bin\shutdown.bat`
+To start: Run `C:\Tomcat\tomcat10\startup.bat`
 To check status:
 
 try accessing http://localhost:8080 in a web browser
@@ -138,7 +138,7 @@ try accessing http://localhost:8080 in a web browser
 
 Deploy your Java application:
 
-Get the WAR file from ... and place your WAR file in the `C:\Tomcat10\webapps` directory
+Place the MyWebApp.war file in the `C:\Tomcat\tomcat10\webapps` directory
 
 
 
