@@ -112,5 +112,46 @@ Save the file as "index.html" in `C:\inetpub\wwwroot\`
 
 # Add OTel Collector Receiver for IIS
 
+- Open PowerShell ISE (it's pre-installed on Windows Server 2016)
+- 
+- File > Open
 
+- Go to `\ProgramData\Splunk\OpenTelemetry Collector\agent_config.yaml` using PowerShell ISE: The default configuration file for the Splunk OpenTelemetry Collector to add
+
+```yml
+receivers:
+  smartagent/windows-iis:
+    type: windows-iis
+```
+
+```yml
+service:
+  pipelines:
+    metrics:
+      receivers: [smartagent/windows-iis]
+```
+
+    Optionally: 
+    - The value Environment at the HKLM:\SYSTEM\CurrentControlSet\Services\splunk-otel-collector registry key contains the environment variables used by the default configuration file:
+        - SPLUNK_ACCESS_TOKEN: The Splunk access token to authenticate requests
+        - SPLUNK_API_URL: The Splunk API URL, e.g. https://api.us1.signalfx.com
+        - SPLUNK_CONFIG: The path to the collector config file, e.g. C:\ProgramData\Splunk\OpenTelemetry Collector\agent_config.yaml
+        - SPLUNK_HEC_TOKEN: The Splunk HEC authentication token (if log collection is enabled)
+        - SPLUNK_HEC_URL: The Splunk HEC endpoint URL, e.g. https://ingest.us1.signalfx.com/v1/log (if log collection is enabled)
+        - SPLUNK_INGEST_URL: The Splunk ingest URL, e.g. https://ingest.us1.signalfx.com
+        - SPLUNK_MEMORY_TOTAL_MIB: Total memory in MiB allocated to the collector, e.g. 512
+        - SPLUNK_REALM: The Splunk realm to send the data to, e.g. us1
+        - SPLUNK_TRACE_URL: The Splunk trace endpoint URL, e.g. https://ingest.us1.signalfx.com/v2/trace
+
+After modifying the configuration file or registry key, apply the changes by restarting the system or running the following PowerShell commands:
+
+```powershell
+Stop-Service splunk-otel-collector
+Start-Service splunk-otel-collector
+Get-Service splunk-otel-collector
+Get-Service splunk-otel-collector | Select-Object Name, Status, StartType, DisplayName
+Get-Process -Name *otel*
+```
+
+![](proof2.png)
 
