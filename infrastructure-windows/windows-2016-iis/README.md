@@ -155,3 +155,6 @@ Get-Process -Name *otel*
 
 ![](proof2.png)
 
+- Open a web browser on the server
+- Navigate to http://localhost/index.html
+- You should see "Hello, World Jek!" displayed
