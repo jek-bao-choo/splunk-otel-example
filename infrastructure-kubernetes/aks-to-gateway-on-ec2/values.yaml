@@ -1,0 +1,73 @@
+cloudProvider: "azure"
+distribution: "aks"
+clusterName: "jek-aks-v2"
+splunkObservability:
+  realm: "us1"
+  accessToken: ""
+  tracesEnabled: true
+  metricsEnabled: true
+  logsEnabled: false
+  infrastructureMonitoringEventsEnabled: false
+  profilingEnabled: false
+clusterReceiver:
+  enabled: true
+agent:
+  enabled: true
+  config:      
+    processors:
+      attributes/helloworld:
+        actions:
+        - key: sookyung
+          value: hello-world-v2
+          action: upsert
+        - key: jek
+          value: hello-world-v3
+          action: insert
+    exporters:
+      otlp:
+        endpoint: <your endpoint>:4317
+        tls:
+          insecure: true
+    service:
+      pipelines:
+        metrics:
+          exporters:
+          - otlp
+          processors:
+          - memory_limiter
+          - batch
+          - resourcedetection
+          - resource
+          receivers:
+          - hostmetrics
+          - kubeletstats
+          - otlp
+          - receiver_creator
+          - signalfx
+        metrics/agent:
+          exporters:
+          - otlp
+          processors:
+          - memory_limiter
+          - batch
+          - resource/add_agent_k8s
+          - resourcedetection
+          - resource
+          receivers:
+          - prometheus/agent
+        traces:
+          exporters:
+          - otlp
+          processors:
+          - memory_limiter
+          - k8sattributes
+          - batch
+          - resourcedetection
+          - resource
+          - resource/add_environment
+          - attributes/helloworld
+          receivers:
+          - otlp
+          - jaeger
+          - smartagent/signalfx-forwarder
+          - zipkin
