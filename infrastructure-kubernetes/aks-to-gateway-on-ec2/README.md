@@ -12,6 +12,9 @@ Install if it doesn't exist
 helm install splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector --values values.yaml
 ```
 
+![](proof1.png)
+
+
 After which test with sample app
 
 ```bash
