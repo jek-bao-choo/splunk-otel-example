@@ -10,15 +10,15 @@ spec:
     args: ["-c", "while true; do cat /app/hello.txt; sleep 10; done"]
     resources:
       limits:
-        memory: "1Gi" 
-        cpu: "0.5"
+        memory: "2Gi" 
+        cpu: "1"
     volumeMounts:
     - name: host-volume
-      mountPath: /app
+      mountPath: /opt/otel
   volumes:
   - name: host-volume
     hostPath:
       path: /tmp
       type: Directory
   nodeSelector:
-    kubernetes.io/hostname: <your-node-name>
+    kubernetes.io/hostname: <YOUR NODE NAME FROM KUBECTLE GET NODES -O WIDE>

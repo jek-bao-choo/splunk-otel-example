@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-app
+  labels:
+    app: sampleapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sampleapp
+  template:
+    metadata:
+      labels:
+        app: sampleapp
+    spec:
+      containers:
+      - name: jekspringwebapp
+        image: jchoo/jekspringwebappmavennoagent:v3
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            memory: "2Gi" 
+            cpu: "1"
+        env:
+        - name: SPLUNK_OTEL_AGENT
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://$(SPLUNK_OTEL_AGENT):4318"
+        - name: OTEL_SERVICE_NAME
+          value: "jek-offline-javaagent-on-k8s"
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: "deployment.environment=jek-sandbox,service.version=1.2.3"
+        - name: JAVA_TOOL_OPTIONS
+          value: -javaagent:/opt/otel/splunk-otel-javaagent.jar
+        volumeMounts:
+        - name: agent-volume
+          mountPath: /opt/otel
+      volumes:
+      - name: agent-volume
+        hostPath:
+          path: /tmp
+          type: Directory
+      nodeSelector:
+        kubernetes.io/hostname: <YOUR NODE NAME FROM KUBECTLE GET NODES -O WIDE>

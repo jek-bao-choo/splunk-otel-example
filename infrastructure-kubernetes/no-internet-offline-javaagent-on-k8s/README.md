@@ -73,4 +73,19 @@ kubectl logs hostpath-pod
 
 # Now add javaagent to Java app:
 
+This assumes OTel Collector is installed in your K8s environment.
 
+
+```bash
+kubectl apply -f sample-app.yaml
+
+kubectl get pods
+
+kubectl logs deploy/sample-app
+
+kubectl port-forward deployment/sample-app 3009:8080
+
+curl localhost:3009/greeting
+```
+
+![](proof3.png)
