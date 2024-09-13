@@ -37,7 +37,7 @@ A few important notes:
 
 ---
 
-# Now do with a java app:
+# Now do with a javaagent app:
 
 SSH into your K8s node local machine download the javaagent by running: 
 `curl -L https://github.com/signalfx/splunk-otel-java/releases/latest/download/splunk-otel-javaagent.jar -o /tmp/splunk-otel-javaagent.jar`
@@ -64,5 +64,13 @@ kubectl apply -f test-javaagent.yaml
 
 kubectl get pods
 
-kubectl logs jar-test-pod
+kubectl logs hostpath-pod
 ```
+
+![](proof2.png)
+
+---
+
+# Now add javaagent to Java app:
+
+
