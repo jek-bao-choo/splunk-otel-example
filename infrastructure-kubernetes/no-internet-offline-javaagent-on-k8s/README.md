@@ -1,3 +1,7 @@
+# TL;DR; 
+Use sample-app.yaml but need to change the node selector hostname.
+
+
 # Testing hostPath volume type
 
 SSH into your K8s node local machine run: `echo "Hello, World" > /tmp/hello.txt`
