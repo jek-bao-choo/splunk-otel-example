@@ -134,6 +134,7 @@ Run the application with the following command and open http://localhost:8080/ro
 env OTEL_TRACES_EXPORTER=console rails server -p 8080
 ```
 
+![](proof1.png)
 
 ## Additional OTel config
 
