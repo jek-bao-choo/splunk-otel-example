@@ -74,6 +74,7 @@ Add the following lines to your Gemfile:
 ```ruby
 gem 'opentelemetry-sdk'
 gem 'opentelemetry-exporter-otlp'
+gem 'opentelemetry-instrumentation-rails'
 gem 'opentelemetry-instrumentation-all'
 ```
 
@@ -86,10 +87,11 @@ Create an initializer config/initializers/opentelemetry.rb:
 ```ruby
 require 'opentelemetry/sdk'
 require 'opentelemetry/exporter/otlp'
+require 'opentelemetry-instrumentation-rails'
 require 'opentelemetry/instrumentation/all'
 
 OpenTelemetry::SDK.configure do |c|
-  c.service_name = 'movie_streamer'
+  c.service_name = 'jek_ror_movie_streamer'
   c.use_all() # This enables automatic instrumentation
 end
 ```
@@ -98,4 +100,24 @@ Stop and start the Rails server:
 
 ```bash
 rails server
+```
+
+```dotnetcli
+env OTEL_TRACES_EXPORTER=console rails server -p 8080
+```
+
+
+## Additional OTel config
+
+According to https://opentelemetry.io/docs/languages/ruby/exporters/#otlp-endpoint, by default traces are sent to an OTLP endpoint listening on localhost:4318. You can change the endpoint by setting the OTEL_EXPORTER_OTLP_ENDPOINT accordingly:
+
+```bash
+env OTEL_TRACES_EXPORTER=console OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" rails server -p 8080
+```
+
+According to https://github.com/open-telemetry/opentelemetry-ruby/tree/main/examples/metrics_sdk, configure the metric endpoint:
+
+```bash
+env OTEL_TRACES_EXPORTER=console OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" OTEL_EXPORTER_OTLP_METRICS_ENDPOINT="http://localhost:4318/v1/metrics" rails server -p 8080
+
 ```
