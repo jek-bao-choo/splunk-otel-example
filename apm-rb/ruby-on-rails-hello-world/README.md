@@ -101,8 +101,36 @@ Stop and start the Rails server:
 ```bash
 rails server
 ```
+or print to console
+```bash
+env OTEL_TRACES_EXPORTER=console rails server -p 8080
+```
 
-```dotnetcli
+## Create another ROR page
+Create a controller for rolling a dice:
+```
+rails generate controller dice
+```
+
+This will create a file called app/controllers/dice_controller.rb. Open that file in your preferred editor and update it with the following code:
+
+```ruby
+class DiceController < ApplicationController
+  def roll
+    render json: rand(1..6).to_s
+  end
+end
+```
+
+Next, open the config/routes.rb file and add the following code:
+```ruby
+Rails.application.routes.draw do
+  get 'rolldice', to: 'dice#roll'
+end
+```
+
+Run the application with the following command and open http://localhost:8080/rolldice in your web browser to ensure it is working.
+```
 env OTEL_TRACES_EXPORTER=console rails server -p 8080
 ```
 
@@ -119,5 +147,4 @@ According to https://github.com/open-telemetry/opentelemetry-ruby/tree/main/exam
 
 ```bash
 env OTEL_TRACES_EXPORTER=console OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" OTEL_EXPORTER_OTLP_METRICS_ENDPOINT="http://localhost:4318/v1/metrics" rails server -p 8080
-
 ```
