@@ -106,6 +106,11 @@ or print to console
 env OTEL_TRACES_EXPORTER=console rails server -p 8080
 ```
 
+or export to OTel Collector. 
+```
+env OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318" rails server -p 3009
+```
+
 ## Create another ROR page
 Create a controller for rolling a dice:
 ```
@@ -134,18 +139,25 @@ Run the application with the following command and open http://localhost:8080/ro
 env OTEL_TRACES_EXPORTER=console rails server -p 8080
 ```
 
+Export to OTel Collector. 
+```
+env OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318" rails server -p 3009
+```
+
+Take note that the OTEL_EXPORTER_OTLP_ENDPOINT is set to http://127.0.0.1:4318. This is the default endpoint for the OpenTelemetry Collector. Because it works only on otlp http. It doesn't work with otlp grpc yet.  
+
+In addition, can't use `OTEL_TRACES_EXPORTER=console` with `OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318"` because it would export to console only.
+
+According to https://opentelemetry.io/docs/languages/ruby/exporters/#otlp-endpoint, by default traces are sent to an OTLP endpoint listening on localhost:4318. You can change the endpoint by setting the OTEL_EXPORTER_OTLP_ENDPOINT accordingly
+
+Finally, there is no need to append /v1/traces to the endpoint because it will be added automatically by the OpenTelemetry Ruby SDK.
+
 ![](proof1.png)
 
 ## Additional OTel config
 
-According to https://opentelemetry.io/docs/languages/ruby/exporters/#otlp-endpoint, by default traces are sent to an OTLP endpoint listening on localhost:4318. You can change the endpoint by setting the OTEL_EXPORTER_OTLP_ENDPOINT accordingly:
-
-```bash
-env OTEL_TRACES_EXPORTER=console OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" rails server -p 8080
-```
-
 According to https://github.com/open-telemetry/opentelemetry-ruby/tree/main/examples/metrics_sdk, configure the metric endpoint:
 
 ```bash
-env OTEL_TRACES_EXPORTER=console OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" OTEL_EXPORTER_OTLP_METRICS_ENDPOINT="http://localhost:4318/v1/metrics" rails server -p 8080
+env OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" OTEL_EXPORTER_OTLP_METRICS_ENDPOINT="http://localhost:4318/v1/metrics" rails server -p 8080
 ```
