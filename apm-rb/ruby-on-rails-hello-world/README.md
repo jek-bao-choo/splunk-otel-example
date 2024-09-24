@@ -108,7 +108,7 @@ env OTEL_TRACES_EXPORTER=console rails server -p 8080
 
 or export to OTel Collector. 
 ```
-env OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318" rails server -p 3009
+env OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318" OTEL_SERVICE_NAME="jek_ror_movie_streamer_v1" rails server -p 3009
 ```
 
 ## Create another ROR page
@@ -142,7 +142,11 @@ env OTEL_TRACES_EXPORTER=console rails server -p 8080
 
 Next export to OTel Collector. Please do not include the `OTEL_TRACES_EXPORTER=console` because it would export to console only.
 ```
-env OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318" rails server -p 3009
+env OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318" OTEL_SERVICE_NAME="jek_ror_movie_streamer_v1" rails server -p 3009
+```
+
+```bash
+curl http://localhost:3009/rolldice
 ```
 
 ![](proof2.png)
@@ -160,8 +164,18 @@ Finally, there is no need to append /v1/traces to the endpoint because it will b
 
 ## Additional OTel config
 
+This is normal 200 response from the server.
+```bash
+env OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" OTEL_SERVICE_NAME="jek_ror_movie_streamer_v1" OTEL_RESOURCE_ATTRIBUTES="deployment.environment=jek-sandbox,service.version=55.66" RAILS_ENV="development" rails server -p 3009
+```
+
+This would generate error because the environment variable RAILS_ENV is set wrongly.
+```bash
+env OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" OTEL_SERVICE_NAME="jek_ror_movie_streamer_v1" OTEL_RESOURCE_ATTRIBUTES="deployment.environment=jek-sandbox,service.version=55.66" RAILS_ENV="jek-dev" rails server -p 3009
+```
+
 According to https://github.com/open-telemetry/opentelemetry-ruby/tree/main/examples/metrics_sdk, configure the metric endpoint:
 
 ```bash
-env OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" OTEL_EXPORTER_OTLP_METRICS_ENDPOINT="http://localhost:4318/v1/metrics" rails server -p 8080
+env OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4318" OTEL_SERVICE_NAME="jek_ror_movie_streamer_v2" OTEL_RESOURCE_ATTRIBUTES="deployment.environment=jek-sandbox,service.version=55.66" OTEL_EXPORTER_OTLP_METRICS_ENDPOINT="http://localhost:4318/v1/metrics" RAILS_ENV="development" rails server -p 3009
 ```
