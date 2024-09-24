@@ -138,11 +138,15 @@ Run the application with the following command and open http://localhost:8080/ro
 ```
 env OTEL_TRACES_EXPORTER=console rails server -p 8080
 ```
+![](proof1.png)
 
-Export to OTel Collector. 
+Next export to OTel Collector. Please do not include the `OTEL_TRACES_EXPORTER=console` because it would export to console only.
 ```
 env OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318" rails server -p 3009
 ```
+
+![](proof2.png)
+![](proof3.png)
 
 Take note that the OTEL_EXPORTER_OTLP_ENDPOINT is set to http://127.0.0.1:4318. This is the default endpoint for the OpenTelemetry Collector. Because it works only on otlp http. It doesn't work with otlp grpc yet.  
 
@@ -152,7 +156,7 @@ According to https://opentelemetry.io/docs/languages/ruby/exporters/#otlp-endpoi
 
 Finally, there is no need to append /v1/traces to the endpoint because it will be added automatically by the OpenTelemetry Ruby SDK.
 
-![](proof1.png)
+
 
 ## Additional OTel config
 
