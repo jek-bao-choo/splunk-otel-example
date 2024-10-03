@@ -13,6 +13,8 @@ managedNodeGroups:
   ssh:
     publicKeyPath: ~/.ssh/id_rsa.pub
 
+secretsEncryption:
+  keyARN: <YOUR-KMS-KEY-ARN>
  
 # managedNodeGroups:
 #   - name: ng-1

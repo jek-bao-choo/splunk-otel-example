@@ -1,14 +1,20 @@
-#My setup
+# Get started
+
+0. Create a KMS key in AWS KMS (if you don't already have one):
+You can do this via the AWS Management Console or using the AWS CLI:
+```bash
+aws kms create-key --description "EKS Secret Encryption Key"
+```
+Note the KeyId from the output.
 
 
-#N Steps
 1. Create EKS EC2 cluster using eksctl
 Because eksctl tool will create K8s Control Plane (master nodes, etcd, API server, etc), worker nodes, VPC, Security Groups, Subnets, Routes, Internet Gateway, etc.
 ```bash
 eksctl create cluster \
 --name=jek-eks-ec2-cluster-<add a date> \
 --nodegroup-name=jek-eks-ec2-workers \
---version=1.21 \
+--version=1.29 \
 --node-type=t3.large \
 --nodes 2 \
 --region=ap-southeast-1 \
@@ -16,6 +22,8 @@ eksctl create cluster \
 --tags=Criticality=low \
 --tags=Owner=email@email.com \
 --managed \
+--encrypt-secrets \
+--kms-key=arn:aws:kms:ap-southeast-1:YOUR_ACCOUNT_ID:key/YOUR_KMS_KEY_ID \
 --dry-run
 ```
 or using the yaml file
@@ -29,6 +37,24 @@ eksctl get cluster
 
 aws eks describe-cluster --name jek-eks-ec2-cluster-<add a date> --region ap-southeast-1
 ```
+
+Once the cluster is created, you can verify the encryption configuration:
+```bash
+kubectl get storageclasses
+```
+You should see that the default storage class is using "secretbox" as the encryption provider.
+
+To further verify, you can create a secret and check its encryption:
+```bash
+kubectl create secret generic test-secret --from-literal=password=mysecretpassword
+kubectl get secret test-secret -o yaml
+```
+The output should show that the secret data is encrypted.
+
+This setup ensures that all Kubernetes secrets in your EKS cluster are encrypted at rest using your specified KMS key.
+
+
+
 
 3. Install Splunk OTel Collector Chart
 
