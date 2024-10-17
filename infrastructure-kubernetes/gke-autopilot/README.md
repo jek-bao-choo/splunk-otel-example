@@ -113,7 +113,7 @@ helm install splunk-otel-collector --set="cloudProvider=gcp,distribution=gke/aut
 
 ```bash
 
-helm uninstall otel-collector
+helm uninstall splunk-otel-collector
 
 ```
 
