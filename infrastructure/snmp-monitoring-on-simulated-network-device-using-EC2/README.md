@@ -211,6 +211,11 @@ service:
       receivers: [hostmetrics, otlp, signalfx, smartagent/snmp]
 ```
 
+`sudo systemctl restart splunk-otel-collector`
+
+`sudo systemctl status splunk-otel-collector`
+
+Go to Splunk Observability Cloud.
 
 ![](proof2.png)
 ![](proof3.png)
