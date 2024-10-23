@@ -10,8 +10,11 @@ sam --version
 ```
 
 # Step 2: Initialize a SAM Project
-- `sam init` ![](init.png)
+- `sam init` 
+    - Choose AWS Starter Template
+    - Choose Zip instead of Image
 - Change directory and build
+
 ```bash
 cd <the folder name>
 
@@ -19,13 +22,12 @@ sam build
 
 sam local invoke
 ``` 
-![](build.png)
+
 
 - Deploy using Serverless Application Model
 ```bash
 sam deploy --stack-name jek-lambda-sam-nodejs18-<today date> --guided 
 ``` 
-![](guided.png)
 
 # Step 3: Modify the Lambda Function
 
@@ -47,17 +49,17 @@ exports.lambdaHandler = async (event) => {
 sam build
 ```
 
-- Run `sam deploy` again without the --guided flag. ![](deploying.png)
+- Run `sam deploy` again without the --guided flag.
 
 - (Optionally) See other sam flags https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-deploy.html 
 
-- Test the deployed lambda function ![](test.png)
+- Test the deployed lambda function
 - Curl the deployed lambda function `curl <the url from API Gateway>` 
 ![](api.png)
 
 
 # Step 5: Add Splunk Lambda Layer for traces
-- Follow the steps in Data Setup ![](lambda.png)
+- Follow the steps in Splunk O11y Cloud's Data Setup. You can find the layer address here https://github.com/signalfx/lambda-layer-versions/blob/main/splunk-apm/splunk-apm.md
 - Open template.yaml in the IDE and add lambda layer by going to template.yaml > Resources > Properties > Layers. Also add add environment variables by staying on template.yaml > Resources > Properties > Environment > Variables
 ```yml
       Layers:
