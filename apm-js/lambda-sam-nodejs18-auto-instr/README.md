@@ -58,8 +58,9 @@ sam build
 ![](api.png)
 
 
-# Step 5: Add Splunk Lambda Layer for traces
+# Step 5: Add Splunk Lambda Layer for traces (WIP)
 - Follow the steps in Splunk O11y Cloud's Data Setup. You can find the layer address here https://github.com/signalfx/lambda-layer-versions/blob/main/splunk-apm/splunk-apm.md
+    - To check your architecture use `aws lambda get-function-configuration --function-name <YOUR_FUNCTION_NAME> | grep Architectures -a2`
 - Open template.yaml in the IDE and add lambda layer by going to template.yaml > Resources > Properties > Layers. Also add add environment variables by staying on template.yaml > Resources > Properties > Environment > Variables
 ```yml
       Layers:
@@ -90,6 +91,6 @@ sam build
 - Delete AWS logging, Xray, and application monitoring
 
 
-# Proof
+# Proof (WIP)
 - ![](proof.png)
 - Date: 23 Oct 2024
