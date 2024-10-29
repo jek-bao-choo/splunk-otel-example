@@ -3,7 +3,7 @@
 version = 0.1
 
 [default.global.parameters]
-stack_name = "lambda-sam-nodejs18-auto-instr"
+stack_name = "lambda-sam-nodejs18-ts-v2"
 
 [default.build.parameters]
 cached = true
@@ -16,10 +16,6 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
-stack_name = "jek-lambda-sam-nodejs18-v1"
-s3_prefix = "jek-lambda-sam-nodejs18-v1"
-region = "ap-southeast-1"
-image_repositories = []
 
 [default.package.parameters]
 resolve_s3 = true
