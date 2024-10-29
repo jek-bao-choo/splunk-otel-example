@@ -4,6 +4,7 @@ kind: ClusterConfig
 metadata:
   region: ap-southeast-1
   version: "1.29"
+  name: "jek-eks-ec2-28oct2024"
 
 managedNodeGroups:
 - name: jek-eks-ec2-managednodegroup-workers
@@ -13,8 +14,8 @@ managedNodeGroups:
   ssh:
     publicKeyPath: ~/.ssh/id_rsa.pub
 
-secretsEncryption:
-  keyARN: <YOUR-KMS-KEY-ARN>
+# secretsEncryption:
+#   keyARN: <YOUR-KMS-KEY-ARN>
  
 # managedNodeGroups:
 #   - name: ng-1
