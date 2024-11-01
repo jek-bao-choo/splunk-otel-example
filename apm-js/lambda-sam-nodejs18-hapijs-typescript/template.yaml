@@ -22,22 +22,33 @@ Resources:
       Runtime: nodejs18.x
       Architectures:
       - x86_64
-      Layers:
-      - !Sub arn:aws:lambda:ap-southeast-1:254067382080:layer:splunk-apm:107  # Replace with your layer ARN
-      # Add Environment variables here
-      Environment:
-        Variables:
-          AWS_LAMBDA_EXEC_WRAPPER: /opt/nodejs-otel-handler #/opt/otel-handler
-          OTEL_SERVICE_NAME: jek-lambda-node18-TYPESCRIPT-apsoutheast1-alt
-          OTEL_RESOURCE_ATTRIBUTES: deployment.environment=jek-sandbox
-          SPLUNK_REALM: XXXX
-          SPLUNK_ACCESS_TOKEN: XXXXXXXX
+#      Layers:
+#      - !Sub arn:aws:lambda:ap-southeast-1:254067382080:layer:splunk-apm:107  # Replace with your layer ARN
+#       # Add Environment variables here
+#      Environment:
+#        Variables:
+#          AWS_LAMBDA_EXEC_WRAPPER: /opt/nodejs-otel-handler #/opt/otel-handler
+#          OTEL_SERVICE_NAME: jek-lambda-node18-ts-hapi
+#          OTEL_RESOURCE_ATTRIBUTES: deployment.environment=jek-sandbox
+#          SPLUNK_REALM: XXXXXXXX
+#          SPLUNK_ACCESS_TOKEN: XXXXXXXXXXXXX
+#      Events:
+#        HelloWorld:
+#          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+#          Properties:
+#            Path: /hello
+#            Method: get
       Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        ProxyApiRoot:
+          Type: Api
           Properties:
-            Path: /hello
-            Method: get
+            Path: /
+            Method: ANY
+        ProxyApiGreedy:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
