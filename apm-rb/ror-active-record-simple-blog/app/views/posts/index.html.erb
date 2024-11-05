@@ -1,0 +1,10 @@
+<h1>Blog Posts</h1>
+
+<%= link_to 'New Post', new_post_path %>
+
+<% @posts.each do |post| %>
+  <div class="post">
+    <h2><%= link_to post.title, post_path(post) %></h2>
+    <p><%= truncate(post.content, length: 100) %></p>
+  </div>
+<% end %>
