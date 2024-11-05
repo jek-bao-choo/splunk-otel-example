@@ -16,4 +16,8 @@ Rails.application.routes.draw do
   # root "posts#index"
   root 'posts#index'
   resources :posts, only: [:index, :new, :create]
+
+  get '/test/write', to: 'database_test#write'
+  get '/test/read', to: 'database_test#read'
+  get '/test/sync', to: 'database_test#sync'
 end
