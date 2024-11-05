@@ -3,11 +3,21 @@
 
 <h1>Blog Posts</h1>
 
-<%= link_to 'Write New Post', new_post_path %>
+<div>
+  <h1>Blog Posts</h1>
 
-<% @posts.each do |post| %>
-  <div>
-    <h2><%= post.title %></h2>
-    <p><%= post.content %></p>
-  </div>
-<% end %>
+  <p>
+    <small>Reading from: <%= ActiveRecord::Base.connection_db_config.configuration_hash[:database] %></small>
+  </p>
+
+  <%= link_to 'New Post', new_post_path %>
+
+  <% @posts.each do |post| %>
+    <div style="margin: 20px 0;">
+      <h2><%= post.title %></h2>
+      <p><%= post.content %></p>
+      <small>Created at: <%= post.created_at %></small>
+    </div>
+  <% end %>
+</div>
+

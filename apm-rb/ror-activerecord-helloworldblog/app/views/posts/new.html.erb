@@ -1,20 +1,39 @@
 <h1>Posts#new</h1>
 <p>Find me in app/views/posts/new.html.erb</p>
 
-<h1>Write New Post</h1>
+<div>
+  <h1>New Post</h1>
 
-<%= form_with(model: @post, local: true) do |form| %>
-  <div>
-    <%= form.label :title %>
-    <%= form.text_field :title %>
-  </div>
+  <p>
+    <small>Writing to: <%= ActiveRecord::Base.connection_db_config.configuration_hash[:database] %></small>
+  </p>
 
-  <div>
-    <%= form.label :content %>
-    <%= form.text_area :content %>
-  </div>
+  <%= form_with(model: @post, local: true) do |form| %>
+    <% if @post.errors.any? %>
+      <div style="color: red;">
+        <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
+        <ul>
+          <% @post.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
-  <%= form.submit 'Create Post' %>
-<% end %>
+    <div>
+      <%= form.label :title %>
+      <%= form.text_field :title %>
+    </div>
 
-<%= link_to 'Back to Posts', posts_path %>
+    <div>
+      <%= form.label :content %>
+      <%= form.text_area :content %>
+    </div>
+
+    <div>
+      <%= form.submit %>
+    </div>
+  <% end %>
+
+  <%= link_to 'Back', posts_path %>
+</div>

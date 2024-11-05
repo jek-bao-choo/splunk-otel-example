@@ -23,8 +23,13 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: storage/test.sqlite3
+  primary:
+    <<: *default
+    database: db/primary_test.sqlite3
+  replica:
+    <<: *default
+    database: db/replica_test.sqlite3
+    replica: true
 
 
 # SQLite3 write its data on the local filesystem, as such it requires

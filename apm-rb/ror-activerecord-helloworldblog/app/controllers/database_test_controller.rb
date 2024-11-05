@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class DatabaseTestController < ApplicationController
+  include DatabaseSyncable
   def write
     ActiveRecord::Base.connected_to(role: :writing) do
       db_info = ActiveRecord::Base.connection_db_config.configuration_hash
