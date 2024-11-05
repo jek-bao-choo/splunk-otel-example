@@ -10,8 +10,14 @@ default: &default
   timeout: 5000
 
 development:
-  <<: *default
-  database: storage/development.sqlite3
+  primary:
+    <<: *default
+    database: db/primary_development.sqlite3
+  replica:
+    <<: *default
+    database: db/replica_development.sqlite3
+    replica: true
+
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

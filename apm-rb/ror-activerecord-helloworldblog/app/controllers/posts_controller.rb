@@ -1,18 +1,27 @@
 class PostsController < ApplicationController
+  # Use replica for reading
   def index
-    @posts = Post.all
+    ActiveRecord::Base.connected_to(role: :reading) do
+      @posts = Post.all
+    end
   end
 
-  def new
-    @post = Post.new
+  # Use replica for showing individual posts
+  def show
+    ActiveRecord::Base.connected_to(role: :reading) do
+      @post = Post.find(params[:id])
+    end
   end
 
+  # Use primary for creating new posts
   def create
-    @post = Post.new(post_params)
-    if @post.save
-      redirect_to posts_path, notice: 'Post created!'
-    else
-      render :new
+    ActiveRecord::Base.connected_to(role: :writing) do
+      @post = Post.new(post_params)
+      if @post.save
+        redirect_to posts_path, notice: 'Post created!'
+      else
+        render :new
+      end
     end
   end
 
