@@ -11,7 +11,7 @@ export class StaticServePlugin implements hapi.PluginBase<unknown, unknown> {
             path: '/static/{param*}',
             handler: (request) => {
                 return {
-                    message: `Static asset: ${request.params.param} - WITHOUT lambda layer but with Hapi.js`,
+                    message: `Static asset: ${request.params.param} - WITHOUT lambda layer but with Hapi.js v2`,
                     path: request.path,
                 };
             },
