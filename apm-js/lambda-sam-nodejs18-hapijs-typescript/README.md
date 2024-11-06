@@ -91,6 +91,11 @@ curl https://your-api-id.execute-api.region.amazonaws.com/Prod/hello
 # Test static endpoint
 curl https://your-api-id.execute-api.region.amazonaws.com/Prod/static/test
 
+# Test _specific route
+curl https://your-api-id.execute-api.region.amazonaws.com/Prod/_specifc/data
+
+# Test catchall redirect
+curl https://your-api-id.execute-api.region.amazonaws.com/some/path
 ```
 
 # Proof

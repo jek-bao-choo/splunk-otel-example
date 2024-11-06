@@ -10,44 +10,15 @@ async function initServer(): Promise<Server> {
         host: 'localhost',
     });
 
-    // Register routes directly in the server for more control
-    server.route([
-        {
-            method: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-            path: '/',
-            handler: () => {
-                return {
-                    message: 'Root endpoint - WITHOUT lambda layer but with Hapi.js',
-                };
-            },
-        },
-        {
-            method: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-            path: '/hello',
-            handler: () => {
-                return {
-                    message: 'Hello endpoint - WITHOUT lambda layer but with Hapi.js',
-                };
-            },
-        },
-    ]);
-
-    // Register the plugin for additional routes
+    // Register the plugin
     await server.register([new StaticServePlugin()]);
 
     // Log all registered routes for debugging
     const routes = server.table();
-    console.log(
-        'Available routes:',
-        JSON.stringify(
-            routes.map((route) => ({
-                path: route.path,
-                method: route.method,
-            })),
-            null,
-            2,
-        ),
-    );
+    console.log('Available routes:', JSON.stringify(routes.map(route => ({
+        path: route.path,
+        method: route.method
+    })), null, 2));
 
     return server;
 }
