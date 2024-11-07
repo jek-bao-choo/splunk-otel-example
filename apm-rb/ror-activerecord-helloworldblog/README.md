@@ -279,6 +279,18 @@ end
 ```
 
 ```
+OpenTelemetry::SDK.configure do |c|
+
+  # Enable ActiveRecord instrumentation
+  c.use 'OpenTelemetry::Instrumentation::ActiveRecord',
+    # Enable query obfuscation for security (optional)
+    db_statement: :obfuscate,
+    # Track configuration name to distinguish between primary/replica
+    peer_service: -> (payload) { 
+      ActiveRecord::Base.connection_pool.spec.config[:role] || 'primary'
+    }
+end
+
 
 
 ```
