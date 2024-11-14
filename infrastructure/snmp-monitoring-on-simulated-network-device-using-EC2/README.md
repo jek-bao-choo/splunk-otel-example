@@ -12,9 +12,13 @@ sudo apt install snmpd snmp
 Configure snmpd:
 
 ```
-sudo nano /etc/snmp/snmpd.conf
+sudo vim /etc/snmp/snmpd.conf
+```
+
+
 Replace the contents with:
-Copyrocommunity public
+```
+community public
 syslocation "Server Room"
 syscontact Admin 
 sysname SimulatedSwitch
