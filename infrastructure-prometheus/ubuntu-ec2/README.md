@@ -1,4 +1,4 @@
-**Setup**
+# **Setup Prometheus Server**
 
 1. SSH into an Ubuntu instance with EC2
 2. Go to root `sudo su`
@@ -13,7 +13,7 @@
 11. In web browser go to `http://<ip address>:9090`. Make sure Security Rule allows Custom TCP port 9090.
 12.  Run the `up` command in Prometheus query.
 
-**Node Exporter**
+# **Setup Node Exporter**
 
 The Node exporter looks at /sys and /proc pseudo files systems
 
@@ -23,9 +23,12 @@ The Node exporter looks at /sys and /proc pseudo files systems
 4. Start the Node exporter `./node_exporter`
 5. Get EC2 public ip address `curl http://checkip.amazonaws.com`
 6. In web browser go to `http://<ip address>:9100`. Make sure Security Rule allows Custom TCP port 9100.
-7. Back to SSH EC2 Ubuntu. Go to the folder of `cd prometheus-2.36.1.linux-amd64/`
-8. Create a copy of prometheus calling it `cp prometheus.yml custom-prometheus.yml`
-9. Add new target for scraping `vim custom-prometheus.yml`
+
+# **Prometheus --(scrape from)--> Node Exporter**
+
+1. Back to SSH EC2 Ubuntu. Go to the folder of `cd prometheus-2.53.3.linux-amd64/`
+2. Create a copy of prometheus calling it `cp prometheus.yml custom-prometheus.yml`
+3. Add new target for scraping `vim custom-prometheus.yml`
 ```yml
 scrape_configs:
   - job_name: "prometheus"
@@ -36,10 +39,10 @@ scrape_configs:
       - targets: ["localhost:9100"] # Newly added
 ```
 
-10. We can specify a custom-prometheus.yml file e.g. `./prometheus --storage.tsdb.retention.time=13d --config.file="/home/ubuntu/prometheus-2.36.1.linux-amd64/custom-prometheus.yml" &`
-11. Run a query in Prometheus `node_cpu_seconds_total` and click Execute to show 
+4. We can specify a custom-prometheus.yml file e.g. `./prometheus --storage.tsdb.retention.time=13d --config.file="/home/ubuntu/prometheus-2.36.1.linux-amd64/custom-prometheus.yml" &`
+5. Run a query in Prometheus `node_cpu_seconds_total` and click Execute to show 
 
-**Send Node Exporter metrics to splunk-otel-collector**
+# **Send Node Exporter metrics to splunk-otel-collector**
 
 1. Install splunk-otel-collector
 ```bash
