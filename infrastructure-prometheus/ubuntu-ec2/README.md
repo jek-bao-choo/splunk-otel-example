@@ -50,11 +50,27 @@ curl -sSL https://dl.signalfx.com/splunk-otel-collector.sh > /tmp/splunk-otel-co
 sudo sh /tmp/splunk-otel-collector.sh --realm us1 -- <ACCESS TOKEN REDACTED> --mode agent --without-instrumentation
 ```
 
-2. Edit this file `/etc/otel/collector/agent_config.yaml` to add prometheus_simple/jekreceiver like this url https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/simpleprometheusreceiver with sample in the folder
+2. Edit this file `sudo vim /etc/otel/collector/agent_config.yaml` 
 
-3. Restart `sudo systemctl restart splunk-otel-collector`
+3. add prometheus_simple/jekreceiver like this url https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/simpleprometheusreceiver with sample in the folder
 
-4. Go to Splunk Observability portal to verify that the metrics are coming in.
+```yml
+receivers:
+  prometheus_simple:
+    collection_interval: 10s
+    endpoint: "127.0.0.1:9090"
+    tls:
+      insecure_skip_verify: true
+```
+
+```yml
+metrics:
+      receivers: [hostmetrics, prometheus_simple, otlp, signalfx]
+```
+
+4. Restart `sudo systemctl restart splunk-otel-collector`
+
+5. Go to Splunk Observability portal to verify that the metrics are coming in.
 ![proof2](proof2.png "proof2")
 ![proof1](proof1.png "proof1")
 ---
