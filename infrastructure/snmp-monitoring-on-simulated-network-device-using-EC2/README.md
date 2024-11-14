@@ -16,9 +16,9 @@ sudo vim /etc/snmp/snmpd.conf
 ```
 
 
-Replace the contents with:
+Verify that the content has these:
 ```
-community public
+rocommunity public
 syslocation "Server Room"
 syscontact Admin 
 sysname SimulatedSwitch
