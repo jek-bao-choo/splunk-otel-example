@@ -342,8 +342,8 @@ require 'opentelemetry-instrumentation-rails'
 require 'opentelemetry/instrumentation/all'
 
 OpenTelemetry::SDK.configure do |c|
-  c.service_name = 'jek_ror_movie_streamer'
-  c.use_all() # This enables automatic instrumentation
+  c.service_name = ENV['OTEL_SERVICE_NAME'] || 'jek_ror_movie_streamer'
+  c.use_all() # enables all instrumentation!
 end
 ```
 
@@ -365,25 +365,45 @@ or export to OTel Collector
 env OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318" OTEL_SERVICE_NAME="jek_ror_movie_streamer_v1" rails server -p 3009
 ```
 
+## Proof
+![](proof1.png)
+
+# Add code to call postgresql database instead of sqlite
+
+(perhaps try Aiven)
+
 # Create tagging for call to primary and replica database
 
-```
+(This requires validation)
+
+Use this code snippet to try primary and replica separation.
 
 ```
+require 'opentelemetry/sdk'
+require 'opentelemetry/exporter/otlp'
+require 'opentelemetry-instrumentation-rails'
+require 'opentelemetry/instrumentation/all'
 
-```
 OpenTelemetry::SDK.configure do |c|
-
-  # Enable ActiveRecord instrumentation
-  c.use 'OpenTelemetry::Instrumentation::ActiveRecord',
-    # Enable query obfuscation for security (optional)
-    db_statement: :obfuscate,
-    # Track configuration name to distinguish between primary/replica
-    peer_service: -> (payload) { 
-      ActiveRecord::Base.connection_pool.spec.config[:role] || 'primary'
-    }
+  c.service_name = ENV['OTEL_SERVICE_NAME'] || 'jek-movie-streaming-v1'
+  c.use_all() # enables all instrumentation!
 end
 
+module PGConnectionPatchers
+  def client_attributes
+    attributes = {
+      'db.system' => 'postgresql',
+      'db.user' => user,
+      'db.name' => db
+    }
+    attributes['peer.service'] = "jek-pgdb-#{ActiveRecord::Base.connection_pool.db_config.name}"
 
+    attributes.merge!(transport_attrs)
+    attributes.compact!
+    attributes
+  end
+end
 
+::PG::Connection.prepend(PGConnectionPatchers)
 ```
+
