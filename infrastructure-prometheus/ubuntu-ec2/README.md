@@ -166,7 +166,7 @@ receivers:
 ![](proof5.png)
 
 ## Work in progress... Add SNMP targets... 
-Work in progress... Add SNMP targets... 
+Work in progress... Add SNMP targets... https://github.com/prometheus/snmp_exporter?tab=readme-ov-file#prometheus-configuration 
 
 # THE END
 
