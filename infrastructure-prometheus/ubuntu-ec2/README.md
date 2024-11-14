@@ -8,9 +8,10 @@
 6. Go to the extracted folder `cd prometheus-2.53.3.linux-amd64/`
 7. In the folder that has promtool run `./promtool check config prometheus.yml` to check the YAML file validity.
 8. Start Prometheus `./prometheus`
-9. Get EC2 public ip address `curl http://checkip.amazonaws.com`
-10. In web browser go to `http://<ip address>:9090`. Make sure Security Rule allows Custom TCP port 9090.
-11.  Run the `up` command in Prometheus query.
+9. Open a new terminal interface.
+10. Get EC2 public ip address `curl http://checkip.amazonaws.com`
+11. In web browser go to `http://<ip address>:9090`. Make sure Security Rule allows Custom TCP port 9090.
+12.  Run the `up` command in Prometheus query.
 
 **Node Exporter**
 
