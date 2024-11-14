@@ -17,9 +17,9 @@
 
 The Node exporter looks at /sys and /proc pseudo files systems
 
-1. Back to SSH EC2 Ubuntu console. Download Node exporter for Linux `sudo wget https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz`
-2. Extract Node exporter from compressed `tar xvf node_exporter-1.3.1.linux-amd64.tar.gz`
-3. Go to the Node exporter folder after extraction ` cd node_exporter-1.3.1.linux-amd64/`
+1. Back to SSH EC2 Ubuntu console. Download Node exporter for Linux from e.g. `sudo wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz`
+2. Extract Node exporter from compressed `tar xvf node_exporter-1.8.2.linux-amd64.tar.gz`
+3. Go to the Node exporter folder after extraction ` cd node_exporter-1.8.2.linux-amd64/`
 4. Start the Node exporter `./node_exporter`.
 5. Get EC2 public ip address `curl http://checkip.amazonaws.com`
 6. In web browser go to `http://<ip address>:9100`. Make sure Security Rule allows Custom TCP port 9100.
