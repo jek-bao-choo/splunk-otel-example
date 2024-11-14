@@ -3,9 +3,9 @@
 1. SSH into an Ubuntu instance with EC2
 2. Go to root `sudo su`
 3. Update and upgrade `apt-get update & apt-get upgrade` and `exit` when done.
-4. Download Prometheus for Linux from https://prometheus.io/download/#prometheus e.g. `sudo wget https://github.com/prometheus/prometheus/releases/download/v2.36.1/prometheus-2.36.1.linux-amd64.tar.gz`
-5. Extract the file `tar xvf prometheus-2.36.1.linux-amd64.tar.gz`
-6. Go to the extracted folder `cd prometheus-2.36.1.linux-amd64/`
+4. Download Prometheus for Linux from https://prometheus.io/download/#prometheus e.g. `sudo wget https://github.com/prometheus/prometheus/releases/download/v2.53.3/prometheus-2.53.3.linux-amd64.tar.gz`
+5. Extract the file `tar xvf prometheus-2.53.3.linux-amd64.tar.gz`
+6. Go to the extracted folder `cd prometheus-2.53.3.linux-amd64/`
 7. In the folder that has promtool run `./promtool check config prometheus.yml` to check the YAML file validity.
 8. Start Prometheus `./prometheus`
 9. Get EC2 public ip address `curl http://checkip.amazonaws.com`
