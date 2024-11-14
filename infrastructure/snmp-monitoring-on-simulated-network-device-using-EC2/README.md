@@ -18,13 +18,21 @@ sudo vim /etc/snmp/snmpd.conf
 
 Verify that the content has these:
 ```
-rocommunity public
-syslocation "Server Room"
-syscontact Admin 
-sysname SimulatedSwitch
-extend ifInOctets /bin/echo 1000000
-extend cpuUsage /bin/echo 50
-extend memUsage /bin/echo 75
+# Basic SNMP configuration
+rocommunity public localhost
+sysLocation "Jek Data Center"
+sysContact "Jek Admin <admin@example.com>"
+
+# Extend SNMP with custom scripts
+# CPU Usage - OID: .1.3.6.1.4.1.2021.10.1.3.1
+extend cpuUsage /bin/sh -c "top -bn1 | grep 'Cpu(s)' | awk '{print $2}'"
+
+# Memory Usage - OID: .1.3.6.1.4.1.2021.4
+view systemview included .1.3.6.1.2.1.25.2.2
+view systemview included .1.3.6.1.4.1.2021.4
+
+# Interface Statistics - OID: .1.3.6.1.2.1.2.2.1.10
+view systemview included .1.3.6.1.2.1.2
 ```
 
 Restart snmpd:
@@ -36,20 +44,13 @@ sudo systemctl restart snmpd
 ## Test the setup:
 
 
-For ifInOctets:
+test a specific OID (1.3.6.1.2.1.1 is the system MIB):
 ```
-snmpwalk -v2c -c public localhost .1.3.6.1.4.1.8072.1.3.2.3.1.2.10.105.102.73.110.79.99.116.101.116.115
+snmpwalk -v2c -c public localhost 1.3.6.1.2.1.1 
+
+snmpwalk -v2c -c public localhost 1.3.6.1.2.1.25.1
 ```
 
-For CPU usage:
-```
-snmpwalk -v2c -c public localhost .1.3.6.1.4.1.8072.1.3.2.3.1.2.8.99.112.117.85.115.97.103.101
-```
-
-For memory usage:
-```
-snmpwalk -v2c -c public localhost .1.3.6.1.4.1.8072.1.3.2.3.1.2.8.109.101.109.85.115.97.103.101
-```
 
 # Spin up a second EC2 Ubuntu instance for monitoring the simulated device remotely
 Install snmp:
