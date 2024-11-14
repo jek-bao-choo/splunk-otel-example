@@ -42,7 +42,7 @@ scrape_configs:
 4. Run Prometheus server by using the custom-prometheus.yml file e.g. `./prometheus --storage.tsdb.retention.time=13d --config.file="/home/ubuntu/prometheus-2.53.3.linux-amd64/custom-prometheus.yml"`
 5. Run a query in Prometheus `node_cpu_seconds_total` and click Execute to show 
 
-# **Send Node Exporter metrics to splunk-otel-collector**
+# **Setup OTel Collector**
 
 1. Install splunk-otel-collector
 ```bash
@@ -50,22 +50,29 @@ curl -sSL https://dl.signalfx.com/splunk-otel-collector.sh > /tmp/splunk-otel-co
 sudo sh /tmp/splunk-otel-collector.sh --realm us1 -- <ACCESS TOKEN REDACTED> --mode agent --without-instrumentation
 ```
 
-2. Edit this file `sudo vim /etc/otel/collector/agent_config.yaml` 
+# **Use OTel Collector --(scrape)--> Prom & Node Exporter Metrics
 
-3. add prometheus_simple/jekreceiver like this url https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/simpleprometheusreceiver with sample in the folder
+1. Edit this file `sudo vim /etc/otel/collector/agent_config.yaml` 
+
+2. add `prometheus_simple/prom` and `prometheus_simple/node` (you can name this it something else other than node or prom too) like this url https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/simpleprometheusreceiver with sample in the folder. 
 
 ```yml
 receivers:
-  prometheus_simple:
+  prometheus_simple/prom:
     collection_interval: 10s
     endpoint: "127.0.0.1:9090"
+    tls:
+      insecure_skip_verify: true
+  prometheus_simple/node:
+    collection_interval: 10s
+    endpoint: "127.0.0.1:9100"
     tls:
       insecure_skip_verify: true
 ```
 
 ```yml
-metrics:
-      receivers: [hostmetrics, prometheus_simple, otlp, signalfx]
+    metrics:
+      receivers: [hostmetrics, otlp, signalfx, prometheus_simple/prom, prometheus_simple/node]
 ```
 
 
@@ -80,9 +87,91 @@ metric name: `node_cpu_seconds_total`
 ![proof2](proof2.png "proof2")
 ![proof1](proof1.png "proof1")
 
----
+# **Add Prometheus SNMP Exporter**
+Similar to how we download and use Prometheus Node Exporter
 
-**Alternatively, Install Prometheus as a Docker Service (instead of ./prometheus and ./node_exporter setup as above**
+1. Back to SSH EC2 Ubuntu console. Download Node exporter for Linux from https://github.com/prometheus/snmp_exporter/releases e.g. `sudo wget https://github.com/prometheus/snmp_exporter/releases/download/v0.26.0/snmp_exporter-0.26.0.linux-amd64.tar.gz`
+
+2. Extract Node exporter from compressed `tar xvf snmp_exporter-0.26.0.linux-amd64.tar.gz`
+
+3. Go to the Node exporter folder after extraction ` cd snmp_exporter-0.26.0.linux-amd64/`
+4. Start the snmp_exporter `./snmp_exporter`
+
+5. Get EC2 public ip address `curl http://checkip.amazonaws.com`
+
+6. In web browser go to `http://<ip address>:9116`. Make sure Security Rule allows Custom TCP port 9116.
+
+![](snmpsetup.png)
+
+7. Also go to `http://<ip address>:9116/snmp?target=127.0.0.1`
+
+![](snmpsetup2.png)
+
+From the README.md of Prometheus SNMP Exporter https://github.com/prometheus/snmp_exporter?tab=readme-ov-file#running
+
+
+```txt
+Visit http://localhost:9116/snmp?target=192.0.0.8 where 192.0.0.8 is the IP or FQDN of the SNMP device to get metrics from. Note that this will use the default transport (udp), default port (161), default auth (public_v2) and default module (if_mib). The auth and module must be defined in the snmp.yml file.
+
+For example, if you have an auth named my_secure_v3 for walking ddwrt, the URL would look like http://localhost:9116/snmp?auth=my_secure_v3&module=ddwrt&target=192.0.0.8.
+
+To configure a different transport and/or port, use the syntax [transport://]host[:port].
+
+For example, to scrape a device using tcp on port 1161, the URL would look like http://localhost:9116/snmp?auth=my_secure_v3&module=ddwrt&target=tcp%3A%2F%2F192.0.0.8%3A1161.
+
+Note that URL encoding should be used for target due to the : and / characters. Prometheus encodes query parameters automatically and manual encoding is not necessary within the Prometheus configuration file.
+
+Metrics concerning the operation of the exporter itself are available at the endpoint http://localhost:9116/metrics.
+
+It is possible to supply an optional snmp_context parameter in the URL, like this: http://localhost:9116/snmp?auth=my_secure_v3&module=ddwrt&target=192.0.0.8&snmp_context=vrf-mgmt The snmp_context parameter in the URL would override the context_name parameter in the snmp.yml file.
+```
+
+# **Use OTel Collector --(scrape)--> SNMP Exporter
+
+1. Edit this file `sudo vim /etc/otel/collector/agent_config.yaml` 
+
+2. add `prometheus_simple/prom` and `prometheus_simple/node` (you can name this it something else other than node or prom too) like this url https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/simpleprometheusreceiver with sample in the folder. 
+
+```yml
+receivers:
+  prometheus_simple/prom:
+    collection_interval: 10s
+    endpoint: "127.0.0.1:9090"
+    tls:
+      insecure_skip_verify: true
+  prometheus_simple/node:
+    collection_interval: 10s
+    endpoint: "127.0.0.1:9100"
+    tls:
+      insecure_skip_verify: true
+  prometheus_simple/snmpexporter:
+    collection_interval: 10s
+    endpoint: "127.0.0.1:9116"
+    tls:
+      insecure_skip_verify: true
+```
+
+```yml
+    metrics:
+      receivers: [hostmetrics, otlp, signalfx, prometheus_simple/prom, prometheus_simple/node, prometheus_simple/snmpexporter]
+```
+
+
+4. Restart `sudo systemctl restart splunk-otel-collector`
+
+5. Go to Splunk Observability portal to verify that the metrics are coming in.
+
+6. For prometheus_simple/snmpexporter, look for metric name e.g. `snmp_packet_duration_seconds_count`
+![](proof4.png)
+![](proof5.png)
+
+## Work in progress... Add SNMP targets... 
+Work in progress... Add SNMP targets... 
+
+# THE END
+
+
+# **Alternatively, Install Prometheus as a Docker Service (instead of ./prometheus and ./node_exporter setup as above**
 
 1. Install Docker Compose which requires Docker Engine. Follow these steps to install Docker Engine https://docs.docker.com/engine/install/ubuntu/
     - Install Docker Compose Plugins. Follow these steps https://docs.docker.com/compose/install/compose-plugin/#installing-compose-on-linux-systems
