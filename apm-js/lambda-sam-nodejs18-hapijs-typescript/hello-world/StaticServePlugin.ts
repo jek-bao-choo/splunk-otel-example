@@ -15,7 +15,7 @@ export class StaticServePlugin implements hapi.PluginBase<unknown, unknown> {
         });
 
         return {
-            message: 'Debug response',
+            message: 'Debug response - Jek v1 commonHandler test',
             debug: {
                 handlerType: 'commonHandler',
                 path: req.path,
@@ -35,22 +35,7 @@ export class StaticServePlugin implements hapi.PluginBase<unknown, unknown> {
                 {
                     method: 'GET',
                     path: '/',
-                    handler: async (request: hapi.Request, h: hapi.ResponseToolkit) => {
-                        console.log('Static route accessed:', {
-                            path: request.path,
-                            params: request.params,
-                            method: request.method,
-                        });
-
-                        return {
-                            message: `Root endpoint: ${request.params.param} - WITH lambda layer but with Hapi.js v1`,
-                            debug: {
-                                path: request.path,
-                                params: request.params,
-                                method: request.method,
-                            },
-                        };
-                    },
+                    handler: this.commonHandler,
                 },
                 {
                     method: 'GET',

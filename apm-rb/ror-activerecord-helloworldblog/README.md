@@ -278,6 +278,99 @@ end
 
 ```
 
+Check using the Rails console
+
+```
+# Start the Rails console
+rails console
+
+# Check primary database
+ActiveRecord::Base.connected_to(role: :writing) do
+  puts "\n=== Primary Database ==="
+  puts "Database: #{ActiveRecord::Base.connection_db_config.configuration_hash[:database]}"
+  puts "Post count: #{Post.count}"
+  puts "Posts:"
+  Post.all.each do |post|
+    puts "- #{post.id}: #{post.title}"
+  end
+end
+
+# Check replica database
+ActiveRecord::Base.connected_to(role: :reading) do
+  puts "\n=== Replica Database ==="
+  puts "Database: #{ActiveRecord::Base.connection_db_config.configuration_hash[:database]}"
+  puts "Post count: #{Post.count}"
+  puts "Posts:"
+  Post.all.each do |post|
+    puts "- #{post.id}: #{post.title}"
+  end
+end
+```
+
+Directly checking the SQLite databases
+
+```
+# For primary database
+sqlite3 db/primary_development.sqlite3 "SELECT * FROM posts;"
+
+# For replica database
+sqlite3 db/replica_development.sqlite3 "SELECT * FROM posts;"
+```
+
+# Add OpenTelemetry SDK
+
+Add the following lines to your Gemfile:
+```
+gem 'opentelemetry-sdk'
+gem 'opentelemetry-exporter-otlp'
+gem 'opentelemetry-instrumentation-rails'
+gem 'opentelemetry-instrumentation-all'
+```
+
+Run bundle install
+
+```
+bundle install
+```
+
+Create an initializer config/initializers/opentelemetry.rb:
+
+```
+require 'opentelemetry/sdk'
+require 'opentelemetry/exporter/otlp'
+require 'opentelemetry-instrumentation-rails'
+require 'opentelemetry/instrumentation/all'
+
+OpenTelemetry::SDK.configure do |c|
+  c.service_name = 'jek_ror_movie_streamer'
+  c.use_all() # This enables automatic instrumentation
+end
+```
+
+Stop and start the Rails server:
+
+```
+rails server 
+```
+
+or print to console
+
+```
+env OTEL_TRACES_EXPORTER=console rails server -p 8080
+```
+
+or export to OTel Collector
+
+```
+env OTEL_EXPORTER_OTLP_ENDPOINT="http://127.0.0.1:4318" OTEL_SERVICE_NAME="jek_ror_movie_streamer_v1" rails server -p 3009
+```
+
+# Create tagging for call to primary and replica database
+
+```
+
+```
+
 ```
 OpenTelemetry::SDK.configure do |c|
 
