@@ -68,11 +68,18 @@ metrics:
       receivers: [hostmetrics, prometheus_simple, otlp, signalfx]
 ```
 
+
 4. Restart `sudo systemctl restart splunk-otel-collector`
 
 5. Go to Splunk Observability portal to verify that the metrics are coming in.
+
+metric name: `promhttp_metric_handler_requests_total`
+![](proof3.png)
+
+metric name: `node_cpu_seconds_total`
 ![proof2](proof2.png "proof2")
 ![proof1](proof1.png "proof1")
+
 ---
 
 **Alternatively, Install Prometheus as a Docker Service (instead of ./prometheus and ./node_exporter setup as above**
