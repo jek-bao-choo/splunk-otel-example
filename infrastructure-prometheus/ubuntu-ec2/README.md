@@ -47,7 +47,7 @@ scrape_configs:
 1. Install splunk-otel-collector
 ```bash
 curl -sSL https://dl.signalfx.com/splunk-otel-collector.sh > /tmp/splunk-otel-collector.sh && \
-sudo sh /tmp/splunk-otel-collector.sh --realm us1 -- <access token redacted> --mode agent
+sudo sh /tmp/splunk-otel-collector.sh --realm us1 -- <ACCESS TOKEN REDACTED> --mode agent --without-instrumentation
 ```
 
 2. Edit this file `/etc/otel/collector/agent_config.yaml` to add prometheus_simple/jekreceiver like this url https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/simpleprometheusreceiver with sample in the folder
