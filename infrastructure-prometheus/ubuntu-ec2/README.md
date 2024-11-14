@@ -39,7 +39,7 @@ scrape_configs:
       - targets: ["localhost:9100"] # Newly added
 ```
 
-4. Run Prometheus server by using the custom-prometheus.yml file e.g. `./prometheus --storage.tsdb.retention.time=13d --config.file="/home/ubuntu/prometheus-2.53.3.linux-amd64/custom-prometheus.yml" &`
+4. Run Prometheus server by using the custom-prometheus.yml file e.g. `./prometheus --storage.tsdb.retention.time=13d --config.file="/home/ubuntu/prometheus-2.53.3.linux-amd64/custom-prometheus.yml"`
 5. Run a query in Prometheus `node_cpu_seconds_total` and click Execute to show 
 
 # **Send Node Exporter metrics to splunk-otel-collector**
