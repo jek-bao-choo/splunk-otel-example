@@ -17,7 +17,7 @@
 
 The Node exporter looks at /sys and /proc pseudo files systems
 
-1. Back to SSH EC2 Ubuntu console. Download Node exporter for Linux from e.g. `sudo wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz`
+1. Back to SSH EC2 Ubuntu console. Download Node exporter for Linux from https://prometheus.io/download/#node_exporter e.g. `sudo wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz`
 2. Extract Node exporter from compressed `tar xvf node_exporter-1.8.2.linux-amd64.tar.gz`
 3. Go to the Node exporter folder after extraction ` cd node_exporter-1.8.2.linux-amd64/`
 4. Start the Node exporter `./node_exporter`.
