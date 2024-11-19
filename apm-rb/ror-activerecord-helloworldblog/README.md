@@ -407,3 +407,5 @@ end
 ::PG::Connection.prepend(PGConnectionPatchers)
 ```
 
+![](proof2.png)
+
