@@ -134,6 +134,8 @@ Refer to `values-two.yaml` for how it is done.
 
 At the time of writing, the latest version of splunk-otel-collector-chart is 0.113.0 so I specifically add 0.113.0 as the version
 
+* remember to replace the realm and access token in the values-one.yaml
+
 ```
 helm install splunk-otel-collector --version 0.113.0 splunk-otel-collector-chart/splunk-otel-collector --values values-two.yaml
 ```
@@ -143,6 +145,8 @@ Note: To skip certificate checks, you can disable secure TLS checks per componen
 ![](resolve-with-option-one.png)
 
 ### Option 2: Revert to install the older version of splunk-otel-collector-chart
+
+* remember to replace the realm and access token in the values-one.yaml
 
 See here for a list of version https://github.com/signalfx/splunk-otel-collector-chart/releases. The stable version seemed to be 0.111.0
 
