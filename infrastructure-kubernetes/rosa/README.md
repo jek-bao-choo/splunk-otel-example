@@ -79,6 +79,48 @@ oc projects
 kubectl get namespace
 ```
 
+# Install OTel Collector in K8s
+
+```
+helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart
+```
+
+```
+helm repo update
+```
+
+- At the time of installation this is the version `splunk-otel-collector-0.113.0`.
+
+- Change realm and access in `values-one.yaml` and install splunk-otel-collector in ROSA using the values-one.yaml
+
+```
+helm install splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector --values values-one.yaml
+
+# OR if we don't want to use imperative approach, we can use declarative approach.
+
+helm install splunk-otel-collector --set="cloudProvider=aws,distribution=openshift,splunkObservability.accessToken=<REDACTED_ACCESS_TOKEN>,clusterName=jek-rosa,splunkObservability.realm=us1,gateway.enabled=false,splunkObservability.profilingEnabled=true,environment=jek-sandbox" splunk-otel-collector-chart/splunk-otel-collector
+```
+
+Right after installation, if you encounter the following error after running e.g. `kubectl logs pod/<THE_OTEL_COLLECTOR_AGENT_POD_NAME>`:
+
+```
+2024-12-09T09:17:01.894Z	error	scraperhelper/scrapercontroller.go:204	Error scraping metrics	{"kind": "receiver", "name": "kubeletstats", "data_type": "metrics", "error": "Get \"https://10.0.44.32:10250/stats/summary\": tls: failed to verify certificate: x509: certificate signed by unknown authority", "scraper": "kubeletstats"}
+go.opentelemetry.io/collector/receiver/scraperhelper.(*controller).scrapeMetricsAndReport
+	go.opentelemetry.io/collector/receiver@v0.113.0/scraperhelper/scrapercontroller.go:204
+go.opentelemetry.io/collector/receiver/scraperhelper.(*controller).startScraping.func1
+	go.opentelemetry.io/collector/receiver@v0.113.0/scraperhelper/scrapercontroller.go:180
+2024-12-09T09:17:01.899Z	error	scraperhelper/scrapercontroller.go:204	Error scraping metrics	{"kind": "receiver", "name": "hostmetrics", "data_type": "metrics", "error": "failed to read usage at /hostfs/sysroot: no such file or directory; failed to read usage at /hostfs/usr: no such file or directory; failed to read usage at /hostfs/sysroot/ostree/deploy/rhcos/var: no such file or directory; failed to read usage at /hostfs/boot: no such file or directory", "scraper": "filesystem"}
+go.opentelemetry.io/collector/receiver/scraperhelper.(*controller).scrapeMetricsAndReport
+	go.opentelemetry.io/collector/receiver@v0.113.0/scraperhelper/scrapercontroller.go:204
+go.opentelemetry.io/collector/receiver/scraperhelper.(*controller).startScraping.func1
+	go.opentelemetry.io/collector/receiver@v0.113.0/scraperhelper/scrapercontroller.go:180
+```
+![](error.png)
+
+
+
+# Clean up
+
 
 11. Use ROSA to delete Openshift cluster
 https://www.rosaworkshop.io/rosa/12-delete_cluster/

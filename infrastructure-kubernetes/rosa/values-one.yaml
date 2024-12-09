@@ -1,0 +1,47 @@
+clusterName: "jek-rosa"
+
+splunkObservability:
+  realm: "us1"
+  accessToken: "<REDACTED_ACCESS_TOKEN>"
+
+  # Optional. Splunk Observability ingest URL, default:
+  # "https://ingest.<realm>.signalfx.com".
+  # ingestUrl: ""
+  # Optional. Splunk Observability API URL, default:
+  # "https://api.<realm>.signalfx.com".
+  # apiUrl: ""
+  
+  metricsEnabled: true
+  tracesEnabled: true
+  profilingEnabled: false
+
+distribution: "openshift"
+
+cloudProvider: "aws"
+
+environment: "jek-sandbox"
+
+agent:
+  enabled: true
+
+  resources:
+    limits:
+      cpu: 200m
+      # This value is being used as a source for default memory_limiter processor configurations
+      memory: 500Mi
+
+  # config: {}
+
+clusterReceiver:
+  enabled: true
+
+  # Need to be adjusted based on size of the monitored cluster
+  resources:
+    limits:
+      cpu: 200m
+      memory: 500Mi
+
+  # config: {}
+
+gateway:
+  enabled: false
