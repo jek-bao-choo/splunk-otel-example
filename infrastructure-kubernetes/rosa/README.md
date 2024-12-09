@@ -118,9 +118,9 @@ go.opentelemetry.io/collector/receiver/scraperhelper.(*controller).startScraping
 ```
 ![](error.png)
 
-## Two options to resolve the `tls: failed to verify certificate: x509` 
+## Resolve the `tls: failed to verify certificate: x509`  and the `failed to read usage at /hostfs/sysroot: no such file or directory; failed to read usage at /hostfs`
 
-### Option 1: Add `insecure_skip_verify: true`
+### Step 1: Resolve `tls: failed to verify certificate: x509` by adding `insecure_skip_verify: true`
 
 As shown here https://docs.splunk.com/observability/en/gdi/opentelemetry/collector-kubernetes/kubernetes-config-advanced.html#override-your-tls-configuration 
 ```
@@ -132,33 +132,24 @@ As shown here https://docs.splunk.com/observability/en/gdi/opentelemetry/collect
 
 Refer to `values-two.yaml` for how it is done.
 
-At the time of writing, the latest version of splunk-otel-collector-chart is 0.113.0 so I specifically add 0.113.0 as the version
-
-* remember to replace the realm and access token in the values-one.yaml
-
-```
-helm install splunk-otel-collector --version 0.113.0 splunk-otel-collector-chart/splunk-otel-collector --values values-two.yaml
-```
-
 Note: To skip certificate checks, you can disable secure TLS checks per component. This option is not recommended for production environments due to security standards.
+
+### Step 2: Revert to install the older version of splunk-otel-collector-chart
+
+At the time of writing, the latest version of splunk-otel-collector-chart is 0.113.0 so I specifically add 0.113.0 as the version.
+
+See here for a list of version https://github.com/signalfx/splunk-otel-collector-chart/releases. The stable version seemed to be `0.111.0`.
+
+* remember to replace the realm and access token in the values-two.yaml
+
+```
+helm install splunk-otel-collector --version 0.111.0 splunk-otel-collector-chart/splunk-otel-collector --values values-two.yaml
+```
+
+
 
 ![](resolve-with-option-one.png)
 
-### Option 2: Revert to install the older version of splunk-otel-collector-chart
-
-* remember to replace the realm and access token in the values-one.yaml
-
-See here for a list of version https://github.com/signalfx/splunk-otel-collector-chart/releases. The stable version seemed to be 0.111.0
-
-```
-helm install splunk-otel-collector --version 0.111.0 splunk-otel-collector-chart/splunk-otel-collector --values values-one.yaml
-
-# OR if we don't want to use imperative approach, we can use declarative approach.
-
-helm install splunk-otel-collector --version 0.111.0 --set="cloudProvider=aws,distribution=openshift,splunkObservability.accessToken=<REDACTED_ACCESS_TOKEN>,clusterName=jek-rosa,splunkObservability.realm=us1,gateway.enabled=false,splunkObservability.profilingEnabled=true,environment=jek-sandbox" splunk-otel-collector-chart/splunk-otel-collector
-```
-
-Personally, I prefer Option 2 to Option 1.
 
 # Clean up
 
