@@ -94,12 +94,13 @@ helm repo update
 - Change realm and access in `values-one.yaml` and install splunk-otel-collector in ROSA using the values-one.yaml
 
 ```
-helm install splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector --values values-one.yaml
+helm install splunk-otel-collector --version 0.113.0 splunk-otel-collector-chart/splunk-otel-collector --values values-one.yaml
 
 # OR if we don't want to use imperative approach, we can use declarative approach.
 
-helm install splunk-otel-collector --set="cloudProvider=aws,distribution=openshift,splunkObservability.accessToken=<REDACTED_ACCESS_TOKEN>,clusterName=jek-rosa,splunkObservability.realm=us1,gateway.enabled=false,splunkObservability.profilingEnabled=true,environment=jek-sandbox" splunk-otel-collector-chart/splunk-otel-collector
+helm install splunk-otel-collector --version 0.113.0 --set="cloudProvider=aws,distribution=openshift,splunkObservability.accessToken=<REDACTED_ACCESS_TOKEN>,clusterName=jek-rosa,splunkObservability.realm=us1,gateway.enabled=false,splunkObservability.profilingEnabled=true,environment=jek-sandbox" splunk-otel-collector-chart/splunk-otel-collector
 ```
+Note: At the time of writing, the latest version of splunk-otel-collector-chart is 0.113.0 so I specifically add 0.113.0 as the version
 
 Right after installation, if you encounter the following error after running e.g. `kubectl logs pod/<THE_OTEL_COLLECTOR_AGENT_POD_NAME>`:
 
@@ -117,10 +118,45 @@ go.opentelemetry.io/collector/receiver/scraperhelper.(*controller).startScraping
 ```
 ![](error.png)
 
+## Two options to resolve the `tls: failed to verify certificate: x509` 
 
+### Option 1: Add `insecure_skip_verify: true`
+
+As shown here https://docs.splunk.com/observability/en/gdi/opentelemetry/collector-kubernetes/kubernetes-config-advanced.html#override-your-tls-configuration 
+```
+  config:
+    receivers:
+      kubeletstats:
+        insecure_skip_verify: true
+```
+
+Refer to `values-two.yaml` for how it is done.
+
+At the time of writing, the latest version of splunk-otel-collector-chart is 0.113.0 so I specifically add 0.113.0 as the version
+
+```
+helm install splunk-otel-collector --version 0.113.0 splunk-otel-collector-chart/splunk-otel-collector --values values-two.yaml
+```
+
+Note: To skip certificate checks, you can disable secure TLS checks per component. This option is not recommended for production environments due to security standards.
+
+![](resolve-with-option-one.png)
+
+### Option 2: Revert to install the older version of splunk-otel-collector-chart
+
+See here for a list of version https://github.com/signalfx/splunk-otel-collector-chart/releases. The stable version seemed to be 0.111.0
+
+```
+helm install splunk-otel-collector --version 0.111.0 splunk-otel-collector-chart/splunk-otel-collector --values values-one.yaml
+
+# OR if we don't want to use imperative approach, we can use declarative approach.
+
+helm install splunk-otel-collector --version 0.111.0 --set="cloudProvider=aws,distribution=openshift,splunkObservability.accessToken=<REDACTED_ACCESS_TOKEN>,clusterName=jek-rosa,splunkObservability.realm=us1,gateway.enabled=false,splunkObservability.profilingEnabled=true,environment=jek-sandbox" splunk-otel-collector-chart/splunk-otel-collector
+```
+
+Personally, I prefer Option 2 to Option 1.
 
 # Clean up
-
 
 11. Use ROSA to delete Openshift cluster
 https://www.rosaworkshop.io/rosa/12-delete_cluster/

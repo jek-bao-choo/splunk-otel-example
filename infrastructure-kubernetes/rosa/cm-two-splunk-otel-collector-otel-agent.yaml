@@ -1,0 +1,329 @@
+apiVersion: v1
+data:
+  relay: |
+    exporters:
+      otlphttp:
+        headers:
+          X-SF-Token: ${SPLUNK_OBSERVABILITY_ACCESS_TOKEN}
+        metrics_endpoint: https://ingest.us1.signalfx.com/v2/datapoint/otlp
+        traces_endpoint: https://ingest.us1.signalfx.com/v2/trace/otlp
+      otlphttp/entities:
+        headers:
+          X-SF-Token: ${SPLUNK_OBSERVABILITY_ACCESS_TOKEN}
+        logs_endpoint: https://ingest.us1.signalfx.com/v3/event
+      signalfx:
+        access_token: ${SPLUNK_OBSERVABILITY_ACCESS_TOKEN}
+        api_url: https://api.us1.signalfx.com
+        correlation: null
+        ingest_url: https://ingest.us1.signalfx.com
+        sync_host_metadata: true
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+      k8s_observer:
+        auth_type: serviceAccount
+        node: ${K8S_NODE_NAME}
+      zpages: null
+    processors:
+      batch:
+        metadata_keys:
+        - X-SF-Token
+      filter/logs:
+        logs:
+          exclude:
+            match_type: strict
+            resource_attributes:
+            - key: splunk.com/exclude
+              value: "true"
+      k8sattributes:
+        extract:
+          annotations:
+          - from: pod
+            key: splunk.com/sourcetype
+          - from: namespace
+            key: splunk.com/exclude
+            tag_name: splunk.com/exclude
+          - from: pod
+            key: splunk.com/exclude
+            tag_name: splunk.com/exclude
+          - from: namespace
+            key: splunk.com/index
+            tag_name: com.splunk.index
+          - from: pod
+            key: splunk.com/index
+            tag_name: com.splunk.index
+          labels:
+          - key: app
+          metadata:
+          - k8s.namespace.name
+          - k8s.node.name
+          - k8s.pod.name
+          - k8s.pod.uid
+          - container.id
+          - container.image.name
+          - container.image.tag
+        filter:
+          node_from_env_var: K8S_NODE_NAME
+        pod_association:
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.uid
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.ip
+        - sources:
+          - from: resource_attribute
+            name: ip
+        - sources:
+          - from: connection
+        - sources:
+          - from: resource_attribute
+            name: host.name
+      memory_limiter:
+        check_interval: 2s
+        limit_mib: ${SPLUNK_MEMORY_LIMIT_MIB}
+      resource:
+        attributes:
+        - action: insert
+          key: k8s.node.name
+          value: ${K8S_NODE_NAME}
+        - action: upsert
+          key: k8s.cluster.name
+          value: jek-rosa
+      resource/add_agent_k8s:
+        attributes:
+        - action: insert
+          key: k8s.pod.name
+          value: ${K8S_POD_NAME}
+        - action: insert
+          key: k8s.pod.uid
+          value: ${K8S_POD_UID}
+        - action: insert
+          key: k8s.namespace.name
+          value: ${K8S_NAMESPACE}
+      resource/add_environment:
+        attributes:
+        - action: insert
+          key: deployment.environment
+          value: jek-sandbox
+      resource/logs:
+        attributes:
+        - action: upsert
+          from_attribute: k8s.pod.annotations.splunk.com/sourcetype
+          key: com.splunk.sourcetype
+        - action: delete
+          key: k8s.pod.annotations.splunk.com/sourcetype
+        - action: delete
+          key: splunk.com/exclude
+      resourcedetection:
+        detectors:
+        - env
+        - ec2
+        - system
+        override: true
+        timeout: 15s
+    receivers:
+      hostmetrics:
+        collection_interval: 10s
+        root_path: /hostfs
+        scrapers:
+          cpu: null
+          disk: null
+          filesystem:
+            exclude_mount_points:
+              match_type: regexp
+              mount_points:
+              - /var/.*
+          load: null
+          memory: null
+          network: null
+          paging: null
+          processes: null
+      jaeger:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:14250
+          thrift_http:
+            endpoint: 0.0.0.0:14268
+      kubeletstats:
+        auth_type: serviceAccount
+        collection_interval: 10s
+        endpoint: ${K8S_NODE_IP}:10250
+        extra_metadata_labels:
+        - container.id
+        insecure_skip_verify: true
+        metric_groups:
+        - container
+        - pod
+        - node
+      nop: null
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+      prometheus/agent:
+        config:
+          scrape_configs:
+          - job_name: otel-agent
+            metric_relabel_configs:
+            - action: drop
+              regex: otelcol_rpc_.*
+              source_labels:
+              - __name__
+            - action: drop
+              regex: otelcol_http_.*
+              source_labels:
+              - __name__
+            - action: drop
+              regex: otelcol_processor_batch_.*
+              source_labels:
+              - __name__
+            scrape_interval: 10s
+            static_configs:
+            - targets:
+              - ${K8S_POD_IP}:8889
+      receiver_creator:
+        receivers:
+          smartagent/coredns:
+            config:
+              extraDimensions:
+                metric_source: k8s-coredns
+              port: 9154
+              skipVerify: true
+              type: coredns
+              useHTTPS: true
+              useServiceAccount: true
+            rule: type == "pod" && namespace == "openshift-dns" && name contains "dns"
+          smartagent/kube-controller-manager:
+            config:
+              extraDimensions:
+                metric_source: kubernetes-controller-manager
+              port: 10257
+              skipVerify: true
+              type: kube-controller-manager
+              useHTTPS: true
+              useServiceAccount: true
+            rule: type == "pod" && labels["app"] == "kube-controller-manager" && labels["kube-controller-manager"]
+              == "true"
+          smartagent/kubernetes-apiserver:
+            config:
+              extraDimensions:
+                metric_source: kubernetes-apiserver
+              skipVerify: true
+              type: kubernetes-apiserver
+              useHTTPS: true
+              useServiceAccount: true
+            rule: type == "port" && port == 6443 && pod.labels["app"] == "openshift-kube-apiserver"
+              && pod.labels["apiserver"] == "true"
+          smartagent/kubernetes-proxy:
+            config:
+              extraDimensions:
+                metric_source: kubernetes-proxy
+              skipVerify: true
+              type: kubernetes-proxy
+              useHTTPS: true
+              useServiceAccount: true
+            rule: type == "port" && pod.labels["app"] == "sdn" && (port == 9101 || port
+              == 29101)
+          smartagent/kubernetes-scheduler:
+            config:
+              extraDimensions:
+                metric_source: kubernetes-scheduler
+              port: 10259
+              skipVerify: true
+              type: kubernetes-scheduler
+              useHTTPS: true
+              useServiceAccount: true
+            rule: type == "pod" && labels["app"] == "openshift-kube-scheduler" && labels["scheduler"]
+              == "true"
+        watch_observers:
+        - k8s_observer
+      signalfx:
+        endpoint: 0.0.0.0:9943
+      smartagent/signalfx-forwarder:
+        listenAddress: 0.0.0.0:9080
+        type: signalfx-forwarder
+      zipkin:
+        endpoint: 0.0.0.0:9411
+    service:
+      extensions:
+      - health_check
+      - k8s_observer
+      - zpages
+      pipelines:
+        logs/entities:
+          exporters:
+          - otlphttp/entities
+          processors:
+          - memory_limiter
+          - batch
+          - resourcedetection
+          - resource
+          receivers:
+          - nop
+        metrics:
+          exporters:
+          - signalfx
+          processors:
+          - memory_limiter
+          - batch
+          - resourcedetection
+          - resource
+          receivers:
+          - hostmetrics
+          - kubeletstats
+          - otlp
+          - receiver_creator
+          - signalfx
+        metrics/agent:
+          exporters:
+          - signalfx
+          processors:
+          - memory_limiter
+          - batch
+          - resource/add_agent_k8s
+          - resourcedetection
+          - resource
+          receivers:
+          - prometheus/agent
+        traces:
+          exporters:
+          - otlphttp
+          - signalfx
+          processors:
+          - memory_limiter
+          - k8sattributes
+          - batch
+          - resourcedetection
+          - resource
+          - resource/add_environment
+          receivers:
+          - otlp
+          - jaeger
+          - smartagent/signalfx-forwarder
+          - zipkin
+      telemetry:
+        metrics:
+          address: 0.0.0.0:8889
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: splunk-otel-collector
+    meta.helm.sh/release-namespace: default
+  creationTimestamp: "2024-12-09T09:43:58Z"
+  labels:
+    app: splunk-otel-collector
+    app.kubernetes.io/instance: splunk-otel-collector
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: splunk-otel-collector
+    app.kubernetes.io/version: 0.113.0
+    chart: splunk-otel-collector-0.113.0
+    helm.sh/chart: splunk-otel-collector-0.113.0
+    heritage: Helm
+    release: splunk-otel-collector
+  name: splunk-otel-collector-otel-agent
+  namespace: default
+  resourceVersion: "107861"
+  uid: cd07f408-4f4f-4f49-9f95-9fe407415fe8
