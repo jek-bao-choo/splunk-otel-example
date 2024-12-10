@@ -96,11 +96,11 @@ helm repo update
 - Change realm and access in `values-one.yaml` and install splunk-otel-collector in ROSA using the values-one.yaml
 
 ```
-helm install splunk-otel-collector --version 0.113.0 splunk-otel-collector-chart/splunk-otel-collector --values values-one.yaml
+helm install splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector --version 0.113.0 --values values-one.yaml
 
 # OR if we don't want to use imperative approach, we can use declarative approach.
 
-helm install splunk-otel-collector --version 0.113.0 --set="cloudProvider=aws,distribution=openshift,splunkObservability.accessToken=<REDACTED_ACCESS_TOKEN>,clusterName=jek-rosa,splunkObservability.realm=us1,gateway.enabled=false,splunkObservability.profilingEnabled=true,environment=jek-sandbox" splunk-otel-collector-chart/splunk-otel-collector
+helm install splunk-otel-collector --set="cloudProvider=aws,distribution=openshift,splunkObservability.accessToken=<REDACTED_ACCESS_TOKEN>,clusterName=jek-rosa,splunkObservability.realm=us1,gateway.enabled=false,splunkObservability.profilingEnabled=true,environment=jek-sandbox" splunk-otel-collector-chart/splunk-otel-collector --version 0.113.0
 ```
 Note: At the time of writing, the latest version of splunk-otel-collector-chart is 0.113.0 so I specifically add 0.113.0 as the version
 
@@ -145,7 +145,7 @@ See here for a list of version https://github.com/signalfx/splunk-otel-collector
 * remember to replace the realm and access token in the values-two.yaml
 
 ```
-helm install splunk-otel-collector --version 0.111.0 splunk-otel-collector-chart/splunk-otel-collector --values values-two.yaml
+helm install splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector --version 0.111.0 --values values-two.yaml
 ```
 
 
