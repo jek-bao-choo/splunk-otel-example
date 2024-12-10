@@ -52,6 +52,8 @@ Note: It takes about 30 to 40 minutes to create cluster as stated here https://d
 https://www.rosaworkshop.io/rosa/3-create_initial_admin/
 `rosa create admin --cluster=<cluster name>`
 
+  Please save the password somewhere!
+
 8. or Path 2 Setup an IDP, Granting Admin Right, and Accessing the cluster
 https://www.rosaworkshop.io/rosa/4-setup_idp/
 https://www.rosaworkshop.io/rosa/5-grant_admin/
