@@ -1,19 +1,25 @@
-1. Ensure that Red Hat OpenShift Service on AWS (ROSA) is enabled through AWS console
+# Setting up Red Hat OpenShift Service on AWS (ROSA) with Splunk OpenTelemetry Collector
 
+## Prerequisites
+
+1. Enable Red Hat OpenShift Service on AWS (ROSA) through AWS console
 2. Sign in to https://www.redhat.com
 
-3. Follow the instructions such as
+## Installation Steps
 
-4. Install ROSA cli
-`brew install rosa-cli`
+### Install and Configure ROSA CLI
 
-5. Manage ROSA credential and privileges
-`rosa login`
+1. Install ROSA CLI:
+```
+brew install rosa-cli
+```
+
+2. Manage ROSA credentials and privileges:
 ```bash
 rosa login
 
 # or login directly with token
-#The token is from Red Hat account after signing in to redhat.com
+# The token is from Red Hat account after signing in to redhat.com
 rosa login --token="<redacted>"
 
 rosa whoami
@@ -21,8 +27,10 @@ rosa whoami
 rosa verify quota
 ```
 
-6. Use ROSA for creating Openshift cluster
-https://www.rosaworkshop.io/rosa/2-deploy/#automatic-mode
+### Create OpenShift Cluster
+
+Follow the instructions at: https://www.rosaworkshop.io/rosa/2-deploy/#automatic-mode
+
 ```bash
 # Create account roles
 rosa create account-roles --mode auto --yes
@@ -30,7 +38,7 @@ rosa create account-roles --mode auto --yes
 # Create cluster with a cluster name no more than 15 characters
 rosa create cluster --interactive --sts
 
-# Follow instructions to complete installation with 
+# Follow instructions to complete installation
 rosa create operator-roles --cluster <cluster name>
 rosa create oidc-provider --cluster <cluster name>
 
@@ -43,24 +51,38 @@ rosa describe cluster --cluster <cluster-name>
 # Wait for console URL and get the console URL
 rosa describe cluster -c <cluster-name> | grep Console
 ```
-Note: It takes about 30 to 40 minutes to create cluster as stated here https://docs.openshift.com/rosa/rosa_getting_started/rosa-quickstart.html 
 
-7. Install Openshift CLI
-`brew install openshift-cli`
+**Note:** Cluster creation takes approximately 30-40 minutes as stated in the [official documentation](https://docs.openshift.com/rosa/rosa_getting_started/rosa-quickstart.html)
 
-8. Path 1 Create quick login using admin
-https://www.rosaworkshop.io/rosa/3-create_initial_admin/
-`rosa create admin --cluster=<cluster name>`
+### Install OpenShift CLI
 
-  Please save the password somewhere!
+```
+brew install openshift-cli
+```
 
-8. or Path 2 Setup an IDP, Granting Admin Right, and Accessing the cluster
-https://www.rosaworkshop.io/rosa/4-setup_idp/
-https://www.rosaworkshop.io/rosa/5-grant_admin/
-https://www.rosaworkshop.io/rosa/6-access_cluster/
-Note: This setup is more cumbersome but more secure so it is recommended
+### Configure Cluster Access
 
-9. Login using Openshift CLI (OC)
+Choose one of the following paths:
+
+#### Path 1: Quick Admin Setup (Less Secure)
+Follow instructions at: https://www.rosaworkshop.io/rosa/3-create_initial_admin/
+
+```
+rosa create admin --cluster=<cluster name>
+```
+
+**Important:** Save the password securely!
+
+#### Path 2: IDP Setup (Recommended for Production)
+Follow these guides:
+- [Setup IDP](https://www.rosaworkshop.io/rosa/4-setup_idp/)
+- [Grant Admin Rights](https://www.rosaworkshop.io/rosa/5-grant_admin/)
+- [Access Cluster](https://www.rosaworkshop.io/rosa/6-access_cluster/)
+
+**Note:** This setup is more secure but requires additional configuration.
+
+### Login Using OpenShift CLI (OC)
+
 ```bash
 # Get API URL
 rosa describe cluster -c <cluster name> | grep API
@@ -72,7 +94,8 @@ oc login <API URL> --username cluster-admin --password <redacted>
 oc whoami
 ```
 
-10. Check that in default namespace
+### Verify Namespace Configuration
+
 ```bash
 # See all projects
 oc projects
@@ -81,129 +104,106 @@ oc projects
 kubectl get namespace
 ```
 
-# Install OTel Collector in K8s
+## Installing OpenTelemetry Collector in Kubernetes
 
+1. Add the Helm repository:
 ```
 helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart
 ```
 
+2. Update the repository:
 ```
 helm repo update
 ```
 
-- At the time of installation this is the version `splunk-otel-collector-0.113.0`.
+**Note:** Current version at time of installation: `splunk-otel-collector-0.113.0`
 
-- Change realm and access in `values-one.yaml` and install splunk-otel-collector in ROSA using the values-one.yaml
+3. Install the collector using one of these methods:
 
-```
+```bash
+# Method 1: Using values file
 helm install splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector --version 0.113.0 --values values-one.yaml
 
-# OR if we don't want to use imperative approach, we can use declarative approach.
-
+# Method 2: Using declarative approach
 helm install splunk-otel-collector --set="cloudProvider=aws,distribution=openshift,splunkObservability.accessToken=<REDACTED_ACCESS_TOKEN>,clusterName=jek-rosa,splunkObservability.realm=us1,gateway.enabled=false,splunkObservability.profilingEnabled=true,environment=jek-sandbox" splunk-otel-collector-chart/splunk-otel-collector --version 0.113.0
 ```
-Note: At the time of writing, the latest version of splunk-otel-collector-chart is 0.113.0 so I specifically add 0.113.0 as the version
 
-Right after installation, if you encounter the following error after running e.g. `kubectl logs pod/<THE_OTEL_COLLECTOR_AGENT_POD_NAME>`:
+### Troubleshooting Common Issues
+
+If you encounter the following errors after installation:
 
 ```
 2024-12-09T09:17:01.894Z	error	scraperhelper/scrapercontroller.go:204	Error scraping metrics	{"kind": "receiver", "name": "kubeletstats", "data_type": "metrics", "error": "Get \"https://10.0.44.32:10250/stats/summary\": tls: failed to verify certificate: x509: certificate signed by unknown authority", "scraper": "kubeletstats"}
-go.opentelemetry.io/collector/receiver/scraperhelper.(*controller).scrapeMetricsAndReport
-	go.opentelemetry.io/collector/receiver@v0.113.0/scraperhelper/scrapercontroller.go:204
-go.opentelemetry.io/collector/receiver/scraperhelper.(*controller).startScraping.func1
-	go.opentelemetry.io/collector/receiver@v0.113.0/scraperhelper/scrapercontroller.go:180
-2024-12-09T09:17:01.899Z	error	scraperhelper/scrapercontroller.go:204	Error scraping metrics	{"kind": "receiver", "name": "hostmetrics", "data_type": "metrics", "error": "failed to read usage at /hostfs/sysroot: no such file or directory; failed to read usage at /hostfs/usr: no such file or directory; failed to read usage at /hostfs/sysroot/ostree/deploy/rhcos/var: no such file or directory; failed to read usage at /hostfs/boot: no such file or directory", "scraper": "filesystem"}
-go.opentelemetry.io/collector/receiver/scraperhelper.(*controller).scrapeMetricsAndReport
-	go.opentelemetry.io/collector/receiver@v0.113.0/scraperhelper/scrapercontroller.go:204
-go.opentelemetry.io/collector/receiver/scraperhelper.(*controller).startScraping.func1
-	go.opentelemetry.io/collector/receiver@v0.113.0/scraperhelper/scrapercontroller.go:180
 ```
+
 ![](error.png)
 
-## Resolve the `tls: failed to verify certificate: x509`  and the `failed to read usage at /hostfs/sysroot: no such file or directory; failed to read usage at /hostfs`
-
-### Step 1: Resolve `tls: failed to verify certificate: x509` by adding `insecure_skip_verify: true`
-
-As shown here https://docs.splunk.com/observability/en/gdi/opentelemetry/collector-kubernetes/kubernetes-config-advanced.html#override-your-tls-configuration 
 ```
-  config:
-    receivers:
-      kubeletstats:
-        insecure_skip_verify: true
+2024-12-09T09:17:01.899Z	error	scraperhelper/scrapercontroller.go:204	Error scraping metrics	{"kind": "receiver", "name": "hostmetrics", "data_type": "metrics", "error": "failed to read usage at /hostfs/sysroot: no such file or directory; failed to read usage at /hostfs/usr: no such file or directory; failed to read usage at /hostfs/sysroot/ostree/deploy/rhcos/var: no such file or directory; failed to read usage at /hostfs/boot: no such file or directory", "scraper": "filesystem"}
 ```
 
-Refer to `values-two.yaml` for how it is done.
+#### Resolution Steps
 
-Note: To skip certificate checks, you can disable secure TLS checks per component. This option is not recommended for production environments due to security standards.
+1. **Fix TLS Certificate Error**
 
-### Step 2a: Resolve the `failed to read usage at /hostfs/sysroot: no such file or directory; failed to read usage at /hostfs` by reverting to install the older version of splunk-otel-collector-chart
+Add `insecure_skip_verify: true` as shown in the [documentation](https://docs.splunk.com/observability/en/gdi/opentelemetry/collector-kubernetes/kubernetes-config-advanced.html#override-your-tls-configuration):
 
-At the time of writing, the latest version of splunk-otel-collector-chart is 0.113.0 so I specifically add 0.113.0 as the version.
-
-See here for a list of version https://github.com/signalfx/splunk-otel-collector-chart/releases. The stable version seemed to be `0.111.0`.
-
-* remember to replace the realm and access token in the values-two.yaml
-
+```yaml
+config:
+  receivers:
+    kubeletstats:
+      insecure_skip_verify: true
 ```
+
+Refer to `values-two.yaml` for implementation details.
+
+**Note:** Disabling secure TLS checks is not recommended for production environments.
+
+2. **Fix Hostfs Error**
+
+Choose one of these solutions:
+
+**Option A:** Use an older, stable version
+```bash
 helm install splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector --version 0.111.0 --values values-two.yaml
 ```
 
+Check available versions at: https://github.com/signalfx/splunk-otel-collector-chart/releases
+
 ![](resolve-with-option-one.png)
 
-### OR Step 2b: the `failed to read usage at /hostfs/sysroot: no such file or directory; failed to read usage at /hostfs` by excluding certain `exclude_mount_points`
+**Option B:** Configure exclude_mount_points
 
-BEFORE:
-```yml
-    receivers:
-      hostmetrics:
-        collection_interval: 10s
-        root_path: /hostfs
-        scrapers:
-          cpu: null
-          disk: null
-          filesystem:
-            exclude_mount_points:
-              match_type: regexp
-              mount_points:
-              - /var/.*
-          load: null
-          memory: null
-          network: null
-          paging: null
-          processes: null
+Update the hostmetrics configuration:
+
+```yaml
+receivers:
+  hostmetrics:
+    collection_interval: 10s
+    root_path: /hostfs
+    scrapers:
+      cpu: null
+      disk: null
+      filesystem:
+        exclude_mount_points:
+          match_type: regexp
+          mount_points:
+          - /var/*
+          - /snap/*
+          - /boot/*
+          - /boot
+          - /opt/orbstack/*
+          - /mnt/machines/*
+          - /Users/*
+      load: null
+      memory: null
+      network: null
+      paging: null
+      processes: null
 ```
 
-AFTER excluding certain points:
-```yml
-    receivers:
-      hostmetrics:
-        collection_interval: 10s
-        root_path: /hostfs
-        scrapers:
-          cpu: null
-          disk: null
-          filesystem:
-            exclude_mount_points:
-              match_type: regexp
-              mount_points:
-              - /var/*
-              - /snap/*
-              - /boot/*
-              - /boot
-              - /opt/orbstack/*
-              - /mnt/machines/*
-              - /Users/*
-          load: null
-          memory: null
-          network: null
-          paging: null
-          processes: null
-```
+Source: [Observability Workshop Configuration](https://github.com/splunk/observability-workshop/blob/007debd1e90066b92d7db01f6d9cc9f96d21dd0b/workshop/otel-contrib-splunk-demo/k8s_manifests/configmap-agent.yaml#L288)
 
-Source: https://github.com/splunk/observability-workshop/blob/007debd1e90066b92d7db01f6d9cc9f96d21dd0b/workshop/otel-contrib-splunk-demo/k8s_manifests/configmap-agent.yaml#L288
+## Cleanup
 
-
-# Clean up
-
-11. Use ROSA to delete Openshift cluster
-https://www.rosaworkshop.io/rosa/12-delete_cluster/
+To delete the OpenShift cluster, follow the instructions at: https://www.rosaworkshop.io/rosa/12-delete_cluster/
