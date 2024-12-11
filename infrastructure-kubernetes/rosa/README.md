@@ -136,7 +136,7 @@ Refer to `values-two.yaml` for how it is done.
 
 Note: To skip certificate checks, you can disable secure TLS checks per component. This option is not recommended for production environments due to security standards.
 
-### Step 2: Revert to install the older version of splunk-otel-collector-chart
+### Step 2a: Resolve the `failed to read usage at /hostfs/sysroot: no such file or directory; failed to read usage at /hostfs` by reverting to install the older version of splunk-otel-collector-chart
 
 At the time of writing, the latest version of splunk-otel-collector-chart is 0.113.0 so I specifically add 0.113.0 as the version.
 
@@ -148,9 +148,59 @@ See here for a list of version https://github.com/signalfx/splunk-otel-collector
 helm install splunk-otel-collector splunk-otel-collector-chart/splunk-otel-collector --version 0.111.0 --values values-two.yaml
 ```
 
-
-
 ![](resolve-with-option-one.png)
+
+### OR Step 2b: the `failed to read usage at /hostfs/sysroot: no such file or directory; failed to read usage at /hostfs` by excluding certain `exclude_mount_points`
+
+BEFORE:
+```yml
+    receivers:
+      hostmetrics:
+        collection_interval: 10s
+        root_path: /hostfs
+        scrapers:
+          cpu: null
+          disk: null
+          filesystem:
+            exclude_mount_points:
+              match_type: regexp
+              mount_points:
+              - /var/.*
+          load: null
+          memory: null
+          network: null
+          paging: null
+          processes: null
+```
+
+AFTER excluding certain points:
+```yml
+    receivers:
+      hostmetrics:
+        collection_interval: 10s
+        root_path: /hostfs
+        scrapers:
+          cpu: null
+          disk: null
+          filesystem:
+            exclude_mount_points:
+              match_type: regexp
+              mount_points:
+              - /var/*
+              - /snap/*
+              - /boot/*
+              - /boot
+              - /opt/orbstack/*
+              - /mnt/machines/*
+              - /Users/*
+          load: null
+          memory: null
+          network: null
+          paging: null
+          processes: null
+```
+
+Source: https://github.com/splunk/observability-workshop/blob/007debd1e90066b92d7db01f6d9cc9f96d21dd0b/workshop/otel-contrib-splunk-demo/k8s_manifests/configmap-agent.yaml#L288
 
 
 # Clean up
