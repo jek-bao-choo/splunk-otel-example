@@ -1,55 +1,119 @@
-# Install
-## SDK
-- Download .NET SDK from https://dotnet.microsoft.com/
-    - At the time of writing I downloaded .NET 8 https://dotnet.microsoft.com/en-us/download/dotnet/8.0
-    - You could also download .NET 6 from https://dotnet.microsoft.com/en-us/download/dotnet/6.0
-- Install the .NET SDK (version 8)
-- In terminal run `dotnet --version` to check the version.
-- The dotnet commands are here https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet
+# .NET Development Setup Guide
 
-## Visual Studio Code
-- Open Visual Studio Code (VSC) on Mac
-- In VSC install C#
+## Prerequisites
 
-# New & Run
-- The dotnet new commands are here https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new
-- For APIs, there seemed to be two types that are relevant to my validation.
-    - Minimal APIs https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-8.0&tabs=visual-studio-code
-        - Something more for learning is that ASP.NET Core API `webapiaot` for .NET 8 because it is introduced in .NET 8 and above. Where AOT stands for Ahead-of-time compilation. The ASP.NET Core Web API (Native AOT) template (short name webapiaot) creates a project with AOT enabled. The template differs from the Web API project template in the following ways: ... Uses minimal APIs only, as MVC isn't yet compatible with Native AOT...
-    - Controlled-based APIs https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&tabs=visual-studio 
-        - This uses the `webapi` template. 
-- `--output <OUTPUT_DIRECTORY>`
--`--verbosity <LEVEL>` introduced after .NET 7
+### .NET SDK Installation
+1. Download the .NET SDK from https://dotnet.microsoft.com/
+   - For .NET 8 (recommended): https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+   - For .NET 6 (alternative): https://dotnet.microsoft.com/en-us/download/dotnet/6.0
 
-## Option 1: Minimal APIs
-- Follow through this tutorial https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-8.0&tabs=visual-studio 
-- `dotnet new web --output jek-dotnet8-minimalapi-web --verbosity diag --dry-run`
-    - The `web` template is introduced in .NET (version 1). The `web` template creates an ASP.NET Core Empty project.
-- `cd jek-dotnet8-minimalapi`
-- `dotnet dev-certs https --trust`
-- `dotnet run`
-- Just follow through the tutorial link
+2. After installation, verify your setup:
+   ```
+   dotnet --version
+   ```
 
-## Option 2: Controller-based APIs
-- Follow through this tutorial https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&tabs=visual-studio
-- `dotnet new webapi --use-controllers --output jek-dotnet8-controllerbasedapi-webapi --verbosity diag --dry-run`
-    - The `webapi` template is introduced in .NET (version 1). The `webapi` template creates an ASP.NET Core Web API.
-- `cd jek-dotnet8-controllerbasedapi-webapi`
-- `dotnet add package Microsoft.EntityFrameworkCore.InMemory`
-- `code -r ../jek-dotnet8-controllerbasedapi-webapi`
-- `dotnet dev-certs https --trust`
-- `dotnet run --launch-profile https`
-- Just follow through the tutorial link
+3. For a complete list of dotnet commands, visit: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet
 
-# Build
-- `dotnet build`
+### Development Environment Setup
+1. Install Visual Studio Code (VSCode)
+2. Install the C# extension in VSCode
 
-# Publish
-- `dotnet publish`
-... `dotnet restore`
+## Creating a New API Project
 
-# Optional
-## NuGet Gallery *optional
-- In NuGet Gallery extension by pcislo  
-- Press `command + shift + p`
-- Search for NuGet
+For detailed information about `dotnet new` commands, visit: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new
+
+There are two main approaches for building APIs in .NET:
+
+### 1. Minimal APIs
+Minimal APIs are ideal for microservices and small applications. They offer a simplified, lightweight approach to building APIs.
+
+- Documentation: https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-8.0&tabs=visual-studio-code
+- Note: The `webapiaot` template (for .NET 8+) includes Ahead-of-time compilation support and is limited to minimal APIs only.
+
+#### Setup Steps:
+1. Create a new project:
+   ```
+   dotnet new web --output jek-dotnet8-minimalapi-web --verbosity diag --dry-run
+   ```
+   Note: The `web` template creates an empty ASP.NET Core project.
+
+2. Navigate to project directory:
+   ```
+   cd jek-dotnet8-minimalapi
+   ```
+
+3. Configure HTTPS certificate:
+   ```
+   dotnet dev-certs https --trust
+   ```
+
+4. Run the application:
+   ```
+   dotnet run
+   ```
+
+### 2. Controller-based APIs
+Controller-based APIs provide a more traditional, feature-rich approach suitable for larger applications.
+
+- Documentation: https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&tabs=visual-studio
+
+#### Setup Steps:
+1. Create a new project:
+   ```
+   dotnet new webapi --use-controllers --output jek-dotnet8-controllerbasedapi-webapi --verbosity diag --dry-run
+   ```
+   Note: The `webapi` template creates a standard ASP.NET Core Web API.
+
+2. Navigate to project directory:
+   ```
+   cd jek-dotnet8-controllerbasedapi-webapi
+   ```
+
+3. Add Entity Framework Core In-Memory package:
+   ```
+   dotnet add package Microsoft.EntityFrameworkCore.InMemory
+   ```
+
+4. Open in VSCode:
+   ```
+   code -r ../jek-dotnet8-controllerbasedapi-webapi
+   ```
+
+5. Configure HTTPS certificate:
+   ```
+   dotnet dev-certs https --trust
+   ```
+
+6. Run the application:
+   ```
+   dotnet run --launch-profile https
+   ```
+
+## Common Commands
+
+### Building the Application
+```
+dotnet build
+```
+
+### Publishing the Application
+```
+dotnet publish
+```
+
+### Restoring Dependencies
+```
+dotnet restore
+```
+
+## Additional Tools
+
+### NuGet Package Management
+1. Install the NuGet Gallery extension by pcislo in VSCode
+2. Access NuGet commands:
+   - Press `Command + Shift + P`
+   - Search for "NuGet"
+
+Note: Command line parameters:
+- `--output <OUTPUT_DIRECTORY>`: Specifies the output directory
+- `--verbosity <LEVEL>`: Sets logging detail (available in .NET 7+)
