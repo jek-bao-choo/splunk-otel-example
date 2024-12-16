@@ -3,14 +3,14 @@ kind: ClusterConfig
 
 metadata:
   region: ap-southeast-1
-  version: "1.29"
-  name: "jek-eks-ec2-28oct2024"
+  version: "1.30"
+  name: "jek-eks-ec2-16dec2024"
 
 managedNodeGroups:
 - name: jek-eks-ec2-managednodegroup-workers
   instanceType: m5.2xlarge
   volumeSize: 50
-  desiredCapacity: 1
+  desiredCapacity: 3
   ssh:
     publicKeyPath: ~/.ssh/id_rsa.pub
 
