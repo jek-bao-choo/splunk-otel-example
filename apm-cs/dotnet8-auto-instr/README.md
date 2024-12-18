@@ -128,6 +128,17 @@ docker kill <container id>
 docker push jchoo/jek-dotnet8-minimalapi-web:1.0
 ```
 
+# Run the .NET container image in K8s
+I am going to use my local K8s cluster. Alternatively, can use EKS, AKS, GKE, and to name a few.
+
+Install Splunk OTel Collector Chart https://github.com/signalfx/splunk-otel-collector-chart in your Kubernetes cluster
+
+After which run the deployment.
+
+```
+kubectl deploy -f deployment-miniapi.yaml
+```
+
 ## Optional Tools
 
 ### NuGet Package Management
