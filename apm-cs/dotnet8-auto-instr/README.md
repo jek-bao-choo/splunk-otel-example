@@ -129,9 +129,14 @@ docker push jchoo/jek-dotnet8-minimalapi-web:1.0
 ```
 
 # Run the .NET container image in K8s
+## Option 1: Semi auto by adding configuration to deployment .yaml file
 I am going to use my local K8s cluster. Alternatively, can use EKS, AKS, GKE, and to name a few.
 
 Install Splunk OTel Collector Chart https://github.com/signalfx/splunk-otel-collector-chart in your Kubernetes cluster
+
+```
+# Work in progress
+```
 
 After which run the deployment.
 
@@ -139,7 +144,10 @@ After which run the deployment.
 kubectl deploy -f deployment-miniapi.yaml
 ```
 
-## Optional Tools
+## Option 2: Auto instrumentation with OTel Operator
+Work in progres...
+
+# Optional Tools that it not required for this but sharing it here as FYI.
 
 ### NuGet Package Management
 1. Install the NuGet Gallery extension by pcislo in VSCode
