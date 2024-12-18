@@ -144,6 +144,18 @@ After which run the deployment.
 kubectl deploy -f deployment-miniapi.yaml
 ```
 
+Port forward
+```
+kubectl port-forward deployment/jek-dotnet8-minimalapi-web 3009:8080
+
+# Invoke general
+curl http://localhost:3009
+
+# View logs for any errors
+kubectl logs deployment/jek-dotnet8-minimalapi-web
+```
+
+
 ## Option 2: Auto instrumentation with OTel Operator
 Work in progres...
 
