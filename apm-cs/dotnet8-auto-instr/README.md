@@ -37,9 +37,14 @@ Minimal APIs are ideal for microservices and small applications. They offer a si
    ```
    Note: The `web` template creates an empty ASP.NET Core project.
 
+
+Note: Command line parameters:
+- `--output <OUTPUT_DIRECTORY>`: Specifies the output directory
+- `--verbosity <LEVEL>`: Sets logging detail (available in .NET 7+)
+
 2. Navigate to project directory:
    ```
-   cd jek-dotnet8-minimalapi
+   cd jek-dotnet8-minimalapi-web
    ```
 
 3. Configure HTTPS certificate:
@@ -96,24 +101,37 @@ Controller-based APIs provide a more traditional, feature-rich approach suitable
 dotnet build
 ```
 
-### Publishing the Application
+### Publishing the Application 
+- Turn on Docker or ensure that Docker is running
+- Following this instruction it is built into it with https://learn.microsoft.com/en-us/dotnet/core/docker/introduction#building-container-images
 ```
-dotnet publish
+dotnet publish --framework net8.0 -t:PublishContainer --os linux --arch x64 /p:ContainerImageName=jchoo/jek-dotnet8-minimalapi-web /p:ContainerImageTag=1.0
+
+docker run --rm -d -p 8000:8080 jek-dotnet8-minimalapi-web
 ```
 
-### Restoring Dependencies
+Test it 
+
 ```
-dotnet restore
+curl -s http://localhost:8000
 ```
 
-## Additional Tools
+End it
+```
+docker ps
+
+docker kill <container id>
+```
+
+### Push to Docker Hub
+```
+docker push jchoo/jek-dotnet8-minimalapi-web:1.0
+```
+
+## Optional Tools
 
 ### NuGet Package Management
 1. Install the NuGet Gallery extension by pcislo in VSCode
 2. Access NuGet commands:
    - Press `Command + Shift + P`
    - Search for "NuGet"
-
-Note: Command line parameters:
-- `--output <OUTPUT_DIRECTORY>`: Specifies the output directory
-- `--verbosity <LEVEL>`: Sets logging detail (available in .NET 7+)
