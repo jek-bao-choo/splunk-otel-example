@@ -11,8 +11,8 @@ managedNodeGroups:
   instanceType: m5.2xlarge
   volumeSize: 50
   desiredCapacity: 3
-  ssh:
-    publicKeyPath: ~/.ssh/id_rsa.pub
+  # ssh:
+  #   publicKeyPath: ~/.ssh/id_rsa.pub
 
 # secretsEncryption:
 #   keyARN: <YOUR-KMS-KEY-ARN>

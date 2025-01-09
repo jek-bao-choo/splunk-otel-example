@@ -19,19 +19,17 @@ Use eksctl to create the Kubernetes Control Plane (master nodes, etcd, API serve
 Using CLI parameters:
 ```bash
 eksctl create cluster \
---name=jek-eks-ec2-cluster-<add a date> \
---nodegroup-name=jek-eks-ec2-workers \
---version=1.29 \
---node-type=t3.large \
---nodes 2 \
---region=ap-southeast-1 \
---tags=Env=test \
---tags=Criticality=low \
---tags=Owner=email@email.com \
---managed \
---encrypt-secrets \
---kms-key=arn:aws:kms:ap-southeast-1:YOUR_ACCOUNT_ID:key/YOUR_KMS_KEY_ID \
---dry-run
+  --name=jek-eks-ec2-cluster \
+  --nodegroup-name=jek-eks-ec2-workers \
+  --version=1.29 \
+  --node-type=t3.large \
+  --nodes 2 \
+  --region=ap-southeast-1 \
+  --tags=Env=test \
+  --tags=Criticality=low \
+  --tags=Owner=email@email.com \
+  --managed \
+  --dry-run
 ```
 
 Alternatively, using a configuration file:
