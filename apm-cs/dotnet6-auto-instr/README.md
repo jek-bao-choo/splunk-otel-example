@@ -44,3 +44,63 @@ dotnet add package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore --versio
 ```
 curl http://localhost:<the port number>
 ```
+
+## Building the Application
+In the folder of jek-dotnet6-minimalapi-web run
+```
+dotnet build
+```
+
+```
+docker build -t jek-dotnet6-minimalapi-web:1.0 .
+```
+
+```
+docker run -d -p 8080:80 --name jek-dotnet6-minimalapi-web-container jek-dotnet6-minimalapi-web:1.0
+```
+
+Test it
+```
+curl http://localhost:8080
+```
+
+## Push the Image to a Docker Registry
+```
+docker tag jek-dotnet6-minimalapi-web:1.0 jchoo/jek-dotnet6-minimalapi-web:1.0
+```
+
+```
+docker push jchoo/jek-dotnet6-minimalapi-web:1.0
+```
+
+## Kubernetes Deployment
+
+### Option 1: Semi-automated Deployment
+
+This approach uses a custom deployment configuration in a YAML file. You can use any Kubernetes cluster (local, EKS, AKS, GKE, etc.).
+
+1. Install the Splunk OTel Collector Chart:
+   https://github.com/signalfx/splunk-otel-collector-chart
+
+2. Deploy the application:
+   ```
+   kubectl apply -f deployment-miniapi-with-agent.yaml
+   ```
+
+3. Set up port forwarding:
+   ```
+   kubectl port-forward deployment/jek-dotnet6-minimalapi-web 3009:80
+   ```
+
+4. Test the deployment:
+   ```
+   # Test general endpoint
+   curl http://localhost:3009
+
+   # View deployment logs
+   kubectl logs deployment/jek-dotnet6-minimalapi-web
+   ```
+
+### Option 2: Automated Instrumentation with OTel Operator
+
+Work in progress...
