@@ -77,6 +77,8 @@ docker push jchoo/jek-dotnet6-minimalapi-web:1.0
 
 ### Option 1: Semi-automated Deployment
 
+Work in progress...
+
 This approach uses a custom deployment configuration in a YAML file. You can use any Kubernetes cluster (local, EKS, AKS, GKE, etc.).
 
 1. Install the Splunk OTel Collector Chart:

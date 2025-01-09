@@ -172,7 +172,31 @@ This approach uses a custom deployment configuration in a YAML file. You can use
 
 ### Option 2: Automated Instrumentation with OTel Operator
 
-Work in progress...
+```
+helm repo add splunk-otel-collector-chart https://signalfx.github.io/splunk-otel-collector-chart
+```
+
+```
+helm repo update
+```
+
+Check if a cert-manager is already installed by looking for cert-manager pods.
+```
+kubectl get pods -l app=cert-manager --all-namespaces
+```
+
+If cert-manager is deployed, make sure to remove certmanager.enabled=true from the list of values to set.
+```
+helm install splunk-otel-collector --set="cloudProvider=aws,distribution=eks,splunkObservability.accessToken=<REDACTED>,clusterName=jek-eks-operator,splunkObservability.realm=us1,gateway.enabled=false,splunkObservability.profilingEnabled=true,environment=jek-sandbox,operator.enabled=true,certmanager.enabled=true" splunk-otel-collector-chart/splunk-otel-collector
+```
+
+Deployment-Wide Annotation For linux-x64:
+```
+kubectl patch deployment jek-dotnet8-minimalapi-web -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-dotnet":"default/splunk-otel-collector","instrumentation.opentelemetry.io/otel-dotnet-auto-runtime":"linux-x64"}}}}}'
+
+```
+
+![](proof.png)
 
 ## Additional Development Tools
 
