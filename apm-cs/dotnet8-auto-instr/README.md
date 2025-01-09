@@ -153,7 +153,7 @@ This approach uses a custom deployment configuration in a YAML file. You can use
 
 2. Deploy the application:
    ```
-   kubectl deploy -f deployment-miniapi.yaml
+   kubectl apply -f deployment-miniapi.yaml
    ```
 
 3. Set up port forwarding:
