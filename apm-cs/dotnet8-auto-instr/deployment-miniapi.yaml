@@ -21,8 +21,27 @@ spec:
       #   - /bin/sh
       #   - -c
       #   - |
+      #     apt-get update && apt-get install -y curl unzip
+          
+      #     echo "Creating install directory..."
+      #     mkdir -p /opt/splunk-otel-dotnet
+      #     chmod 777 /opt/splunk-otel-dotnet
+          
+      #     echo "Downloading install script..."
       #     curl -sSfL https://github.com/signalfx/splunk-otel-dotnet/releases/latest/download/splunk-otel-dotnet-install.sh -O
-      #     sh ./splunk-otel-dotnet-install.sh
+      #     chmod +x ./splunk-otel-dotnet-install.sh
+          
+      #     echo "Setting install directory..."
+      #     export SPLUNK_OTEL_DOTNET_INSTALL_DIR=/opt/splunk-otel-dotnet
+          
+      #     echo "Running install script..."
+      #     bash -x ./splunk-otel-dotnet-install.sh
+          
+      #     echo "Checking /tmp directory for downloaded files..."
+      #     ls -la /tmp/tmp.*
+          
+      #     echo "Final contents of install directory:"
+      #     ls -la /opt/splunk-otel-dotnet
       #   volumeMounts:
       #   - name: otel-instrumentation
       #     mountPath: /opt/splunk-otel-dotnet
@@ -31,23 +50,25 @@ spec:
         image: jchoo/jek-dotnet8-minimalapi-web:1.0
         ports:
         - containerPort: 8080
-      #   env:
-      #   - name: NODE_IP
-      #     valueFrom:
-      #       fieldRef:
-      #         fieldPath: status.hostIP
-      #   - name: OTEL_SERVICE_NAME
-      #     value: "jek-dotnet8-minimalapi-web"
-      #   - name: OTEL_RESOURCE_ATTRIBUTES
-      #     value: "deployment.environment=jek-sandbox,service.version=1.0"
-      #   - name: DOTNET_STARTUP_HOOKS
-      #     value: /opt/splunk-otel-dotnet/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll
-      #   - name: CORECLR_ENABLE_PROFILING
-      #     value: "1"
-      #   - name: CORECLR_PROFILER
-      #     value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
-      #   - name: CORECLR_PROFILER_PATH
-      #     value: /opt/splunk-otel-dotnet/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so
+        env:
+        - name: OTEL_LOG_LEVEL
+          value: "debug"
+        # - name: NODE_IP
+        #   valueFrom:
+        #     fieldRef:
+        #       fieldPath: status.hostIP
+        # - name: OTEL_SERVICE_NAME
+        #   value: "jek-dotnet8-minimalapi-web"
+        # - name: OTEL_RESOURCE_ATTRIBUTES
+        #   value: "deployment.environment=jek-sandbox,service.version=1.0"
+        # - name: DOTNET_STARTUP_HOOKS
+        #   value: /opt/splunk-otel-dotnet/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll
+        # - name: CORECLR_ENABLE_PROFILING
+        #   value: "1"
+        # - name: CORECLR_PROFILER
+        #   value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
+        # - name: CORECLR_PROFILER_PATH
+        #   value: /opt/splunk-otel-dotnet/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so
       #   - name: SPLUNK_PROFILER_ENABLED
       #     value: "true"
       #   - name: SPLUNK_PROFILER_MEMORY_ENABLED

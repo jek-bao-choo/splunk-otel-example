@@ -14,49 +14,59 @@ spec:
       labels:
         app: jekdotnet6miniapiweb
     spec:
-      # initContainers:
-      # - name: otel-instrumentation
-      #   image: debian:stable-slim
-      #   command:
-      #   - /bin/sh
-      #   - -c
-      #   - |
-      #     curl -sSfL https://github.com/signalfx/splunk-otel-dotnet/releases/latest/download/splunk-otel-dotnet-install.sh -O
-      #     sh ./splunk-otel-dotnet-install.sh
-      #   volumeMounts:
-      #   - name: otel-instrumentation
-      #     mountPath: /opt/splunk-otel-dotnet
+      initContainers:
+      - name: opentelemetry-auto-instrumentation-dotnet
+        image: ghcr.io/signalfx/splunk-otel-dotnet/splunk-otel-dotnet:v1.7.0
+        command:
+        - /bin/sh
+        - -c
+        - |
+          cp -a /autoinstrumentation/. /otel-auto-instrumentation-dotnet
+        volumeMounts:
+        - name: opentelemetry-auto-instrumentation-dotnet
+          mountPath: /otel-auto-instrumentation-dotnet
       containers:
       - name: dotnet6miniapiwebapp
         image: jchoo/jek-dotnet6-minimalapi-web:1.0
         ports:
         - containerPort: 80
-      #   env:
-      #   - name: NODE_IP
-      #     valueFrom:
-      #       fieldRef:
-      #         fieldPath: status.hostIP
-      #   - name: OTEL_SERVICE_NAME
-      #     value: "jek-dotnet6-minimalapi-web"
-      #   - name: OTEL_RESOURCE_ATTRIBUTES
-      #     value: "deployment.environment=jek-sandbox,service.version=1.0"
-      #   - name: DOTNET_STARTUP_HOOKS
-      #     value: /opt/splunk-otel-dotnet/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll
-      #   - name: CORECLR_ENABLE_PROFILING
-      #     value: "1"
-      #   - name: CORECLR_PROFILER
-      #     value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
-      #   - name: CORECLR_PROFILER_PATH
-      #     value: /opt/splunk-otel-dotnet/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so
-      #   - name: SPLUNK_PROFILER_ENABLED
-      #     value: "true"
-      #   - name: SPLUNK_PROFILER_MEMORY_ENABLED
-      #     value: "true"
-      #   - name: OTEL_EXPORTER_OTLP_ENDPOINT
-      #     value: "http://$(NODE_IP):4317"
-      #   volumeMounts:
-      #   - name: otel-instrumentation
-      #     mountPath: /opt/splunk-otel-dotnet
-      # volumes:
-      # - name: otel-instrumentation
-      #   emptyDir: {}
+        env:
+        - name: OTEL_NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: OTEL_SERVICE_NAME
+          value: "jek-dotnet6-minimalapi-web"
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: "deployment.environment=jek-sandbox,service.version=1.0"
+        - name: CORECLR_ENABLE_PROFILING
+          value: "1"
+        - name: CORECLR_PROFILER
+          value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
+        - name: CORECLR_PROFILER_PATH
+          value: /otel-auto-instrumentation-dotnet/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so
+        - name: DOTNET_STARTUP_HOOKS
+          value: /otel-auto-instrumentation-dotnet/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll
+        - name: DOTNET_ADDITIONAL_DEPS
+          value: /otel-auto-instrumentation-dotnet/AdditionalDeps
+        - name: OTEL_DOTNET_AUTO_HOME
+          value: /otel-auto-instrumentation-dotnet
+        - name: DOTNET_SHARED_STORE
+          value: /otel-auto-instrumentation-dotnet/store
+        - name: SPLUNK_PROFILER_ENABLED
+          value: "false"
+        - name: SPLUNK_PROFILER_MEMORY_ENABLED
+          value: "true"
+        - name: OTEL_DOTNET_AUTO_PLUGINS
+          value: Splunk.OpenTelemetry.AutoInstrumentation.Plugin,Splunk.OpenTelemetry.AutoInstrumentation
+        - name: OTEL_LOG_LEVEL
+          value: "debug"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          # value: "http://$(OTEL_NODE_IP):4318"
+          value: http://splunk-otel-collector-agent.default.svc.cluster.local:4318
+        volumeMounts:
+        - name: opentelemetry-auto-instrumentation-dotnet
+          mountPath: /otel-auto-instrumentation-dotnet
+      volumes:
+      - name: opentelemetry-auto-instrumentation-dotnet
+        emptyDir: {}
