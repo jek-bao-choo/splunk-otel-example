@@ -62,8 +62,8 @@ spec:
         - name: OTEL_LOG_LEVEL
           value: "debug"
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
-          # value: "http://$(OTEL_NODE_IP):4318"
-          value: http://splunk-otel-collector-agent.default.svc.cluster.local:4318
+          value: "http://$(OTEL_NODE_IP):4318"
+          # value: http://splunk-otel-collector-agent.default.svc.cluster.local:4318
         volumeMounts:
         - name: opentelemetry-auto-instrumentation-dotnet
           mountPath: /otel-auto-instrumentation-dotnet
