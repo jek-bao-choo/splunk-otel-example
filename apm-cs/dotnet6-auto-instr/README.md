@@ -101,6 +101,15 @@ This approach uses a custom deployment configuration in a YAML file. You can use
 
    # View deployment logs
    kubectl logs deployment/jek-dotnet6-minimalapi-web
+
+   # Check out the logs
+   kubectl exec --stdin --tty deploy/jek-dotnet6-minimalapi-web -- /bin/bash
+
+   cd /var/log/opentelemetry/dotnet
+
+   ls
+
+   # then cat the logs   
    ```
 
 ### Option 2: Automated Instrumentation with OTel Operator

@@ -27,7 +27,7 @@ spec:
           mountPath: /otel-auto-instrumentation-dotnet
       containers:
       - name: dotnet6miniapiwebapp
-        image: jchoo/jek-dotnet6-minimalapi-web:1.0
+        image: jchoo/jek-dotnet6-minimalapi-web:2.0
         ports:
         - containerPort: 80
         env:
