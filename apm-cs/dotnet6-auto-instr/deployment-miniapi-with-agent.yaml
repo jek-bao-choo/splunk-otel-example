@@ -36,9 +36,9 @@ spec:
             fieldRef:
               fieldPath: status.hostIP
         - name: OTEL_SERVICE_NAME
-          value: "jek-dotnet6-minimalapi-web"
+          value: "jek-dotnet6-minimalapi-web-v7"
         - name: OTEL_RESOURCE_ATTRIBUTES
-          value: "deployment.environment=jek-sandbox,service.version=2.0"
+          value: "deployment.environment=jek-sandbox,service.version=3.0"
         - name: CORECLR_ENABLE_PROFILING
           value: "1"
         - name: CORECLR_PROFILER
