@@ -33,7 +33,11 @@ https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetc
 ```
 dotnet add package Microsoft.EntityFrameworkCore.InMemory --version 6.0.28
 dotnet add package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore --version 6.0.28
+dotnet add package Splunk.OpenTelemetry.AutoInstrumentation --version 1.8.0
+dotnet list package
 ```
+
+It is very important to add `Splunk.OpenTelemetry.AutoInstrumentation --version 1.8.0`
 
 ```
 dotnet clean
@@ -61,11 +65,11 @@ curl http://localhost:<the port number>
 ## Building the Application
 In the folder of jek-dotnet6-minimalapi-web run
 ```
-docker build -t jek-dotnet6-minimalapi-web:5.0 .
+docker build -t jek-dotnet6-minimalapi-web:7.0 .
 ```
 
 ```
-docker run -d -p 8080:80 --name jek-dotnet6-minimalapi-web-container jek-dotnet6-minimalapi-web:5.0
+docker run -d -p 8080:80 --name jek-dotnet6-minimalapi-web-container jek-dotnet6-minimalapi-web:7.0
 ```
 
 Test it
@@ -75,18 +79,14 @@ curl http://localhost:8080
 
 ## Push the Image to a Docker Registry
 ```
-docker tag jek-dotnet6-minimalapi-web:5.0 jchoo/jek-dotnet6-minimalapi-web:5.0
+docker tag jek-dotnet6-minimalapi-web:7.0 jchoo/jek-dotnet6-minimalapi-web:7.0
 ```
 
 ```
-docker push jchoo/jek-dotnet6-minimalapi-web:5.0
+docker push jchoo/jek-dotnet6-minimalapi-web:7.0
 ```
 
 ## Kubernetes Deployment
-
-### Option 1: Semi-automated Deployment
-
-Work in progress...
 
 This approach uses a custom deployment configuration in a YAML file. You can use any Kubernetes cluster (local, EKS, AKS, GKE, etc.).
 
@@ -120,7 +120,3 @@ This approach uses a custom deployment configuration in a YAML file. You can use
 
    # then cat the logs   
    ```
-
-### Option 2: Automated Instrumentation with OTel Operator
-
-Work in progress...
