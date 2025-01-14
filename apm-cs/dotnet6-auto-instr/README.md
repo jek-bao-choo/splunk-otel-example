@@ -35,6 +35,19 @@ dotnet add package Microsoft.EntityFrameworkCore.InMemory --version 6.0.28
 dotnet add package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore --version 6.0.28
 ```
 
+```
+dotnet clean
+
+
+dotnet restore
+
+
+dotnet build
+
+
+dotnet list package
+```
+
 5. Run the application:
    ```
    dotnet run
@@ -48,15 +61,11 @@ curl http://localhost:<the port number>
 ## Building the Application
 In the folder of jek-dotnet6-minimalapi-web run
 ```
-dotnet build
+docker build -t jek-dotnet6-minimalapi-web:5.0 .
 ```
 
 ```
-docker build -t jek-dotnet6-minimalapi-web:1.0 .
-```
-
-```
-docker run -d -p 8080:80 --name jek-dotnet6-minimalapi-web-container jek-dotnet6-minimalapi-web:1.0
+docker run -d -p 8080:80 --name jek-dotnet6-minimalapi-web-container jek-dotnet6-minimalapi-web:5.0
 ```
 
 Test it
@@ -66,11 +75,11 @@ curl http://localhost:8080
 
 ## Push the Image to a Docker Registry
 ```
-docker tag jek-dotnet6-minimalapi-web:1.0 jchoo/jek-dotnet6-minimalapi-web:1.0
+docker tag jek-dotnet6-minimalapi-web:5.0 jchoo/jek-dotnet6-minimalapi-web:5.0
 ```
 
 ```
-docker push jchoo/jek-dotnet6-minimalapi-web:1.0
+docker push jchoo/jek-dotnet6-minimalapi-web:5.0
 ```
 
 ## Kubernetes Deployment

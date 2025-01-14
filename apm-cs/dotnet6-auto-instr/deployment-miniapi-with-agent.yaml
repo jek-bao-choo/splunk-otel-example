@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
       - name: opentelemetry-auto-instrumentation-dotnet
-        image: ghcr.io/signalfx/splunk-otel-dotnet/splunk-otel-dotnet:v1.7.0
+        image: ghcr.io/signalfx/splunk-otel-dotnet/splunk-otel-dotnet:v1.8.0
         command:
         - /bin/sh
         - -c
@@ -27,7 +27,7 @@ spec:
           mountPath: /otel-auto-instrumentation-dotnet
       containers:
       - name: dotnet6miniapiwebapp
-        image: jchoo/jek-dotnet6-minimalapi-web:2.0
+        image: jchoo/jek-dotnet6-minimalapi-web:5.0
         ports:
         - containerPort: 80
         env:
@@ -38,7 +38,7 @@ spec:
         - name: OTEL_SERVICE_NAME
           value: "jek-dotnet6-minimalapi-web"
         - name: OTEL_RESOURCE_ATTRIBUTES
-          value: "deployment.environment=jek-sandbox,service.version=1.0"
+          value: "deployment.environment=jek-sandbox,service.version=2.0"
         - name: CORECLR_ENABLE_PROFILING
           value: "1"
         - name: CORECLR_PROFILER
