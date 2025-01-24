@@ -6,83 +6,87 @@ This guide provides comprehensive instructions for setting up a .NET development
 
 ### .NET SDK Installation
 
-1. Download the .NET 6.0.428 SDK from https://dotnet.microsoft.com/en-us/download/dotnet/6.0
+1. Download the .NET 6.0.428 SDK from [here](https://dotnet.microsoft.com/en-us/download/dotnet/6.0).
 
-In the folder with global.json run `dotnet --version` to check that the version is 6.0.428.
+2. In the folder with `global.json`, run `dotnet --version` to check that the version is 6.0.428.
 
- Minimal APIs
+## Minimal APIs
 
 Minimal APIs provide a streamlined approach ideal for microservices and small applications. They offer a simplified architecture with reduced boilerplate code.
 
-**Documentation:**
-https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio-code
+**Documentation:** [Minimal APIs](https://learn.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio-code)
 
-1. `dotnet new web -o jek-dotnet6-minimalapi-web`
+### Steps to Create a Minimal API
+
+1. Create a new web project:
+   ```bash
+   dotnet new web -o jek-dotnet6-minimalapi-web
+   ```
 
 2. Navigate to the project directory:
-   ```
+   ```bash
    cd jek-dotnet6-minimalapi-web
    ```
 
 3. Configure HTTPS certificate:
-   ```
+   ```bash
    dotnet dev-certs https --trust
    ```
 
-4. Add NuGets
-```
-dotnet add package Microsoft.EntityFrameworkCore.InMemory --version 6.0.28
-dotnet add package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore --version 6.0.28
-dotnet add package Splunk.OpenTelemetry.AutoInstrumentation --version 1.8.0
-dotnet list package
-```
-
-It is very important to add `Splunk.OpenTelemetry.AutoInstrumentation --version 1.8.0`
-
-```
-dotnet clean
-
-
-dotnet restore
-
-
-dotnet build
-
-
-dotnet list package
-```
-
-5. Run the application:
+4. Add NuGet packages:
+   ```bash
+   dotnet add package Microsoft.EntityFrameworkCore.InMemory --version 6.0.28
+   dotnet add package Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore --version 6.0.28
+   dotnet add package Splunk.OpenTelemetry.AutoInstrumentation --version 1.8.0
+   dotnet list package
    ```
+
+   It is very important to add `Splunk.OpenTelemetry.AutoInstrumentation --version 1.8.0`.
+
+5. Clean, restore, and build the project:
+   ```bash
+   dotnet clean
+   dotnet restore
+   dotnet build
+   dotnet list package
+   ```
+
+6. Run the application:
+   ```bash
    dotnet run
    ```
 
-6. Another terminal to test it:
-```
-curl http://localhost:<the port number>
-```
+7. Test the application in another terminal:
+   ```bash
+   curl http://localhost:<the port number>
+   ```
 
 ## Building the Application
-In the folder of jek-dotnet6-minimalapi-web run
-```
+
+In the folder of `jek-dotnet6-minimalapi-web`, run:
+```bash
 docker build -t jek-dotnet6-minimalapi-web:7.0 .
 ```
 
-```
+Run the Docker container:
+```bash
 docker run -d -p 8080:80 --name jek-dotnet6-minimalapi-web-container jek-dotnet6-minimalapi-web:7.0
 ```
 
-Test it
-```
+Test it:
+```bash
 curl http://localhost:8080
 ```
 
 ## Push the Image to a Docker Registry
-```
+
+Tag the Docker image:
+```bash
 docker tag jek-dotnet6-minimalapi-web:7.0 jchoo/jek-dotnet6-minimalapi-web:7.0
 ```
 
-```
+Push the Docker image:
+```bash
 docker push jchoo/jek-dotnet6-minimalapi-web:7.0
 ```
 
@@ -90,21 +94,20 @@ docker push jchoo/jek-dotnet6-minimalapi-web:7.0
 
 This approach uses a custom deployment configuration in a YAML file. You can use any Kubernetes cluster (local, EKS, AKS, GKE, etc.).
 
-1. Install the Splunk OTel Collector Chart:
-   https://github.com/signalfx/splunk-otel-collector-chart
+1. Install the Splunk OTel Collector Chart: [Splunk OTel Collector Chart](https://github.com/signalfx/splunk-otel-collector-chart)
 
 2. Deploy the application:
-   ```
+   ```bash
    kubectl apply -f deployment-miniapi-with-agent.yaml
    ```
 
 3. Set up port forwarding:
-   ```
+   ```bash
    kubectl port-forward deployment/jek-dotnet6-minimalapi-web 3009:80
    ```
 
 4. Test the deployment:
-   ```
+   ```bash
    # Test general endpoint
    curl http://localhost:3009
 
@@ -121,13 +124,16 @@ This approach uses a custom deployment configuration in a YAML file. You can use
    # then cat the logs   
    ```
 
-![](proof.png)
+![Proof](proof.png)
 
-# Troubleshooting
-If you run into problem such as Assembly version conflict issue:
+## Troubleshooting
 
-https://docs.splunk.com/observability/en/gdi/get-data-in/application/otel-dotnet/troubleshooting/common-dotnet-troubleshooting.html#assembly-version-conflicts and https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/blob/main/docs/troubleshooting.md#assembly-version-conflicts
+If you run into problems such as Assembly version conflict issues, refer to:
 
+- [Assembly Version Conflicts](https://docs.splunk.com/observability/en/gdi/get-data-in/application/otel-dotnet/troubleshooting/common-dotnet-troubleshooting.html#assembly-version-conflicts)
+- [OpenTelemetry .NET Instrumentation Troubleshooting](https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/blob/main/docs/troubleshooting.md#assembly-version-conflicts)
+
+Example error:
 ```
 File name: 'System.Diagnostics.DiagnosticSource, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51'
    --- End of inner exception stack trace ---
@@ -149,7 +155,7 @@ File name: 'System.Diagnostics.DiagnosticSource, Version=8.0.0.0, Culture=neutra
    at StartupHook.Initialize() in /_/src/OpenTelemetry.AutoInstrumentation.StartupHook/StartupHook.cs:line 41
 ```
 
-Or this 
+Or this:
 ```
 root@jek-dotnet6-minimalapi-web-74dffb4669-xzrck:/var/log/opentelemetry/dotnet# cat otel-dotnet-auto-1-jek-dotnet6-minimalapi-web-Loader-20250110.log
 [2025-01-10T09:04:11.8467387Z] [Information] Managed Loader TryLoadManagedAssembly()
@@ -166,11 +172,11 @@ File name: 'System.Diagnostics.DiagnosticSource, Version=8.0.0.0, Culture=neutra
    at OpenTelemetry.AutoInstrumentation.Loader.Loader.TryLoadManagedAssembly() in /_/src/OpenTelemetry.AutoInstrumentation.Loader/Loader.cs:line 59
 ```
 
-How to view this? 
+### How to View Logs
 
-Activate debugging https://docs.splunk.com/observability/en/gdi/get-data-in/application/otel-dotnet/troubleshooting/common-dotnet-troubleshooting.html#activate-debug-logging
+Activate debugging: [Activate Debug Logging](https://docs.splunk.com/observability/en/gdi/get-data-in/application/otel-dotnet/troubleshooting/common-dotnet-troubleshooting.html#activate-debug-logging)
 
-```
+```bash
 # Check out the logs
 kubectl exec --stdin --tty deploy/jek-dotnet6-minimalapi-web -- /bin/bash
 
@@ -179,14 +185,17 @@ cd /var/log/opentelemetry/dotnet
 ls
 ```
 
-In short, the gist is to have
+### Important Configuration
 
+Ensure you have the following in your `csproj`:
 
-`<PackageReference Include=“Splunk.OpenTelemetry.AutoInstrumentation” Version=“1.8.0" />`
+```xml
+<PackageReference Include="Splunk.OpenTelemetry.AutoInstrumentation" Version="1.8.0" />
+```
 
-this package and version in the csproj.
+And use this image and version in the `initContainer` of the `deployment.yaml`:
 
-And using this image and version in the initContainer of the deployment.yaml
-
-`image: ghcr.io/signalfx/splunk-otel-dotnet/splunk-otel-dotnet:v1.8.0` 
+```yaml
+image: ghcr.io/signalfx/splunk-otel-dotnet/splunk-otel-dotnet:v1.8.0
+```
 
