@@ -1,0 +1,1 @@
+https://github.com/signalfx/splunk-opentelemetry-examples/tree/main/collector/k8s-with-windows-nodes

@@ -1,0 +1,1 @@
+https://github.com/signalfx/splunk-opentelemetry-examples/tree/main/collector/nvidia-nim-operator-metrics
